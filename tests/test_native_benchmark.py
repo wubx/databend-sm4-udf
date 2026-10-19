@@ -52,9 +52,9 @@ class NativeBenchmark(unittest.TestCase):
                     self.assertEqual(float(row['median_ms']),result['median_ms'])
         large=json.loads((LARGE/'results.json').read_text())
         self.assertEqual(large['metadata']['rows'],[100000,300000,1000000])
-        self.assertEqual(large['metadata']['implementations'],['native_md5','wasm_md5'])
-        self.assertEqual(large['timed_query_count'],108)
-        self.assertEqual(len(large['summary']),18)
+        self.assertEqual(large['metadata']['implementations'],list(report.IMPLS))
+        self.assertEqual(large['timed_query_count'],216)
+        self.assertEqual(len(large['summary']),36)
 
     def test_md5_only_excludes_identity(self):
         r=fixture()

@@ -25,40 +25,40 @@
 <text x='590.0' y='336.0' font-size='12' text-anchor='middle' fill='#666' font-weight='normal'>1M</text>
 <text x='330.0' y='366.0' font-size='12' text-anchor='middle' fill='#666' font-weight='normal'>行数（对数刻度）</text>
 <text x='18' y='186.0' font-size='12' fill='#666' text-anchor='middle' transform='rotate(-90 18 186.0)'>耗时比（WASM ÷ 内置）</text>
-<polyline points='70.0,84.9 243.3,83.2 330.0,116.1 416.7,162.8 458.0,192.5 477.2,204.3 503.3,244.2 544.7,273.0 590.0,286.5' fill='none' stroke='#c3aee8' stroke-width='2.5'/>
+<polyline points='70.0,84.9 243.3,83.2 330.0,116.1 416.7,162.8 458.0,192.5 477.2,204.3 503.3,244.6 544.7,270.4 590.0,288.0' fill='none' stroke='#c3aee8' stroke-width='2.5'/>
 <circle cx='70.0' cy='84.9' r='4' fill='#c3aee8'/>
 <circle cx='243.3' cy='83.2' r='4' fill='#c3aee8'/>
 <circle cx='330.0' cy='116.1' r='4' fill='#c3aee8'/>
 <circle cx='416.7' cy='162.8' r='4' fill='#c3aee8'/>
 <circle cx='458.0' cy='192.5' r='4' fill='#c3aee8'/>
 <circle cx='477.2' cy='204.3' r='4' fill='#c3aee8'/>
-<circle cx='503.3' cy='244.2' r='4' fill='#c3aee8'/>
-<circle cx='544.7' cy='273.0' r='4' fill='#c3aee8'/>
-<circle cx='590.0' cy='286.5' r='4' fill='#c3aee8'/>
+<circle cx='503.3' cy='244.6' r='4' fill='#c3aee8'/>
+<circle cx='544.7' cy='270.4' r='4' fill='#c3aee8'/>
+<circle cx='590.0' cy='288.0' r='4' fill='#c3aee8'/>
 <rect x='614' y='64' width='14' height='4' fill='#c3aee8'/>
-<text x='634.0' y='70.0' font-size='12' text-anchor='start' fill='#333' font-weight='normal'>16 B/行：3.3×</text>
-<polyline points='70.0,79.6 243.3,84.9 330.0,114.6 416.7,178.8 458.0,224.9 477.2,247.4 503.3,266.2 544.7,286.4 590.0,293.2' fill='none' stroke='#9d7fd8' stroke-width='2.5'/>
+<text x='634.0' y='70.0' font-size='12' text-anchor='start' fill='#333' font-weight='normal'>16 B/行：3.2×</text>
+<polyline points='70.0,79.6 243.3,84.9 330.0,114.6 416.7,178.8 458.0,224.9 477.2,247.4 503.3,268.7 544.7,284.9 590.0,293.3' fill='none' stroke='#9d7fd8' stroke-width='2.5'/>
 <circle cx='70.0' cy='79.6' r='4' fill='#9d7fd8'/>
 <circle cx='243.3' cy='84.9' r='4' fill='#9d7fd8'/>
 <circle cx='330.0' cy='114.6' r='4' fill='#9d7fd8'/>
 <circle cx='416.7' cy='178.8' r='4' fill='#9d7fd8'/>
 <circle cx='458.0' cy='224.9' r='4' fill='#9d7fd8'/>
 <circle cx='477.2' cy='247.4' r='4' fill='#9d7fd8'/>
-<circle cx='503.3' cy='266.2' r='4' fill='#9d7fd8'/>
-<circle cx='544.7' cy='286.4' r='4' fill='#9d7fd8'/>
-<circle cx='590.0' cy='293.2' r='4' fill='#9d7fd8'/>
+<circle cx='503.3' cy='268.7' r='4' fill='#9d7fd8'/>
+<circle cx='544.7' cy='284.9' r='4' fill='#9d7fd8'/>
+<circle cx='590.0' cy='293.3' r='4' fill='#9d7fd8'/>
 <rect x='614' y='88' width='14' height='4' fill='#9d7fd8'/>
 <text x='634.0' y='94.0' font-size='12' text-anchor='start' fill='#333' font-weight='normal'>128 B/行：2.6×</text>
-<polyline points='70.0,81.4 243.3,122.0 330.0,163.9 416.7,237.0 458.0,270.7 477.2,278.5 503.3,285.9 544.7,291.4 590.0,294.0' fill='none' stroke='#7a52c7' stroke-width='2.5'/>
+<polyline points='70.0,81.4 243.3,122.0 330.0,163.9 416.7,237.0 458.0,270.7 477.2,278.5 503.3,287.1 544.7,291.9 590.0,293.8' fill='none' stroke='#7a52c7' stroke-width='2.5'/>
 <circle cx='70.0' cy='81.4' r='4' fill='#7a52c7'/>
 <circle cx='243.3' cy='122.0' r='4' fill='#7a52c7'/>
 <circle cx='330.0' cy='163.9' r='4' fill='#7a52c7'/>
 <circle cx='416.7' cy='237.0' r='4' fill='#7a52c7'/>
 <circle cx='458.0' cy='270.7' r='4' fill='#7a52c7'/>
 <circle cx='477.2' cy='278.5' r='4' fill='#7a52c7'/>
-<circle cx='503.3' cy='285.9' r='4' fill='#7a52c7'/>
-<circle cx='544.7' cy='291.4' r='4' fill='#7a52c7'/>
-<circle cx='590.0' cy='294.0' r='4' fill='#7a52c7'/>
+<circle cx='503.3' cy='287.1' r='4' fill='#7a52c7'/>
+<circle cx='544.7' cy='291.9' r='4' fill='#7a52c7'/>
+<circle cx='590.0' cy='293.8' r='4' fill='#7a52c7'/>
 <rect x='614' y='112' width='14' height='4' fill='#7a52c7'/>
 <text x='634.0' y='118.0' font-size='12' text-anchor='start' fill='#333' font-weight='normal'>1,024 B/行：2.5×</text>
 </svg>

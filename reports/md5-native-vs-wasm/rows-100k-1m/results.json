@@ -2,7 +2,7 @@
   "schema": 1,
   "complete": true,
   "metadata": {
-    "started_at": "2026-10-19T14:07:01.179632+00:00",
+    "started_at": "2026-10-19T15:04:10.054676+00:00",
     "version": "Databend Query v1.2.947-nightly-f3733a6b32(rust-1.100.0-nightly-2026-09-21T02:16:50.512714833Z)",
     "cpu": "AMD Ryzen 9 5950X 16-Core Processor",
     "logical_cpus": 32,
@@ -25,7 +25,9 @@
     "repeats": 5,
     "implementations": [
       "native_md5",
-      "wasm_md5"
+      "wasm_md5",
+      "sql_identity",
+      "wasm_identity"
     ],
     "md5_crate": "0.10.6",
     "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
@@ -36,7 +38,7 @@
       "benchmarks/native-vs-wasm/benchmark.py": "ecfa4fb7d1e30fcad79f3ccf6f7c996bbdd82f2e1de36d6539ea83d888d2d11c"
     },
     "wasm_sha256": "0d90342bf4926265357099ddf0762b78b0df5025f83eea0080552bd9bebac552",
-    "finished_at": "2026-10-19T14:08:09.064802+00:00"
+    "finished_at": "2026-10-19T15:05:44.379062+00:00"
   },
   "validation": {
     "edge_cases": 27,
@@ -44,15 +46,15 @@
     "128B_sample_rows": 257,
     "1024B_sample_rows": 257
   },
-  "timed_query_count": 108,
+  "timed_query_count": 216,
   "summary": [
     {
       "length": 16,
       "rows": 100000,
       "impl": "native_md5",
       "median_ms": 21,
-      "min_ms": 20,
-      "max_ms": 24,
+      "min_ms": 19,
+      "max_ms": 22,
       "samples": 5,
       "rows_per_second": 4761904.761904762
     },
@@ -60,171 +62,351 @@
       "length": 16,
       "rows": 100000,
       "impl": "wasm_md5",
-      "median_ms": 171,
-      "min_ms": 171,
-      "max_ms": 172,
+      "median_ms": 170,
+      "min_ms": 163,
+      "max_ms": 176,
       "samples": 5,
-      "rows_per_second": 584795.3216374269
+      "rows_per_second": 588235.2941176471
+    },
+    {
+      "length": 16,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "median_ms": 8,
+      "min_ms": 7,
+      "max_ms": 8,
+      "samples": 5,
+      "rows_per_second": 12500000.0
+    },
+    {
+      "length": 16,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "median_ms": 141,
+      "min_ms": 139,
+      "max_ms": 147,
+      "samples": 5,
+      "rows_per_second": 709219.8581560283
     },
     {
       "length": 16,
       "rows": 300000,
       "impl": "native_md5",
-      "median_ms": 48,
-      "min_ms": 47,
+      "median_ms": 47,
+      "min_ms": 45,
       "max_ms": 49,
       "samples": 5,
-      "rows_per_second": 6250000.0
+      "rows_per_second": 6382978.723404256
     },
     {
       "length": 16,
       "rows": 300000,
       "impl": "wasm_md5",
-      "median_ms": 234,
+      "median_ms": 243,
       "min_ms": 233,
-      "max_ms": 246,
+      "max_ms": 251,
       "samples": 5,
-      "rows_per_second": 1282051.282051282
+      "rows_per_second": 1234567.9012345679
     },
     {
       "length": 16,
-      "rows": 1000000,
-      "impl": "native_md5",
-      "median_ms": 143,
-      "min_ms": 141,
-      "max_ms": 145,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "median_ms": 10,
+      "min_ms": 9,
+      "max_ms": 11,
       "samples": 5,
-      "rows_per_second": 6993006.993006993
+      "rows_per_second": 30000000.0
     },
     {
       "length": 16,
-      "rows": 1000000,
-      "impl": "wasm_md5",
-      "median_ms": 478,
-      "min_ms": 454,
-      "max_ms": 493,
-      "samples": 5,
-      "rows_per_second": 2092050.209205021
-    },
-    {
-      "length": 128,
-      "rows": 100000,
-      "impl": "native_md5",
-      "median_ms": 37,
-      "min_ms": 37,
-      "max_ms": 39,
-      "samples": 5,
-      "rows_per_second": 2702702.7027027025
-    },
-    {
-      "length": 128,
-      "rows": 100000,
-      "impl": "wasm_md5",
-      "median_ms": 209,
-      "min_ms": 208,
-      "max_ms": 235,
-      "samples": 5,
-      "rows_per_second": 478468.8995215311
-    },
-    {
-      "length": 128,
       "rows": 300000,
-      "impl": "native_md5",
-      "median_ms": 100,
-      "min_ms": 98,
-      "max_ms": 101,
-      "samples": 5,
-      "rows_per_second": 3000000.0
-    },
-    {
-      "length": 128,
-      "rows": 300000,
-      "impl": "wasm_md5",
-      "median_ms": 336,
-      "min_ms": 331,
-      "max_ms": 367,
-      "samples": 5,
-      "rows_per_second": 892857.1428571428
-    },
-    {
-      "length": 128,
-      "rows": 1000000,
-      "impl": "native_md5",
-      "median_ms": 315,
-      "min_ms": 302,
-      "max_ms": 319,
-      "samples": 5,
-      "rows_per_second": 3174603.1746031744
-    },
-    {
-      "length": 128,
-      "rows": 1000000,
-      "impl": "wasm_md5",
-      "median_ms": 816,
-      "min_ms": 804,
-      "max_ms": 842,
-      "samples": 5,
-      "rows_per_second": 1225490.1960784313
-    },
-    {
-      "length": 1024,
-      "rows": 100000,
-      "impl": "native_md5",
-      "median_ms": 152,
+      "impl": "wasm_identity",
+      "median_ms": 156,
       "min_ms": 151,
-      "max_ms": 160,
+      "max_ms": 159,
       "samples": 5,
-      "rows_per_second": 657894.7368421053
+      "rows_per_second": 1923076.923076923
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "native_md5",
+      "median_ms": 147,
+      "min_ms": 142,
+      "max_ms": 151,
+      "samples": 5,
+      "rows_per_second": 6802721.088435374
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "wasm_md5",
+      "median_ms": 466,
+      "min_ms": 459,
+      "max_ms": 474,
+      "samples": 5,
+      "rows_per_second": 2145922.746781116
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "median_ms": 19,
+      "min_ms": 18,
+      "max_ms": 20,
+      "samples": 5,
+      "rows_per_second": 52631578.94736842
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "median_ms": 205,
+      "min_ms": 199,
+      "max_ms": 212,
+      "samples": 5,
+      "rows_per_second": 4878048.780487805
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "native_md5",
+      "median_ms": 38,
+      "min_ms": 38,
+      "max_ms": 40,
+      "samples": 5,
+      "rows_per_second": 2631578.947368421
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "wasm_md5",
+      "median_ms": 204,
+      "min_ms": 202,
+      "max_ms": 220,
+      "samples": 5,
+      "rows_per_second": 490196.07843137253
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "median_ms": 10,
+      "min_ms": 9,
+      "max_ms": 10,
+      "samples": 5,
+      "rows_per_second": 10000000.0
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "median_ms": 159,
+      "min_ms": 152,
+      "max_ms": 171,
+      "samples": 5,
+      "rows_per_second": 628930.8176100629
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "native_md5",
+      "median_ms": 97,
+      "min_ms": 94,
+      "max_ms": 100,
+      "samples": 5,
+      "rows_per_second": 3092783.505154639
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "wasm_md5",
+      "median_ms": 342,
+      "min_ms": 340,
+      "max_ms": 347,
+      "samples": 5,
+      "rows_per_second": 877192.9824561403
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "median_ms": 15,
+      "min_ms": 15,
+      "max_ms": 17,
+      "samples": 5,
+      "rows_per_second": 20000000.0
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "median_ms": 188,
+      "min_ms": 184,
+      "max_ms": 200,
+      "samples": 5,
+      "rows_per_second": 1595744.680851064
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "native_md5",
+      "median_ms": 316,
+      "min_ms": 310,
+      "max_ms": 322,
+      "samples": 5,
+      "rows_per_second": 3164556.9620253164
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "wasm_md5",
+      "median_ms": 812,
+      "min_ms": 804,
+      "max_ms": 840,
+      "samples": 5,
+      "rows_per_second": 1231527.0935960591
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "median_ms": 38,
+      "min_ms": 36,
+      "max_ms": 38,
+      "samples": 5,
+      "rows_per_second": 26315789.47368421
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "median_ms": 300,
+      "min_ms": 294,
+      "max_ms": 307,
+      "samples": 5,
+      "rows_per_second": 3333333.3333333335
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "native_md5",
+      "median_ms": 156,
+      "min_ms": 151,
+      "max_ms": 157,
+      "samples": 5,
+      "rows_per_second": 641025.641025641
     },
     {
       "length": 1024,
       "rows": 100000,
       "impl": "wasm_md5",
-      "median_ms": 518,
-      "min_ms": 496,
-      "max_ms": 531,
+      "median_ms": 511,
+      "min_ms": 494,
+      "max_ms": 670,
       "samples": 5,
-      "rows_per_second": 193050.19305019305
+      "rows_per_second": 195694.71624266144
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "median_ms": 25,
+      "min_ms": 24,
+      "max_ms": 27,
+      "samples": 5,
+      "rows_per_second": 4000000.0
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "median_ms": 323,
+      "min_ms": 310,
+      "max_ms": 323,
+      "samples": 5,
+      "rows_per_second": 309597.52321981423
     },
     {
       "length": 1024,
       "rows": 300000,
       "impl": "native_md5",
-      "median_ms": 442,
-      "min_ms": 435,
+      "median_ms": 446,
+      "min_ms": 441,
       "max_ms": 453,
       "samples": 5,
-      "rows_per_second": 678733.0316742081
+      "rows_per_second": 672645.7399103139
     },
     {
       "length": 1024,
       "rows": 300000,
       "impl": "wasm_md5",
-      "median_ms": 1231,
-      "min_ms": 1211,
-      "max_ms": 1244,
+      "median_ms": 1218,
+      "min_ms": 1210,
+      "max_ms": 1248,
       "samples": 5,
-      "rows_per_second": 243704.3054427295
+      "rows_per_second": 246305.41871921183
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "median_ms": 66,
+      "min_ms": 63,
+      "max_ms": 67,
+      "samples": 5,
+      "rows_per_second": 4545454.545454546
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "median_ms": 611,
+      "min_ms": 590,
+      "max_ms": 1087,
+      "samples": 5,
+      "rows_per_second": 490998.36333878885
     },
     {
       "length": 1024,
       "rows": 1000000,
       "impl": "native_md5",
-      "median_ms": 1466,
-      "min_ms": 1440,
-      "max_ms": 1472,
+      "median_ms": 1463,
+      "min_ms": 1427,
+      "max_ms": 1485,
       "samples": 5,
-      "rows_per_second": 682128.2401091405
+      "rows_per_second": 683526.999316473
     },
     {
       "length": 1024,
       "rows": 1000000,
       "impl": "wasm_md5",
-      "median_ms": 3658,
-      "min_ms": 3640,
-      "max_ms": 3695,
+      "median_ms": 3676,
+      "min_ms": 3560,
+      "max_ms": 3755,
       "samples": 5,
-      "rows_per_second": 273373.4281027884
+      "rows_per_second": 272034.8204570185
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "median_ms": 199,
+      "min_ms": 195,
+      "max_ms": 201,
+      "samples": 5,
+      "rows_per_second": 5025125.628140704
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "median_ms": 1588,
+      "min_ms": 1564,
+      "max_ms": 1617,
+      "samples": 5,
+      "rows_per_second": 629722.9219143577
     }
   ],
   "samples": [
@@ -235,7 +417,7 @@
       "phase": "warmup",
       "repeat": 0,
       "server_ms": 20,
-      "wall_ms": 22.275611758232117,
+      "wall_ms": 22.791093215346336,
       "checksum": "5666105449321052274"
     },
     {
@@ -244,8 +426,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 24,
-      "wall_ms": 26.256976649165154,
+      "server_ms": 19,
+      "wall_ms": 21.38599567115307,
       "checksum": "5666105449321052274"
     },
     {
@@ -254,18 +436,18 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 1,
+      "server_ms": 22,
+      "wall_ms": 24.38199706375599,
+      "checksum": "5666105449321052274"
+    },
+    {
+      "length": 16,
+      "rows": 100000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 2,
       "server_ms": 21,
-      "wall_ms": 23.974642157554626,
-      "checksum": "5666105449321052274"
-    },
-    {
-      "length": 16,
-      "rows": 100000,
-      "impl": "native_md5",
-      "phase": "measure",
-      "repeat": 2,
-      "server_ms": 20,
-      "wall_ms": 23.265307769179344,
+      "wall_ms": 24.021534249186516,
       "checksum": "5666105449321052274"
     },
     {
@@ -274,8 +456,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 20,
-      "wall_ms": 22.861791774630547,
+      "server_ms": 22,
+      "wall_ms": 24.137772619724274,
       "checksum": "5666105449321052274"
     },
     {
@@ -285,7 +467,7 @@
       "phase": "measure",
       "repeat": 4,
       "server_ms": 21,
-      "wall_ms": 23.233860731124878,
+      "wall_ms": 23.17558228969574,
       "checksum": "5666105449321052274"
     },
     {
@@ -294,8 +476,8 @@
       "impl": "wasm_md5",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 174,
-      "wall_ms": 177.75623314082623,
+      "server_ms": 168,
+      "wall_ms": 171.22960649430752,
       "checksum": "5666105449321052274"
     },
     {
@@ -304,8 +486,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 172,
-      "wall_ms": 175.36558024585247,
+      "server_ms": 176,
+      "wall_ms": 179.74198050796986,
       "checksum": "5666105449321052274"
     },
     {
@@ -314,8 +496,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 171,
-      "wall_ms": 174.51726086437702,
+      "server_ms": 169,
+      "wall_ms": 173.2335016131401,
       "checksum": "5666105449321052274"
     },
     {
@@ -325,7 +507,7 @@
       "phase": "measure",
       "repeat": 2,
       "server_ms": 171,
-      "wall_ms": 174.5238732546568,
+      "wall_ms": 175.09932070970535,
       "checksum": "5666105449321052274"
     },
     {
@@ -334,8 +516,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 171,
-      "wall_ms": 175.42985454201698,
+      "server_ms": 163,
+      "wall_ms": 166.3234755396843,
       "checksum": "5666105449321052274"
     },
     {
@@ -344,158 +526,398 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 171,
-      "wall_ms": 174.26604963839054,
+      "server_ms": 170,
+      "wall_ms": 173.97008277475834,
       "checksum": "5666105449321052274"
     },
     {
       "length": 16,
-      "rows": 300000,
-      "impl": "native_md5",
+      "rows": 100000,
+      "impl": "sql_identity",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 51,
-      "wall_ms": 54.170237854123116,
-      "checksum": "13447407437309201582"
+      "server_ms": 6,
+      "wall_ms": 9.194953367114067,
+      "checksum": "12234406557322523725"
     },
     {
       "length": 16,
-      "rows": 300000,
-      "impl": "native_md5",
+      "rows": 100000,
+      "impl": "sql_identity",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 49,
-      "wall_ms": 51.191629841923714,
-      "checksum": "13447407437309201582"
+      "server_ms": 7,
+      "wall_ms": 10.113952681422234,
+      "checksum": "12234406557322523725"
     },
     {
       "length": 16,
-      "rows": 300000,
-      "impl": "native_md5",
+      "rows": 100000,
+      "impl": "sql_identity",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 48,
-      "wall_ms": 50.776707008481026,
-      "checksum": "13447407437309201582"
+      "server_ms": 8,
+      "wall_ms": 11.185139417648315,
+      "checksum": "12234406557322523725"
     },
     {
       "length": 16,
-      "rows": 300000,
-      "impl": "native_md5",
+      "rows": 100000,
+      "impl": "sql_identity",
       "phase": "measure",
       "repeat": 2,
-      "server_ms": 49,
-      "wall_ms": 52.10714414715767,
-      "checksum": "13447407437309201582"
+      "server_ms": 8,
+      "wall_ms": 10.650932788848877,
+      "checksum": "12234406557322523725"
     },
     {
       "length": 16,
-      "rows": 300000,
-      "impl": "native_md5",
+      "rows": 100000,
+      "impl": "sql_identity",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 47,
-      "wall_ms": 50.02189986407757,
-      "checksum": "13447407437309201582"
+      "server_ms": 8,
+      "wall_ms": 11.167559772729874,
+      "checksum": "12234406557322523725"
     },
     {
       "length": 16,
-      "rows": 300000,
-      "impl": "native_md5",
+      "rows": 100000,
+      "impl": "sql_identity",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 47,
-      "wall_ms": 50.438717007637024,
-      "checksum": "13447407437309201582"
+      "server_ms": 8,
+      "wall_ms": 11.507228016853333,
+      "checksum": "12234406557322523725"
     },
     {
       "length": 16,
-      "rows": 300000,
-      "impl": "wasm_md5",
+      "rows": 100000,
+      "impl": "wasm_identity",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 242,
-      "wall_ms": 245.98468467593193,
-      "checksum": "13447407437309201582"
+      "server_ms": 142,
+      "wall_ms": 145.42024955153465,
+      "checksum": "12234406557322523725"
     },
     {
       "length": 16,
-      "rows": 300000,
-      "impl": "wasm_md5",
+      "rows": 100000,
+      "impl": "wasm_identity",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 234,
-      "wall_ms": 237.45394498109818,
-      "checksum": "13447407437309201582"
+      "server_ms": 139,
+      "wall_ms": 143.069826066494,
+      "checksum": "12234406557322523725"
     },
     {
       "length": 16,
-      "rows": 300000,
-      "impl": "wasm_md5",
-      "phase": "measure",
-      "repeat": 1,
-      "server_ms": 246,
-      "wall_ms": 250.19834376871586,
-      "checksum": "13447407437309201582"
-    },
-    {
-      "length": 16,
-      "rows": 300000,
-      "impl": "wasm_md5",
-      "phase": "measure",
-      "repeat": 2,
-      "server_ms": 234,
-      "wall_ms": 237.82550171017647,
-      "checksum": "13447407437309201582"
-    },
-    {
-      "length": 16,
-      "rows": 300000,
-      "impl": "wasm_md5",
-      "phase": "measure",
-      "repeat": 3,
-      "server_ms": 233,
-      "wall_ms": 236.9570080190897,
-      "checksum": "13447407437309201582"
-    },
-    {
-      "length": 16,
-      "rows": 300000,
-      "impl": "wasm_md5",
-      "phase": "measure",
-      "repeat": 4,
-      "server_ms": 238,
-      "wall_ms": 242.22347140312195,
-      "checksum": "13447407437309201582"
-    },
-    {
-      "length": 16,
-      "rows": 1000000,
-      "impl": "native_md5",
-      "phase": "warmup",
-      "repeat": 0,
-      "server_ms": 145,
-      "wall_ms": 148.1972634792328,
-      "checksum": "5353389211026534659"
-    },
-    {
-      "length": 16,
-      "rows": 1000000,
-      "impl": "native_md5",
-      "phase": "measure",
-      "repeat": 0,
-      "server_ms": 144,
-      "wall_ms": 146.60040102899075,
-      "checksum": "5353389211026534659"
-    },
-    {
-      "length": 16,
-      "rows": 1000000,
-      "impl": "native_md5",
+      "rows": 100000,
+      "impl": "wasm_identity",
       "phase": "measure",
       "repeat": 1,
       "server_ms": 141,
-      "wall_ms": 144.05959658324718,
+      "wall_ms": 144.97490972280502,
+      "checksum": "12234406557322523725"
+    },
+    {
+      "length": 16,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 142,
+      "wall_ms": 145.8059698343277,
+      "checksum": "12234406557322523725"
+    },
+    {
+      "length": 16,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 140,
+      "wall_ms": 144.09783110022545,
+      "checksum": "12234406557322523725"
+    },
+    {
+      "length": 16,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 147,
+      "wall_ms": 151.04455314576626,
+      "checksum": "12234406557322523725"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "native_md5",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 48,
+      "wall_ms": 51.305435597896576,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 48,
+      "wall_ms": 50.84065906703472,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 45,
+      "wall_ms": 48.45576174557209,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 47,
+      "wall_ms": 49.375638365745544,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 47,
+      "wall_ms": 50.247419625520706,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 49,
+      "wall_ms": 51.46155506372452,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_md5",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 243,
+      "wall_ms": 247.4656067788601,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_md5",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 233,
+      "wall_ms": 236.11332289874554,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_md5",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 244,
+      "wall_ms": 248.520253226161,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_md5",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 251,
+      "wall_ms": 254.70665842294693,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_md5",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 238,
+      "wall_ms": 242.6574733108282,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_md5",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 243,
+      "wall_ms": 246.35578878223896,
+      "checksum": "13447407437309201582"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 10,
+      "wall_ms": 12.968473136425018,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 10,
+      "wall_ms": 12.368453666567802,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 11,
+      "wall_ms": 14.094328507781029,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 9,
+      "wall_ms": 11.837860569357872,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 9,
+      "wall_ms": 11.71594113111496,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 11,
+      "wall_ms": 13.456469401717186,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 159,
+      "wall_ms": 162.2696854174137,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 151,
+      "wall_ms": 155.77948465943336,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 157,
+      "wall_ms": 161.01320087909698,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 155,
+      "wall_ms": 158.69773365557194,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 159,
+      "wall_ms": 162.8998201340437,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 156,
+      "wall_ms": 159.5700178295374,
+      "checksum": "17558862008785307858"
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "native_md5",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 146,
+      "wall_ms": 149.25102144479752,
+      "checksum": "5353389211026534659"
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 151,
+      "wall_ms": 153.6312960088253,
+      "checksum": "5353389211026534659"
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 142,
+      "wall_ms": 145.44140547513962,
       "checksum": "5353389211026534659"
     },
     {
@@ -505,7 +927,7 @@
       "phase": "measure",
       "repeat": 2,
       "server_ms": 143,
-      "wall_ms": 145.61408571898937,
+      "wall_ms": 145.81366069614887,
       "checksum": "5353389211026534659"
     },
     {
@@ -514,8 +936,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 145,
-      "wall_ms": 147.48098514974117,
+      "server_ms": 147,
+      "wall_ms": 150.1457840204239,
       "checksum": "5353389211026534659"
     },
     {
@@ -524,8 +946,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 142,
-      "wall_ms": 145.07148414850235,
+      "server_ms": 148,
+      "wall_ms": 150.4922043532133,
       "checksum": "5353389211026534659"
     },
     {
@@ -535,7 +957,7 @@
       "phase": "warmup",
       "repeat": 0,
       "server_ms": 467,
-      "wall_ms": 470.96608579158783,
+      "wall_ms": 471.49001620709896,
       "checksum": "5353389211026534659"
     },
     {
@@ -544,8 +966,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 478,
-      "wall_ms": 481.8486347794533,
+      "server_ms": 466,
+      "wall_ms": 469.847759231925,
       "checksum": "5353389211026534659"
     },
     {
@@ -554,8 +976,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 454,
-      "wall_ms": 459.1667763888836,
+      "server_ms": 470,
+      "wall_ms": 474.84299167990685,
       "checksum": "5353389211026534659"
     },
     {
@@ -564,8 +986,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 2,
-      "server_ms": 490,
-      "wall_ms": 494.6377966552973,
+      "server_ms": 474,
+      "wall_ms": 478.86213287711143,
       "checksum": "5353389211026534659"
     },
     {
@@ -574,8 +996,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 493,
-      "wall_ms": 496.81730940937996,
+      "server_ms": 459,
+      "wall_ms": 462.88384310901165,
       "checksum": "5353389211026534659"
     },
     {
@@ -584,78 +1006,198 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 474,
-      "wall_ms": 478.3922117203474,
+      "server_ms": 463,
+      "wall_ms": 466.41586534678936,
       "checksum": "5353389211026534659"
     },
     {
-      "length": 128,
-      "rows": 100000,
-      "impl": "native_md5",
+      "length": 16,
+      "rows": 1000000,
+      "impl": "sql_identity",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 38,
-      "wall_ms": 40.68458452820778,
-      "checksum": "6721421136777464559"
+      "server_ms": 21,
+      "wall_ms": 24.15553107857704,
+      "checksum": "5742692878634930680"
     },
     {
-      "length": 128,
-      "rows": 100000,
-      "impl": "native_md5",
+      "length": 16,
+      "rows": 1000000,
+      "impl": "sql_identity",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 39,
-      "wall_ms": 42.19062253832817,
-      "checksum": "6721421136777464559"
+      "server_ms": 18,
+      "wall_ms": 20.317913964390755,
+      "checksum": "5742692878634930680"
     },
     {
-      "length": 128,
-      "rows": 100000,
-      "impl": "native_md5",
+      "length": 16,
+      "rows": 1000000,
+      "impl": "sql_identity",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 37,
-      "wall_ms": 40.10360687971115,
-      "checksum": "6721421136777464559"
+      "server_ms": 20,
+      "wall_ms": 22.51388505101204,
+      "checksum": "5742692878634930680"
     },
     {
-      "length": 128,
-      "rows": 100000,
-      "impl": "native_md5",
+      "length": 16,
+      "rows": 1000000,
+      "impl": "sql_identity",
       "phase": "measure",
       "repeat": 2,
-      "server_ms": 37,
-      "wall_ms": 39.61407206952572,
-      "checksum": "6721421136777464559"
+      "server_ms": 19,
+      "wall_ms": 22.205816581845284,
+      "checksum": "5742692878634930680"
     },
     {
-      "length": 128,
-      "rows": 100000,
-      "impl": "native_md5",
+      "length": 16,
+      "rows": 1000000,
+      "impl": "sql_identity",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 37,
-      "wall_ms": 39.26830552518368,
-      "checksum": "6721421136777464559"
+      "server_ms": 19,
+      "wall_ms": 21.46691456437111,
+      "checksum": "5742692878634930680"
     },
     {
-      "length": 128,
-      "rows": 100000,
-      "impl": "native_md5",
+      "length": 16,
+      "rows": 1000000,
+      "impl": "sql_identity",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 39,
-      "wall_ms": 41.73537902534008,
-      "checksum": "6721421136777464559"
+      "server_ms": 18,
+      "wall_ms": 20.931310951709747,
+      "checksum": "5742692878634930680"
     },
     {
-      "length": 128,
-      "rows": 100000,
-      "impl": "wasm_md5",
+      "length": 16,
+      "rows": 1000000,
+      "impl": "wasm_identity",
       "phase": "warmup",
       "repeat": 0,
       "server_ms": 206,
-      "wall_ms": 209.47005599737167,
+      "wall_ms": 210.06862074136734,
+      "checksum": "5742692878634930680"
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 209,
+      "wall_ms": 212.65576034784317,
+      "checksum": "5742692878634930680"
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 199,
+      "wall_ms": 203.12481559813023,
+      "checksum": "5742692878634930680"
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 201,
+      "wall_ms": 204.40474338829517,
+      "checksum": "5742692878634930680"
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 212,
+      "wall_ms": 216.40432439744473,
+      "checksum": "5742692878634930680"
+    },
+    {
+      "length": 16,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 205,
+      "wall_ms": 209.19057168066502,
+      "checksum": "5742692878634930680"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "native_md5",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 39,
+      "wall_ms": 41.74357280135155,
+      "checksum": "6721421136777464559"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 40,
+      "wall_ms": 42.44469664990902,
+      "checksum": "6721421136777464559"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 38,
+      "wall_ms": 40.82895442843437,
+      "checksum": "6721421136777464559"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 38,
+      "wall_ms": 40.753480046987534,
+      "checksum": "6721421136777464559"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 38,
+      "wall_ms": 40.88473506271839,
+      "checksum": "6721421136777464559"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 40,
+      "wall_ms": 42.523520067334175,
+      "checksum": "6721421136777464559"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "wasm_md5",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 217,
+      "wall_ms": 221.1496476083994,
       "checksum": "6721421136777464559"
     },
     {
@@ -664,8 +1206,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 212,
-      "wall_ms": 216.84758365154266,
+      "server_ms": 208,
+      "wall_ms": 212.25601620972157,
       "checksum": "6721421136777464559"
     },
     {
@@ -674,8 +1216,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 208,
-      "wall_ms": 212.2839316725731,
+      "server_ms": 202,
+      "wall_ms": 207.0382945239544,
       "checksum": "6721421136777464559"
     },
     {
@@ -684,8 +1226,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 2,
-      "server_ms": 208,
-      "wall_ms": 212.4800030142069,
+      "server_ms": 202,
+      "wall_ms": 207.04596117138863,
       "checksum": "6721421136777464559"
     },
     {
@@ -694,8 +1236,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 209,
-      "wall_ms": 213.51887099444866,
+      "server_ms": 220,
+      "wall_ms": 223.58070872724056,
       "checksum": "6721421136777464559"
     },
     {
@@ -704,9 +1246,129 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 235,
-      "wall_ms": 243.00577118992805,
+      "server_ms": 204,
+      "wall_ms": 207.7924683690071,
       "checksum": "6721421136777464559"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 10,
+      "wall_ms": 12.927010655403137,
+      "checksum": "13424864660309259947"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 10,
+      "wall_ms": 12.818528339266777,
+      "checksum": "13424864660309259947"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 10,
+      "wall_ms": 12.755120173096657,
+      "checksum": "13424864660309259947"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 9,
+      "wall_ms": 11.352889239788055,
+      "checksum": "13424864660309259947"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 10,
+      "wall_ms": 12.215636670589447,
+      "checksum": "13424864660309259947"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 9,
+      "wall_ms": 11.100053787231445,
+      "checksum": "13424864660309259947"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 160,
+      "wall_ms": 164.5546481013298,
+      "checksum": "13424864660309259947"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 161,
+      "wall_ms": 165.21570086479187,
+      "checksum": "13424864660309259947"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 171,
+      "wall_ms": 176.2680560350418,
+      "checksum": "13424864660309259947"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 155,
+      "wall_ms": 158.87266397476196,
+      "checksum": "13424864660309259947"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 159,
+      "wall_ms": 163.3091177791357,
+      "checksum": "13424864660309259947"
+    },
+    {
+      "length": 128,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 152,
+      "wall_ms": 156.28482215106487,
+      "checksum": "13424864660309259947"
     },
     {
       "length": 128,
@@ -714,8 +1376,8 @@
       "impl": "native_md5",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 99,
-      "wall_ms": 102.30743885040283,
+      "server_ms": 106,
+      "wall_ms": 108.16012136638165,
       "checksum": "15560445987326293478"
     },
     {
@@ -724,8 +1386,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 99,
-      "wall_ms": 101.94552317261696,
+      "server_ms": 97,
+      "wall_ms": 99.72372092306614,
       "checksum": "15560445987326293478"
     },
     {
@@ -734,8 +1396,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 101,
-      "wall_ms": 104.25697267055511,
+      "server_ms": 97,
+      "wall_ms": 100.12161917984486,
       "checksum": "15560445987326293478"
     },
     {
@@ -744,8 +1406,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 2,
-      "server_ms": 98,
-      "wall_ms": 101.05272568762302,
+      "server_ms": 94,
+      "wall_ms": 96.77881188690662,
       "checksum": "15560445987326293478"
     },
     {
@@ -755,7 +1417,7 @@
       "phase": "measure",
       "repeat": 3,
       "server_ms": 100,
-      "wall_ms": 103.04292850196362,
+      "wall_ms": 102.72468440234661,
       "checksum": "15560445987326293478"
     },
     {
@@ -764,8 +1426,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 101,
-      "wall_ms": 103.89337316155434,
+      "server_ms": 96,
+      "wall_ms": 99.29772466421127,
       "checksum": "15560445987326293478"
     },
     {
@@ -774,8 +1436,8 @@
       "impl": "wasm_md5",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 359,
-      "wall_ms": 362.70166747272015,
+      "server_ms": 356,
+      "wall_ms": 360.1809348911047,
       "checksum": "15560445987326293478"
     },
     {
@@ -784,8 +1446,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 336,
-      "wall_ms": 340.7981153577566,
+      "server_ms": 340,
+      "wall_ms": 344.3884588778019,
       "checksum": "15560445987326293478"
     },
     {
@@ -794,8 +1456,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 352,
-      "wall_ms": 355.95307871699333,
+      "server_ms": 342,
+      "wall_ms": 345.82524560391903,
       "checksum": "15560445987326293478"
     },
     {
@@ -804,8 +1466,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 2,
-      "server_ms": 367,
-      "wall_ms": 371.7486262321472,
+      "server_ms": 340,
+      "wall_ms": 344.27621588110924,
       "checksum": "15560445987326293478"
     },
     {
@@ -814,8 +1476,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 334,
-      "wall_ms": 338.76919746398926,
+      "server_ms": 347,
+      "wall_ms": 350.9229049086571,
       "checksum": "15560445987326293478"
     },
     {
@@ -824,9 +1486,129 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 331,
-      "wall_ms": 336.45728416740894,
+      "server_ms": 342,
+      "wall_ms": 345.42710706591606,
       "checksum": "15560445987326293478"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 16,
+      "wall_ms": 18.43678206205368,
+      "checksum": "17786877206692310925"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 15,
+      "wall_ms": 17.689425498247147,
+      "checksum": "17786877206692310925"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 17,
+      "wall_ms": 19.622504711151123,
+      "checksum": "17786877206692310925"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 15,
+      "wall_ms": 17.21908338367939,
+      "checksum": "17786877206692310925"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 15,
+      "wall_ms": 17.76779815554619,
+      "checksum": "17786877206692310925"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 17,
+      "wall_ms": 20.161323249340057,
+      "checksum": "17786877206692310925"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 186,
+      "wall_ms": 190.59796445071697,
+      "checksum": "17786877206692310925"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 184,
+      "wall_ms": 188.3345376700163,
+      "checksum": "17786877206692310925"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 184,
+      "wall_ms": 188.32828290760517,
+      "checksum": "17786877206692310925"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 200,
+      "wall_ms": 204.78635653853416,
+      "checksum": "17786877206692310925"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 195,
+      "wall_ms": 199.084447696805,
+      "checksum": "17786877206692310925"
+    },
+    {
+      "length": 128,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 188,
+      "wall_ms": 192.0128222554922,
+      "checksum": "17786877206692310925"
     },
     {
       "length": 128,
@@ -834,8 +1616,8 @@
       "impl": "native_md5",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 312,
-      "wall_ms": 315.1344805955887,
+      "server_ms": 310,
+      "wall_ms": 312.7462714910507,
       "checksum": "8526803481124168633"
     },
     {
@@ -844,8 +1626,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 311,
-      "wall_ms": 313.50612826645374,
+      "server_ms": 321,
+      "wall_ms": 323.86989891529083,
       "checksum": "8526803481124168633"
     },
     {
@@ -854,8 +1636,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 302,
-      "wall_ms": 305.6738208979368,
+      "server_ms": 310,
+      "wall_ms": 313.4507406502962,
       "checksum": "8526803481124168633"
     },
     {
@@ -864,18 +1646,18 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 2,
+      "server_ms": 322,
+      "wall_ms": 324.810354039073,
+      "checksum": "8526803481124168633"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 3,
       "server_ms": 315,
-      "wall_ms": 318.65051202476025,
-      "checksum": "8526803481124168633"
-    },
-    {
-      "length": 128,
-      "rows": 1000000,
-      "impl": "native_md5",
-      "phase": "measure",
-      "repeat": 3,
-      "server_ms": 319,
-      "wall_ms": 321.9526428729296,
+      "wall_ms": 318.1225545704365,
       "checksum": "8526803481124168633"
     },
     {
@@ -884,8 +1666,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 317,
-      "wall_ms": 319.8240529745817,
+      "server_ms": 316,
+      "wall_ms": 319.2825559526682,
       "checksum": "8526803481124168633"
     },
     {
@@ -894,8 +1676,8 @@
       "impl": "wasm_md5",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 811,
-      "wall_ms": 816.1164093762636,
+      "server_ms": 821,
+      "wall_ms": 825.8291073143482,
       "checksum": "8526803481124168633"
     },
     {
@@ -904,8 +1686,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 822,
-      "wall_ms": 825.7151506841183,
+      "server_ms": 810,
+      "wall_ms": 813.9772564172745,
       "checksum": "8526803481124168633"
     },
     {
@@ -914,8 +1696,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 813,
-      "wall_ms": 817.3364568501711,
+      "server_ms": 840,
+      "wall_ms": 844.3128485232592,
       "checksum": "8526803481124168633"
     },
     {
@@ -924,8 +1706,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 2,
-      "server_ms": 842,
-      "wall_ms": 846.0233081132174,
+      "server_ms": 812,
+      "wall_ms": 815.7511297613382,
       "checksum": "8526803481124168633"
     },
     {
@@ -934,8 +1716,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 816,
-      "wall_ms": 819.8660183697939,
+      "server_ms": 804,
+      "wall_ms": 808.2293588668108,
       "checksum": "8526803481124168633"
     },
     {
@@ -944,9 +1726,129 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 804,
-      "wall_ms": 808.2794118672609,
+      "server_ms": 817,
+      "wall_ms": 821.560688316822,
       "checksum": "8526803481124168633"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 36,
+      "wall_ms": 38.55346515774727,
+      "checksum": "8084941918114249712"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 36,
+      "wall_ms": 38.83621469140053,
+      "checksum": "8084941918114249712"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 38,
+      "wall_ms": 41.36895202100277,
+      "checksum": "8084941918114249712"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 37,
+      "wall_ms": 40.05272872745991,
+      "checksum": "8084941918114249712"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 38,
+      "wall_ms": 40.78635759651661,
+      "checksum": "8084941918114249712"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 38,
+      "wall_ms": 41.12229496240616,
+      "checksum": "8084941918114249712"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 297,
+      "wall_ms": 302.0698819309473,
+      "checksum": "8084941918114249712"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 304,
+      "wall_ms": 308.6877893656492,
+      "checksum": "8084941918114249712"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 300,
+      "wall_ms": 304.38277311623096,
+      "checksum": "8084941918114249712"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 295,
+      "wall_ms": 299.6038030833006,
+      "checksum": "8084941918114249712"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 294,
+      "wall_ms": 298.29045571386814,
+      "checksum": "8084941918114249712"
+    },
+    {
+      "length": 128,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 307,
+      "wall_ms": 311.5993496030569,
+      "checksum": "8084941918114249712"
     },
     {
       "length": 1024,
@@ -955,7 +1857,7 @@
       "phase": "warmup",
       "repeat": 0,
       "server_ms": 157,
-      "wall_ms": 159.74503755569458,
+      "wall_ms": 159.97003391385078,
       "checksum": "17977418058864721025"
     },
     {
@@ -964,8 +1866,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 152,
-      "wall_ms": 154.64722737669945,
+      "server_ms": 156,
+      "wall_ms": 158.34555588662624,
       "checksum": "17977418058864721025"
     },
     {
@@ -974,28 +1876,28 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 154,
-      "wall_ms": 156.74104541540146,
-      "checksum": "17977418058864721025"
-    },
-    {
-      "length": 1024,
-      "rows": 100000,
-      "impl": "native_md5",
-      "phase": "measure",
-      "repeat": 2,
-      "server_ms": 160,
-      "wall_ms": 163.470059633255,
-      "checksum": "17977418058864721025"
-    },
-    {
-      "length": 1024,
-      "rows": 100000,
-      "impl": "native_md5",
-      "phase": "measure",
-      "repeat": 3,
       "server_ms": 151,
-      "wall_ms": 154.12181802093983,
+      "wall_ms": 154.14170734584332,
+      "checksum": "17977418058864721025"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 151,
+      "wall_ms": 154.2223785072565,
+      "checksum": "17977418058864721025"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 157,
+      "wall_ms": 159.59531255066395,
       "checksum": "17977418058864721025"
     },
     {
@@ -1004,8 +1906,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 152,
-      "wall_ms": 154.6002011746168,
+      "server_ms": 156,
+      "wall_ms": 158.91970321536064,
       "checksum": "17977418058864721025"
     },
     {
@@ -1014,8 +1916,8 @@
       "impl": "wasm_md5",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 508,
-      "wall_ms": 513.7962400913239,
+      "server_ms": 523,
+      "wall_ms": 528.2784905284643,
       "checksum": "17977418058864721025"
     },
     {
@@ -1024,8 +1926,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 518,
-      "wall_ms": 523.8110013306141,
+      "server_ms": 516,
+      "wall_ms": 521.9625663012266,
       "checksum": "17977418058864721025"
     },
     {
@@ -1034,8 +1936,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 496,
-      "wall_ms": 502.82662734389305,
+      "server_ms": 494,
+      "wall_ms": 500.5214251577854,
       "checksum": "17977418058864721025"
     },
     {
@@ -1044,8 +1946,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 2,
-      "server_ms": 514,
-      "wall_ms": 519.96317692101,
+      "server_ms": 511,
+      "wall_ms": 517.1774737536907,
       "checksum": "17977418058864721025"
     },
     {
@@ -1054,8 +1956,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 531,
-      "wall_ms": 536.3137722015381,
+      "server_ms": 510,
+      "wall_ms": 514.7399008274078,
       "checksum": "17977418058864721025"
     },
     {
@@ -1064,9 +1966,129 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 527,
-      "wall_ms": 532.4403550475836,
+      "server_ms": 670,
+      "wall_ms": 675.5749881267548,
       "checksum": "17977418058864721025"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 25,
+      "wall_ms": 27.531180530786514,
+      "checksum": "17326038203865619708"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 25,
+      "wall_ms": 28.09041738510132,
+      "checksum": "17326038203865619708"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 24,
+      "wall_ms": 27.415569871664047,
+      "checksum": "17326038203865619708"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 26,
+      "wall_ms": 28.60650233924389,
+      "checksum": "17326038203865619708"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 27,
+      "wall_ms": 29.97458353638649,
+      "checksum": "17326038203865619708"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 24,
+      "wall_ms": 27.048692107200623,
+      "checksum": "17326038203865619708"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 298,
+      "wall_ms": 306.78078904747963,
+      "checksum": "17326038203865619708"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 316,
+      "wall_ms": 325.417373329401,
+      "checksum": "17326038203865619708"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 310,
+      "wall_ms": 319.96126659214497,
+      "checksum": "17326038203865619708"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 323,
+      "wall_ms": 331.12198673188686,
+      "checksum": "17326038203865619708"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 323,
+      "wall_ms": 331.5914273262024,
+      "checksum": "17326038203865619708"
+    },
+    {
+      "length": 1024,
+      "rows": 100000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 323,
+      "wall_ms": 330.70576563477516,
+      "checksum": "17326038203865619708"
     },
     {
       "length": 1024,
@@ -1074,8 +2096,8 @@
       "impl": "native_md5",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 437,
-      "wall_ms": 440.3859544545412,
+      "server_ms": 454,
+      "wall_ms": 456.54832385480404,
       "checksum": "14609977119964910397"
     },
     {
@@ -1084,8 +2106,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 435,
-      "wall_ms": 438.14169988036156,
+      "server_ms": 451,
+      "wall_ms": 454.3399531394243,
       "checksum": "14609977119964910397"
     },
     {
@@ -1094,38 +2116,38 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 1,
+      "server_ms": 441,
+      "wall_ms": 444.75251622498035,
+      "checksum": "14609977119964910397"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 443,
+      "wall_ms": 445.2471733093262,
+      "checksum": "14609977119964910397"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 446,
+      "wall_ms": 449.4207911193371,
+      "checksum": "14609977119964910397"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 4,
       "server_ms": 453,
-      "wall_ms": 455.50443790853024,
-      "checksum": "14609977119964910397"
-    },
-    {
-      "length": 1024,
-      "rows": 300000,
-      "impl": "native_md5",
-      "phase": "measure",
-      "repeat": 2,
-      "server_ms": 442,
-      "wall_ms": 445.0608678162098,
-      "checksum": "14609977119964910397"
-    },
-    {
-      "length": 1024,
-      "rows": 300000,
-      "impl": "native_md5",
-      "phase": "measure",
-      "repeat": 3,
-      "server_ms": 438,
-      "wall_ms": 441.22560508549213,
-      "checksum": "14609977119964910397"
-    },
-    {
-      "length": 1024,
-      "rows": 300000,
-      "impl": "native_md5",
-      "phase": "measure",
-      "repeat": 4,
-      "server_ms": 445,
-      "wall_ms": 447.1821691840887,
+      "wall_ms": 456.6151089966297,
       "checksum": "14609977119964910397"
     },
     {
@@ -1134,8 +2156,8 @@
       "impl": "wasm_md5",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 1235,
-      "wall_ms": 1239.663477987051,
+      "server_ms": 1229,
+      "wall_ms": 1234.4409804791212,
       "checksum": "14609977119964910397"
     },
     {
@@ -1144,8 +2166,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 1217,
-      "wall_ms": 1222.5086614489555,
+      "server_ms": 1212,
+      "wall_ms": 1217.089917510748,
       "checksum": "14609977119964910397"
     },
     {
@@ -1154,8 +2176,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 1231,
-      "wall_ms": 1236.1998315900564,
+      "server_ms": 1248,
+      "wall_ms": 1253.3487398177385,
       "checksum": "14609977119964910397"
     },
     {
@@ -1164,8 +2186,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 2,
-      "server_ms": 1237,
-      "wall_ms": 1242.5698284059763,
+      "server_ms": 1223,
+      "wall_ms": 1228.3537816256285,
       "checksum": "14609977119964910397"
     },
     {
@@ -1174,8 +2196,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 1211,
-      "wall_ms": 1218.400064855814,
+      "server_ms": 1218,
+      "wall_ms": 1223.0217885226011,
       "checksum": "14609977119964910397"
     },
     {
@@ -1184,9 +2206,129 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 1244,
-      "wall_ms": 1248.5875748097897,
+      "server_ms": 1210,
+      "wall_ms": 1214.6052233874798,
       "checksum": "14609977119964910397"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 62,
+      "wall_ms": 65.63039310276508,
+      "checksum": "1557612736729011849"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 64,
+      "wall_ms": 66.17146357893944,
+      "checksum": "1557612736729011849"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 67,
+      "wall_ms": 69.79420408606529,
+      "checksum": "1557612736729011849"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 63,
+      "wall_ms": 66.10086373984814,
+      "checksum": "1557612736729011849"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 67,
+      "wall_ms": 69.93331760168076,
+      "checksum": "1557612736729011849"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 66,
+      "wall_ms": 69.52459923923016,
+      "checksum": "1557612736729011849"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 624,
+      "wall_ms": 631.7699067294598,
+      "checksum": "1557612736729011849"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 590,
+      "wall_ms": 598.229456692934,
+      "checksum": "1557612736729011849"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 1087,
+      "wall_ms": 1096.6808088123798,
+      "checksum": "1557612736729011849"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 616,
+      "wall_ms": 624.4282759726048,
+      "checksum": "1557612736729011849"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 611,
+      "wall_ms": 618.7713164836168,
+      "checksum": "1557612736729011849"
+    },
+    {
+      "length": 1024,
+      "rows": 300000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 604,
+      "wall_ms": 612.4809365719557,
+      "checksum": "1557612736729011849"
     },
     {
       "length": 1024,
@@ -1194,8 +2336,8 @@
       "impl": "native_md5",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 1474,
-      "wall_ms": 1476.9799541682005,
+      "server_ms": 1465,
+      "wall_ms": 1468.1872930377722,
       "checksum": "2811235095299382675"
     },
     {
@@ -1204,38 +2346,38 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 0,
+      "server_ms": 1475,
+      "wall_ms": 1477.574361488223,
+      "checksum": "2811235095299382675"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 1448,
+      "wall_ms": 1451.361795887351,
+      "checksum": "2811235095299382675"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 1485,
+      "wall_ms": 1487.6943733543158,
+      "checksum": "2811235095299382675"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "native_md5",
+      "phase": "measure",
+      "repeat": 3,
       "server_ms": 1463,
-      "wall_ms": 1465.6512755900621,
-      "checksum": "2811235095299382675"
-    },
-    {
-      "length": 1024,
-      "rows": 1000000,
-      "impl": "native_md5",
-      "phase": "measure",
-      "repeat": 1,
-      "server_ms": 1468,
-      "wall_ms": 1471.447555348277,
-      "checksum": "2811235095299382675"
-    },
-    {
-      "length": 1024,
-      "rows": 1000000,
-      "impl": "native_md5",
-      "phase": "measure",
-      "repeat": 2,
-      "server_ms": 1440,
-      "wall_ms": 1443.2686567306519,
-      "checksum": "2811235095299382675"
-    },
-    {
-      "length": 1024,
-      "rows": 1000000,
-      "impl": "native_md5",
-      "phase": "measure",
-      "repeat": 3,
-      "server_ms": 1472,
-      "wall_ms": 1474.0520622581244,
+      "wall_ms": 1466.2731420248747,
       "checksum": "2811235095299382675"
     },
     {
@@ -1244,8 +2386,8 @@
       "impl": "native_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 1466,
-      "wall_ms": 1468.780618160963,
+      "server_ms": 1427,
+      "wall_ms": 1429.5394159853458,
       "checksum": "2811235095299382675"
     },
     {
@@ -1254,8 +2396,8 @@
       "impl": "wasm_md5",
       "phase": "warmup",
       "repeat": 0,
-      "server_ms": 3763,
-      "wall_ms": 3768.802462145686,
+      "server_ms": 3683,
+      "wall_ms": 3688.7791603803635,
       "checksum": "2811235095299382675"
     },
     {
@@ -1264,8 +2406,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 0,
-      "server_ms": 3640,
-      "wall_ms": 3646.30414173007,
+      "server_ms": 3560,
+      "wall_ms": 3565.1896074414253,
       "checksum": "2811235095299382675"
     },
     {
@@ -1274,8 +2416,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 1,
-      "server_ms": 3658,
-      "wall_ms": 3663.3376013487577,
+      "server_ms": 3625,
+      "wall_ms": 3630.624694749713,
       "checksum": "2811235095299382675"
     },
     {
@@ -1284,8 +2426,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 2,
-      "server_ms": 3666,
-      "wall_ms": 3671.5312749147415,
+      "server_ms": 3676,
+      "wall_ms": 3680.607272312045,
       "checksum": "2811235095299382675"
     },
     {
@@ -1294,8 +2436,8 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 3,
-      "server_ms": 3654,
-      "wall_ms": 3659.137073904276,
+      "server_ms": 3751,
+      "wall_ms": 3756.6004879772663,
       "checksum": "2811235095299382675"
     },
     {
@@ -1304,9 +2446,129 @@
       "impl": "wasm_md5",
       "phase": "measure",
       "repeat": 4,
-      "server_ms": 3695,
-      "wall_ms": 3699.8235192149878,
+      "server_ms": 3755,
+      "wall_ms": 3760.7940565794706,
       "checksum": "2811235095299382675"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 197,
+      "wall_ms": 199.74375143647194,
+      "checksum": "3716310645124186006"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 201,
+      "wall_ms": 204.2643316090107,
+      "checksum": "3716310645124186006"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 195,
+      "wall_ms": 198.21889884769917,
+      "checksum": "3716310645124186006"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 199,
+      "wall_ms": 201.88000239431858,
+      "checksum": "3716310645124186006"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 199,
+      "wall_ms": 201.91260799765587,
+      "checksum": "3716310645124186006"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "sql_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 200,
+      "wall_ms": 203.63430865108967,
+      "checksum": "3716310645124186006"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "warmup",
+      "repeat": 0,
+      "server_ms": 1591,
+      "wall_ms": 1600.087258964777,
+      "checksum": "3716310645124186006"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 0,
+      "server_ms": 1598,
+      "wall_ms": 1607.2243228554726,
+      "checksum": "3716310645124186006"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 1,
+      "server_ms": 1581,
+      "wall_ms": 1590.4415659606457,
+      "checksum": "3716310645124186006"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 2,
+      "server_ms": 1617,
+      "wall_ms": 1624.852403998375,
+      "checksum": "3716310645124186006"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 3,
+      "server_ms": 1564,
+      "wall_ms": 1572.387894615531,
+      "checksum": "3716310645124186006"
+    },
+    {
+      "length": 1024,
+      "rows": 1000000,
+      "impl": "wasm_identity",
+      "phase": "measure",
+      "repeat": 4,
+      "server_ms": 1588,
+      "wall_ms": 1598.0933364480734,
+      "checksum": "3716310645124186006"
     }
   ]
 }

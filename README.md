@@ -137,9 +137,11 @@ bendsql --query="$(<sql/compat_python.sql)"
 **MD5 内置函数 vs WASM**：用来回答“有内置函数时还需要 WASM 吗”。
 
 - [1–5 万行](reports/md5-native-vs-wasm/rows-1-50k/REPORT.md)：所有规模内置更快；1,024 B × 5 万行内置 **80 ms**、WASM **340 ms**。
-- [10–100 万行](reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md)：1,024 B × 100 万行内置 **1,466 ms**、WASM **3,658 ms**，差距缩小到约 2.5 倍。
+- [10–100 万行](reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md)：1,024 B × 100 万行内置 **1,463 ms**、WASM **3,676 ms**，差距缩小到约 2.5 倍；WASM 多出的耗时约三分之一花在数据进出 WASM 上。
 
-所有数字都是单机、单线程下的完整 SQL 耗时。测试环境和方法见 [报告索引](reports/README.md) 与 [BENCHMARKS](docs/BENCHMARKS.md)。
+**[max_threads 扩展](reports/max-threads/REPORT.md)**：1,024 B × 100 万行从 1 线程加到 16 线程，内置 MD5 快 **10.6 倍**、WASM SM4 **6.3 倍**、WASM MD5 **4.8 倍**；5 万行时 WASM 最多快约 2 倍。
+
+除 max_threads 报告外，数字都是单机、单线程下的完整 SQL 耗时。测试环境和方法见 [报告索引](reports/README.md) 与 [BENCHMARKS](docs/BENCHMARKS.md)。
 
 ## 开发与测试
 

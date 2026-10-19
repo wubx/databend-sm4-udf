@@ -105,6 +105,17 @@ def main():
                md5_rows, [(f'{n:,} B/行', c, [md5[n, r, 'wasm_md5'] / md5[n, r, 'native_md5'] for r in md5_rows])
                           for n, c in [(16, '#c3aee8'), (128, '#9d7fd8'), (1024, COLORS['native'])]],
                '耗时比（WASM ÷ 内置）', reference=1, ticks=[1, 100, 1000, 10000, 100000, 1000000])
+
+    with (ROOT / 'reports/max-threads/results.csv').open(newline='') as stream:
+        scaling = {(int(r['length']), int(r['rows']), r['impl'], int(r['threads'])): float(r['speedup'])
+                   for r in csv.DictReader(stream)}
+    threads = sorted({k[3] for k in scaling})
+    series = [('内置 MD5', COLORS['native'], 1000000, 'native_md5'), ('WASM SM4', COLORS['wasm'], 1000000, 'sm4_wasm'),
+              ('WASM MD5', '#9bbcf2', 1000000, 'wasm_md5'), ('JS SM4*', COLORS['js'], 50000, 'sm4_js')]
+    line_chart('max-threads-speedup.svg', 'max_threads 加速倍数（1,024 B/行，相对 1 线程）',
+               '1,024 B × 100 万行时内置 MD5、WASM SM4、WASM MD5，以及 1,024 B × 5 万行时 JS SM4，相对单线程的加速倍数。',
+               threads, [(label, color, [scaling[1024, r, i, t] for t in threads]) for label, color, r, i in series],
+               '加速倍数', reference=1, label_right=True, x_label='max_threads（对数刻度；*JS 为 5 万行）')
     print('Generated', ', '.join(sorted(p.name for p in OUT.glob('*.svg'))))
 
 

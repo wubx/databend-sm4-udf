@@ -91,10 +91,23 @@ WASM 比 JS、Python 快，但和 Databend 的原生内置函数比又如何？S
 线越接近红色虚线，两者差距越小。
 
 - 只查 1 行时，内置函数 5 ms，WASM 约 130 ms，差距主要就是那一百多毫秒的启动成本。
-- 到了 100 万行，1,024 B 的数据内置函数 1.47 s，WASM 3.66 s，差距缩小到 2.5 倍左右，但内置函数始终更快。
-- 剩下的差距来自数据在 WASM 内存里的进出拷贝、逐行分配结果，以及编译目标本身的差异。
+- 到了 100 万行，1,024 B 的数据内置函数 1.46 s，WASM 3.68 s，差距缩小到 2.5 倍左右，但内置函数始终更快。
+- 剩下的差距可以用“只传数据、不做计算”的 identity 函数拆开看：每行 1 KB 时，WASM 每多处理一行约 3.5 µs，其中约 1.2 µs 花在数据进出 WASM 内存上，约 2.1 µs 是 MD5 计算本身；内置函数每行约 1.5 µs。
 
 所以顺序很清楚：**先找内置函数，没有合适的再写 UDF。** WASM 的价值是补上内置函数做不到的计算，而不是替代它们。
+
+### 多给几个线程呢
+
+上面的数字都是 `max_threads=1`。把同一条查询放到多数据块的表上，再把线程数从 1 调到 16：
+
+![1,024 B × 100 万行时，16 线程下内置 MD5 快 10.6 倍、WASM SM4 快 6.3 倍、WASM MD5 快 4.8 倍；JS SM4 在 5 万行时 8 线程快约 6.4 倍](images/max-threads-speedup.svg)
+
+- 数据量大时，加线程很管用：1,024 B × 100 万行，WASM SM4 从 9.3 s 降到 1.5 s，WASM MD5 从 3.8 s 降到 0.8 s。
+- 数据量小时帮助有限：5 万行的表只有 7 个数据块，而且一百多毫秒的启动成本每次查询都要付一次，WASM 最多只快约 2 倍。
+- 内置函数扩展得最好，所以线程越多，它和 WASM 的差距反而越大：1,024 B × 100 万行时，耗时比从单线程的 2.4 倍变成 16 线程的 5.4 倍。
+- JS 也能并行，8 线程时快约 6.4 倍，但仍比同条件的 WASM 慢 40 多倍。
+
+完整数据见 [max_threads 扩展报告](../reports/max-threads/REPORT.md)。
 
 ## 5. 怎么选
 
@@ -138,9 +151,9 @@ flowchart LR
 
 ## 测试环境与延伸阅读
 
-以上数据来自一台 AMD Ryzen 9 5950X 单机，Databend Query v1.2.947-nightly，设置 `max_threads=1`，使用 Memory 表并关闭结果缓存。计时是完整的服务端 SQL 耗时，包含扫描、运行时初始化、数据转换和 RPC。并发、多线程和跨机网络场景没有测，你的环境中的数字会不同。
+以上数据来自一台 AMD Ryzen 9 5950X 单机，Databend Query v1.2.947-nightly，关闭结果缓存。除“多给几个线程呢”一节外，都设置 `max_threads=1` 并使用 Memory 表。计时是完整的服务端 SQL 耗时，包含扫描、运行时初始化、数据转换和 RPC。并发和跨机网络场景没有测，你的环境中的数字会不同。
 
-- 完整数据：[SM4 三端报告](../reports/sm4-backends/REPORT.md) · [MD5 1–5 万行](../reports/md5-native-vs-wasm/rows-1-50k/REPORT.md) · [MD5 10–100 万行](../reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md)
+- 完整数据：[SM4 三端报告](../reports/sm4-backends/REPORT.md) · [MD5 1–5 万行](../reports/md5-native-vs-wasm/rows-1-50k/REPORT.md) · [MD5 10–100 万行](../reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md) · [max_threads 扩展](../reports/max-threads/REPORT.md)
 - 测试方法：[BENCHMARKS.md](BENCHMARKS.md)
 - 部署：[部署总览](DEPLOYMENT.md) · [JS](DEPLOY_JS.md) · [WASM](DEPLOY_WASM.md) · [Python Server](DEPLOY_PYTHON.md)
 

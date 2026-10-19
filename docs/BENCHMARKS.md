@@ -37,6 +37,8 @@ export SM4_PASSWORD=''
 - 计时取服务端时间，包含扫描、hash、运行时创建和编译、Arrow 转换以及 Python RPC；不包含数据准备和 Python Server 启动。
 - 结果是单查询延迟，不是并发 QPS，也不是纯 SM4 计算时间。
 
+调大 `max_threads` 的效果需要多数据块的表和不带 `LIMIT` 的查询，单独放在 [max_threads 扩展实验](../benchmarks/max-threads/README.md) 中。
+
 ## 输出
 
 结果默认写到 `results/benchmark.json`，该目录被 Git 忽略。文件包含：

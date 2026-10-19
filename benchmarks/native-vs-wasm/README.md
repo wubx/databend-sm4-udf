@@ -20,7 +20,7 @@ MD5 只是一个容易验证的计算样本，不要用于密码、签名等安�
 
 `md-5` 的版本参照 Databend 源码中的 `Cargo.lock` 选定，没有重新编译 Databend。两边仍有差异：内置函数按列写入结果，WASM 逐行返回 String，编译目标和调用接口也不同。
 
-两个 identity 基线用来观察“经过 WASM 边界本身”的开销。它们的输出和输入一样长，而 MD5 输出固定 32 个字符，所以不能简单相减得到纯 MD5 计算时间。
+两个 identity 基线用来观察“经过 WASM 边界本身”的开销。报告用它们做近似的耗时拆分：按每增加一行的耗时，把 WASM MD5 分成“数据进出 WASM”和“MD5 计算”两部分。identity 的输出和输入一样长，而 MD5 输出固定 32 个字符，所以这个拆分只是估算。
 
 ## 构建
 
@@ -52,18 +52,20 @@ export SM4_PASSWORD=''
 
 ### 扩大到 10–100 万行
 
-`--md5-only` 只比较两种 MD5，不跑 identity 基线：
+同样跑四种执行路径，只是换成更大的行数：
 
 ```bash
-.venv/bin/python benchmarks/native-vs-wasm/benchmark.py --md5-only \
+.venv/bin/python benchmarks/native-vs-wasm/benchmark.py \
   --rows 100000,300000,1000000 --lengths 16,128,1024 --repeats 5 \
   --output results/native-vs-wasm-large.json \
   --report-dir reports/md5-native-vs-wasm/rows-100k-1m
 ```
 
-共 108 次计时查询（18 次预热、90 次正式）。`--report-dir` 让结果写到独立目录，不覆盖默认矩阵的报告。
+共 216 次计时查询（36 次预热、180 次正式）。`--report-dir` 让结果写到独立目录，不覆盖默认矩阵的报告。只想比较两种 MD5 时加 `--md5-only`，跳过 identity 基线。
 
-1,024 B × 100 万行光原文就约 0.95 GiB，加上其他长度的数据、运行时和中间结果，需要预留足够内存。
+1,024 B × 100 万行光原文就约 0.95 GiB，identity 还会返回等长的结果，加上运行时和中间结果，需要预留足够内存。
+
+多线程下的对比在另一个实验里：[max_threads 扩展](../max-threads/README.md)。
 
 ## 报告
 

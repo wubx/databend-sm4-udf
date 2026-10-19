@@ -56,7 +56,8 @@ def render(e):
     if tuple(e['metadata'].get('implementations',IMPLS))==('native_md5','wasm_md5'):
         return render_md5_only(e)
     m=e['metadata'];idx={(r['length'],r['rows'],r['impl']):r for r in e['summary']}
-    timings=[];identity=[];spreads=[]
+    timings=[];identity=[];spreads=[];breakdown=[]
+    large=min(m['rows'])>=100000;top=max(m['rows'])
     for length in m['lengths']:
         for count in m['rows']:
             n,w,b,i=[idx[length,count,impl] for impl in IMPLS]
@@ -64,9 +65,35 @@ def render(e):
             timings.append([length,f'{count:,}',n['median_ms'],w['median_ms'],ratio])
             identity.append([length,f'{count:,}',b['median_ms'],i['median_ms']])
             spreads.append([length,f'{count:,}',f'{n["min_ms"]}–{n["max_ms"]}',f'{w["min_ms"]}–{w["max_ms"]}'])
-    text=['# Databend 内置 MD5 与 WASM UDF：1–5 万行\n',
-        '**状态：完整测试已结束，所有结果校验一致。** MD5 仅作为计算样本，不用于安全用途。'
-        '10 万至 100 万行见 [大行数报告](../rows-100k-1m/REPORT.md)，其他报告见 [报告索引](../../README.md)。\n',
+        low=min(m['rows'])
+        n,w,b,i=[(idx[length,top,impl]['median_ms']-idx[length,low,impl]['median_ms'])*1000/(top-low) for impl in IMPLS]
+        breakdown.append([length,*[f'{v:.2f}' for v in (n,w,i-b,w-i,n-b)]])
+    low=min(m['rows'])
+    fixed=('' if low>100 else
+        f'{low:,} 行时 WASM identity 已需 {min(idx[length,low,"wasm_identity"]["median_ms"] for length in m["lengths"])}–'
+        f'{max(idx[length,low,"wasm_identity"]["median_ms"] for length in m["lengths"])} ms，'
+        f'而 SQL 基线只需 {max(idx[length,low,"sql_identity"]["median_ms"] for length in m["lengths"])} ms 以内，'
+        '这部分是每次查询的 WASM 固定开销（运行时创建、模块编译），不随行数增长。')
+    row_args=','.join(map(str,m['rows']));length_args=','.join(map(str,m['lengths']))
+    if large:
+        title='# 内置 MD5 与 WASM MD5：10–100 万行\n'
+        intro=('**状态：完整测试已结束，所有结果校验一致。** MD5 仅作为计算样本，不用于安全用途。'
+            '1–5 万行见 [小规模报告](../rows-1-50k/REPORT.md)，两轮独立测量；多线程见 [max_threads 扩展](../../max-threads/REPORT.md)；'
+            '其他报告见 [报告索引](../../README.md)。\n')
+        command=(f'.venv/bin/python benchmarks/native-vs-wasm/benchmark.py \\\n  --rows {row_args} --lengths {length_args} --repeats {m["repeats"]} \\\n'
+            '  --output results/native-vs-wasm-large.json \\\n  --report-dir reports/md5-native-vs-wasm/rows-100k-1m')
+        regenerate=('```bash\n.venv/bin/python benchmarks/native-vs-wasm/report.py \\\n  --input results/native-vs-wasm-large.json \\\n'
+            '  --report-dir reports/md5-native-vs-wasm/rows-100k-1m\n```\n')
+        memory='1,024 B × 100 万行仅原文就约 0.95 GiB，identity 还会返回等长结果，应预留足够内存。'
+    else:
+        title='# Databend 内置 MD5 与 WASM UDF：1–5 万行\n'
+        intro=('**状态：完整测试已结束，所有结果校验一致。** MD5 仅作为计算样本，不用于安全用途。'
+            '10 万至 100 万行见 [大行数报告](../rows-100k-1m/REPORT.md)，多线程见 [max_threads 扩展](../../max-threads/REPORT.md)，'
+            '其他报告见 [报告索引](../../README.md)。\n')
+        command='.venv/bin/python benchmarks/native-vs-wasm/benchmark.py'
+        regenerate='```bash\n.venv/bin/python benchmarks/native-vs-wasm/report.py \\\n  --input results/native-vs-wasm.json\n```\n'
+        memory=''
+    text=[title,intro,
         '## 1. 对比什么\n',
         '- 内置：`md5(data)`，Query 原生 Rust 表达式内执行。',
         '- WASM：`md5_wasm(data)`，`md-5 = 0.10.6`、同一算法库，输出相同的小写 32 字符 Hex STRING。',
@@ -92,21 +119,28 @@ def render(e):
         '## 4. 无 MD5 计算的基线（毫秒）\n',
         table(['输入 B/行','行数','SQL 原文基线','WASM identity'],identity),
         '\nIdentity 用于观察执行边界开销。MD5 输出固定 32 字符，identity 输出与输入等长，两者输出量和内存分配不同。\n',
-        '## 5. 正式测量 min–max（毫秒）\n',
+        '## 5. 耗时拆分（每增加一行的微秒数）\n',
+        f'取 {low:,} → {top:,} 行的中位数差除以增加的行数，固定开销在相减时抵消。'
+        '数据进出 WASM ≈ WASM identity − SQL 基线；WASM MD5 计算 ≈ WASM MD5 − WASM identity；内置 MD5 计算 ≈ 内置 MD5 − SQL 基线。'
+        +fixed+'\n',
+        table(['输入 B/行','内置 MD5','WASM MD5','其中：数据进出 WASM','其中：WASM MD5 计算','内置 MD5 计算'],breakdown),
+        '\n这是近似拆分：identity 返回与输入等长的结果，MD5 只返回 32 字符，两者的输出拷贝量不同，'
+        '短输入时差值可能偏小甚至为负。\n',
+        '## 6. 正式测量 min–max（毫秒）\n',
         table(['输入 B/行','行数','内置 md5 范围','WASM md5 范围'],spreads),
-        '\n## 6. 如何解读\n',
+        '\n## 7. 如何解读\n',
         '- 原生内置函数没有 WASM 边界，能直接使用 Query 的列式执行和结果 buffer；已有语义满足需求时应优先使用内置函数。',
         '- WASM 比当前纯 Python/JS SM4 快，但比原生函数慢。',
         '- 小规模由 WASM 固定成本主导；更大输入会摊薄固定成本，逐行 ABI、分配和编译 target 的差异仍然存在。',
-        '- 计时为完整 SQL；未测并发 QPS、多线程、冷进程启动或纯计算占比。',
+        '- 计时为完整 SQL；未测并发 QPS、冷进程启动或纯计算占比。多线程结果见 [max_threads 扩展](../../max-threads/REPORT.md)。',
         '- 单机共享开发环境、单线程设置、没有绑核；硬件/版本/数据变化后需重新测量。\n',
-        '## 7. 复现\n',
-        '```bash\n# 项目根目录；不改变主 SM4 工件\nrustup target add wasm32-wasip1\ncargo test --locked --manifest-path benchmarks/native-vs-wasm/wasm/Cargo.toml\ncargo build --locked --release --target wasm32-wasip1 \\\n  --manifest-path benchmarks/native-vs-wasm/wasm/Cargo.toml\nexport SM4_URL=http://127.0.0.1:8000\nexport SM4_USER=root\nexport SM4_PASSWORD=\'\'\n.venv/bin/python benchmarks/native-vs-wasm/benchmark.py\n```\n',
+        '## 8. 复现\n',
+        '```bash\n# 项目根目录；不改变主 SM4 工件\nrustup target add wasm32-wasip1\ncargo test --locked --manifest-path benchmarks/native-vs-wasm/wasm/Cargo.toml\ncargo build --locked --release --target wasm32-wasip1 \\\n  --manifest-path benchmarks/native-vs-wasm/wasm/Cargo.toml\nexport SM4_URL=http://127.0.0.1:8000\nexport SM4_USER=root\nexport SM4_PASSWORD=\'\'\n'+command+'\n```\n',
         '需要管理员批准的专用测试节点、UDF/stage/Memory 表权限；脚本不会改安全配置。'
         '设置了 CARGO_TARGET_DIR 时，通过 `--wasm-file` 指定真实工件路径。结束时清理临时函数/表/stage；'
-        '失败或强制 kill 后需按日志确认残留。不要未经批准在生产执行。\n',
+        '失败或强制 kill 后需按日志确认残留。'+memory+'不要未经批准在生产执行。\n',
         '使用已完成的原始数据重新生成：\n',
-        '```bash\n.venv/bin/python benchmarks/native-vs-wasm/report.py \\\n  --input results/native-vs-wasm.json\n```\n',
+        regenerate,
         f'WASM SHA256：`{m["wasm_sha256"]}`。源码、Cargo.lock、工具链指纹和逐次计时见 [results.json](results.json)。\n']
     return '\n'.join(text).rstrip()+'\n'
 
