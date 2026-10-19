@@ -1,6 +1,6 @@
-# 内置 MD5 与 WASM MD5：大行数对比
+# 内置 MD5 与 WASM MD5：10–100 万行
 
-**状态：完整测量已结束，结果一致且清理成功。** 此轮只执行两种 MD5，不运行 identity，也不重跑 SM4。上一轮小规模结果保留在 [独立报告](../REPORT.md)，不拼接为同一次测量。
+**状态：完整测量已结束，结果一致且清理成功。** 此轮只执行两种 MD5，不运行 identity，也不重跑 SM4。上一轮小规模结果保留在 [1–5 万行报告](../rows-1-50k/REPORT.md)，不拼接为同一次测量；其他报告见 [报告索引](../../README.md)。
 
 ## 1. 测试目标与环境
 
@@ -95,17 +95,17 @@ export SM4_PASSWORD=''
 .venv/bin/python benchmarks/native-vs-wasm/benchmark.py --md5-only \
   --rows 100000,300000,1000000 --lengths 16,128,1024 --repeats 5 \
   --output results/native-vs-wasm-large.json \
-  --report-dir benchmarks/native-vs-wasm/large
+  --report-dir reports/md5-native-vs-wasm/rows-100k-1m
 ```
 
-WASM 工件构建方法见 [部署步骤](../README.md)；自定义 CARGO_TARGET_DIR 时传 --wasm-file。1,024 B × 100 万行仅原文就约 0.95 GiB，应预留输入表、运行时和中间结果的内存。不要未经批准在生产运行。
+WASM 工件构建方法见 [实验说明](../../../benchmarks/native-vs-wasm/README.md)；自定义 CARGO_TARGET_DIR 时传 --wasm-file。1,024 B × 100 万行仅原文就约 0.95 GiB，应预留输入表、运行时和中间结果的内存。不要未经批准在生产运行。
 
 用完整原始记录重新生成本页，不覆盖上一轮：
 
 ```bash
 .venv/bin/python benchmarks/native-vs-wasm/report.py \
   --input results/native-vs-wasm-large.json \
-  --report-dir benchmarks/native-vs-wasm/large
+  --report-dir reports/md5-native-vs-wasm/rows-100k-1m
 ```
 
 - 未测并发 QPS、峰值 RSS、多线程扩展、冷进程启动或纯内核计算。单机共享环境、无绑核。

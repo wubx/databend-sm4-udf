@@ -8,6 +8,9 @@ import statistics
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
+REPORTS=ROOT/'reports/md5-native-vs-wasm'
+DEFAULT_REPORT_DIR=REPORTS/'rows-1-50k'
+LARGE_REPORT_DIR=REPORTS/'rows-100k-1m'
 IMPLS=('native_md5','wasm_md5','sql_identity','wasm_identity')
 
 
@@ -61,9 +64,10 @@ def render(e):
             timings.append([length,f'{count:,}',n['median_ms'],w['median_ms'],ratio])
             identity.append([length,f'{count:,}',b['median_ms'],i['median_ms']])
             spreads.append([length,f'{count:,}',f'{n["min_ms"]}–{n["max_ms"]}',f'{w["min_ms"]}–{w["max_ms"]}'])
-    text=['# Databend 内置 MD5 与 WASM UDF 性能对比\n',
+    text=['# Databend 内置 MD5 与 WASM UDF：1–5 万行\n',
         '**状态：完整测试已结束，所有结果校验一致。** 本测试只回答所测 MD5 实现和执行路径的差异，'
-        '不是“任何内置函数一定快多少倍”的通用保证。MD5 仅作为计算样本，不推荐用于安全用途。\n',
+        '不是“任何内置函数一定快多少倍”的通用保证。MD5 仅作为计算样本，不推荐用于安全用途。'
+        '10 万至 100 万行见 [大行数报告](../rows-100k-1m/REPORT.md)，其他报告见 [报告索引](../../README.md)。\n',
         '## 1. 对比什么\n',
         '- 内置：`md5(data)`，Query 原生 Rust 表达式内执行。',
         '- WASM：`md5_wasm(data)`，`md-5 = 0.10.6`、同一算法库，输出相同的小写 32 字符 Hex STRING。',
@@ -127,9 +131,10 @@ def render_md5_only(e):
             increments.append([length,*[f'{d*1000/(high-low):.3f}' for d in delta],
                 '不可分辨' if delta[0]<=0 else f'{delta[1]/delta[0]:.2f}×'])
     row_args=','.join(map(str,m['rows']));length_args=','.join(map(str,m['lengths']))
-    text=['# 内置 MD5 与 WASM MD5：大行数对比\n',
+    text=['# 内置 MD5 与 WASM MD5：10–100 万行\n',
         '**状态：完整测量已结束，结果一致且清理成功。** 此轮只执行两种 MD5，不运行 identity，也不重跑 SM4。'
-        '上一轮小规模结果保留在 [独立报告](../REPORT.md)，不拼接为同一次测量。\n',
+        '上一轮小规模结果保留在 [1–5 万行报告](../rows-1-50k/REPORT.md)，不拼接为同一次测量；'
+        '其他报告见 [报告索引](../../README.md)。\n',
         '## 1. 测试目标与环境\n',
         '检验扩大行数后，WASM 的固定加载/初始化成本是否被摊薄，以及完整 SQL 的相对差距如何变化。'
         '不能仅凭大行数差距把剩余成本精确归因于 ABI、分配或算法。MD5 不用于安全推荐。\n',
@@ -159,11 +164,11 @@ def render_md5_only(e):
         '同一个 MD5 库在 native/WASM target 下的编译、结果 buffer/String 分配和执行边界仍有差异。\n',
         '## 6. 复现\n',
         '从项目根目录构建后，在有管理员批准的独立测试实例运行：\n',
-        f'```bash\nexport SM4_URL=http://127.0.0.1:8000\nexport SM4_USER=root\nexport SM4_PASSWORD=\'\'\n.venv/bin/python benchmarks/native-vs-wasm/benchmark.py --md5-only \\\n  --rows {row_args} --lengths {length_args} --repeats {m["repeats"]} \\\n  --output results/native-vs-wasm-large.json \\\n  --report-dir benchmarks/native-vs-wasm/large\n```\n',
-        'WASM 工件构建方法见 [部署步骤](../README.md)；自定义 CARGO_TARGET_DIR 时传 --wasm-file。'
+        f'```bash\nexport SM4_URL=http://127.0.0.1:8000\nexport SM4_USER=root\nexport SM4_PASSWORD=\'\'\n.venv/bin/python benchmarks/native-vs-wasm/benchmark.py --md5-only \\\n  --rows {row_args} --lengths {length_args} --repeats {m["repeats"]} \\\n  --output results/native-vs-wasm-large.json \\\n  --report-dir reports/md5-native-vs-wasm/rows-100k-1m\n```\n',
+        'WASM 工件构建方法见 [实验说明](../../../benchmarks/native-vs-wasm/README.md)；自定义 CARGO_TARGET_DIR 时传 --wasm-file。'
         '1,024 B × 100 万行仅原文就约 0.95 GiB，应预留输入表、运行时和中间结果的内存。不要未经批准在生产运行。\n',
         '用完整原始记录重新生成本页，不覆盖上一轮：\n',
-        '```bash\n.venv/bin/python benchmarks/native-vs-wasm/report.py \\\n  --input results/native-vs-wasm-large.json \\\n  --report-dir benchmarks/native-vs-wasm/large\n```\n',
+        '```bash\n.venv/bin/python benchmarks/native-vs-wasm/report.py \\\n  --input results/native-vs-wasm-large.json \\\n  --report-dir reports/md5-native-vs-wasm/rows-100k-1m\n```\n',
         '- 未测并发 QPS、峰值 RSS、多线程扩展、冷进程启动或纯内核计算。单机共享环境、无绑核。',
         '- 未更换运行时策略或尝试缓存模块的优化；本报告不能证明这种固定成本在所有 Databend 版本都相同。',
         '- 没有修改已部署 SM4；临时函数、表、stage 正常退出时清理。',
@@ -171,7 +176,7 @@ def render_md5_only(e):
     return '\n'.join(text).rstrip()+'\n'
 
 
-def publish(record,directory=HERE):
+def publish(record,directory=DEFAULT_REPORT_DIR):
     evidence=summarize(record)
     directory=Path(directory)
     directory.mkdir(parents=True,exist_ok=True)
@@ -185,5 +190,5 @@ def publish(record,directory=HERE):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--input',type=Path,required=True)
-    p.add_argument('--report-dir',type=Path,default=HERE)
+    p.add_argument('--report-dir',type=Path,default=DEFAULT_REPORT_DIR)
     args=p.parse_args();publish(json.loads(args.input.read_text()),args.report_dir)

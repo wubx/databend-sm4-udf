@@ -14,6 +14,7 @@ import re
 import statistics
 
 ROOT=Path(__file__).resolve().parents[1]
+REPORT_DIR=ROOT/'reports/sm4-backends'
 IMPLS=('python','js','wasm')
 
 
@@ -124,11 +125,12 @@ def render(e):
                            f'{p["median_ms"]/w["median_ms"]:.1f}×',f'{j["median_ms"]/w["median_ms"]:.1f}×'])
             spread.append([length,f'{count:,}',*[f'{r["min_ms"]/1000:.3f}–{r["max_ms"]/1000:.3f}' for r in [p,j,w]]])
             throughput.append([length,f'{count:,}',*[f'{r["rows_per_second"]:,.0f}' for r in [p,j,w]]])
-    text=['# 测试报告\n',
+    text=['# SM4 三端测试报告\n',
         '**结论：当前源码快照的三端正确性检查通过，且以下新版接口性能矩阵已完整跑完。** '
         '本报告由完成后的记录生成，不复用旧 CBC 文本封装的性能数字。\n',
         f'- 本次隔离测试时间（UTC）：`{e["test_interval"]["started_at"]}` 至 `{e["test_interval"]["finished_at"]}`。',
-        '- 可提交证据：[test-results.json](test-results.json)；性能汇总：[benchmark-results.csv](benchmark-results.csv)。',
+        '- 可提交证据：[results.json](results.json)；性能汇总：[results.csv](results.csv)；'
+        '测试口径：[BENCHMARKS](../../docs/BENCHMARKS.md)；其他报告：[报告索引](../README.md)。',
         '- 这是本机共享开发环境的实测快照，不是安全审计、跨版本认证或性能保证。\n',
         '## 1. 环境\n',
         md_table(['项目','值'],[
@@ -177,7 +179,7 @@ def render(e):
         '- 原严格字节函数定义未改变。当前实例没有注册本项目 Python 入口；三端完整验证在独立实例完成。',
         f'- 新部署/隔离测试工件 SHA256：`{e["fingerprints"]["wasm_sha256"]}`。\n',
         '## 5. 复现\n',
-        '先按 [README](../README.md) 安装依赖、构建 WASM，在有权限的专用实例配置 UDF 访问策略：\n',
+        '先按 [README](../../README.md) 安装依赖、构建 WASM，在有权限的专用实例配置 UDF 访问策略：\n',
         f'```bash\nmake test\nmake wasm\nexport SM4_URL=http://127.0.0.1:8000\nexport SM4_USER=root\nexport SM4_PASSWORD=\'\'\n.venv/bin/python scripts/integration.py --benchmark-smoke --benchmark-report \\\n  --benchmark-report-rows {row_spec}\n```\n',
         '此命令创建随机前缀的临时函数和表，完成后自动清理，不更改实例安全设置。'
         '如果只跑性能且已注册公开函数、Python Server 也已启动：\n',
@@ -186,27 +188,28 @@ def render(e):
         '重复次数、checksum 和源码指纹，输出本报告及脱敏摘要；不会从数据库自动取凭证或隐式执行 SQL。\n',
         '## 6. 边界与安全\n',
         '- 本报告不包含压力并发、峰值 RSS、网络跨机、TLS 或高可用测试；未做全版本 Databend ABI 认证。',
-        '- 未调用外部数据库实例；兼容性仅限 [参数约定](COMPATIBILITY.md) 和固定参考向量。',
+        '- 未调用外部数据库实例；兼容性仅限 [参数约定](../../docs/COMPATIBILITY.md) 和固定参考向量。',
         '- 默认 IV 是固定兼容值，不是安全的生产 IV 生成策略；示例密钥公开，不用于真实数据。',
         '- ECB/CBC/CFB128/OFB 不提供认证；解密非 NULL 不证明数据未篡改或密钥正确。',
-        '- 实现未保证常数时间，未经密码学安全审计；详见 [SECURITY](../SECURITY.md)。',
+        '- 实现未保证常数时间，未经密码学安全审计；详见 [SECURITY](../../SECURITY.md)。',
         '- 报告对应一份有源码/向量/工件 SHA256 的快照。后续修改实现，应重测而不是沿用本页数字。\n']
     return '\n'.join(text).rstrip()+'\n'
 
 
 def readme_summary(e):
     b=e['benchmark'];c=e['correctness']
-    rows='／'.join(f'{n:,}' for n in b['rows'])
-    scales=len(b['lengths'])*len(b['rows'])
+    index={(r['length'],r['rows'],r['impl']):r for r in b['summary']}
+    length,count=max(b['lengths']),max(b['rows'])
+    largest={impl:index[length,count,impl]['median_ms']/1000 for impl in IMPLS}
+    rows=f'{min(b["rows"]):,}–{count:,}'
     return (
-        '已完成当前版本的三端正确性验证和一轮新版接口性能实测：\n\n'
-        f'- 严格字节接口 **{c["strict_vectors_per_backend"]} 个向量 × 三端**，字符串 key/IV 策略 '
-        f'**{c["adapter_vectors_per_backend"]} 个向量 × 三端**，共 **{c["vector_assertions_across_three_backends"]:,} 条共享向量断言通过**。\n'
-        f'- `explicit_iv`、CBC 解密，16/128/1,024 B × {rows} 行，共 {scales} 个规模；'
-        f'每组预热一次、正式三次，**{b["timed_query_count"]} 次计时查询完成**。\n'
-        '- 报告列出环境版本、中位数、波动范围、吞吐、源码/工件指纹和复现命令；不是旧文本封装性能数字。\n\n'
-        '**[查看完整测试报告](docs/TEST_REPORT.md)** · [性能 CSV](docs/benchmark-results.csv) · [脱敏测试证据 JSON](docs/test-results.json)\n\n'
-        '不同规模的结果以报告实测数据为准；不意味着任何实现总是最快，也不构成性能保证。'
+        '**[SM4 三端](reports/sm4-backends/REPORT.md)**（[CSV](reports/sm4-backends/results.csv) · '
+        '[JSON](reports/sm4-backends/results.json)）\n\n'
+        f'- 正确性：严格接口 {c["strict_vectors_per_backend"]} + 字符串 key/IV {c["adapter_vectors_per_backend"]} 个向量 × 三端，'
+        f'共 **{c["vector_assertions_across_three_backends"]:,} 条断言通过**。\n'
+        f'- 性能：`explicit_iv`、CBC 解密，16/128/1,024 B × {rows} 行，{b["timed_query_count"]} 次计时查询。'
+        f'{length:,} B × {count:,} 行中位耗时 WASM **{largest["wasm"]:.3f} s**、'
+        f'JS {largest["js"]:.3f} s、Python {largest["python"]:.3f} s。'
     )
 
 
@@ -224,15 +227,15 @@ def main():
     p.add_argument('--update-readme',action='store_true',help='Refresh the README report summary only after full validation')
     args=p.parse_args()
     evidence=build(read(args.integration),read(args.benchmark),read(args.unit),read(args.deployment))
-    docs=ROOT/'docs';docs.mkdir(exist_ok=True)
-    (docs/'test-results.json').write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n')
-    (docs/'TEST_REPORT.md').write_text(render(evidence))
+    REPORT_DIR.mkdir(parents=True,exist_ok=True)
+    (REPORT_DIR/'results.json').write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n')
+    (REPORT_DIR/'REPORT.md').write_text(render(evidence))
     fields=['length','rows','impl','median_ms','min_ms','max_ms','samples','rows_per_second','plaintext_mib_per_second']
-    with (docs/'benchmark-results.csv').open('w',newline='') as stream:
+    with (REPORT_DIR/'results.csv').open('w',newline='') as stream:
         writer=csv.DictWriter(stream,fieldnames=fields,lineterminator='\n');writer.writeheader();writer.writerows(evidence['benchmark']['summary'])
     if args.update_readme:
         update_readme(evidence)
-    print('Generated docs/TEST_REPORT.md, docs/test-results.json, docs/benchmark-results.csv')
+    print('Generated',', '.join(str((REPORT_DIR/name).relative_to(ROOT)) for name in ['REPORT.md','results.json','results.csv']))
 
 
 if __name__=='__main__':main()

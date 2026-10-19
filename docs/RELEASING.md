@@ -14,8 +14,9 @@
 | 部署 SQL | `sql/js.sql`, `sql/wasm.sql`, `sql/python.sql`, `sql/compat_*.sql` | 六个严格接口和十二个中性命名的 IV 策略入口；生成器校验同步 |
 | 测试及固定向量 | `tests/` | 共同 API 回归；`vectors.json` / `compat_vectors.json` 和 SQL smoke 用例是必要测试数据，应提交 |
 | 工具 | `scripts/` | SQL 生成、上传、集成测试、基准脚本 |
-| API、报告和使用文档 | `docs/` | 接口规则、基准方法；`TEST_REPORT.md`、`test-results.json`、`benchmark-results.csv` 是可提交的脱敏实测快照 |
-| 原生/WASM 对照 | `benchmarks/native-vs-wasm/` | MD5 源码、独立 Cargo.lock、复现脚本，以及两轮脱敏报告/JSON/CSV |
+| API 和使用文档 | `docs/` | 接口规则、部署、基准方法及发布清单 |
+| 测试与性能报告 | `reports/` | 每个子目录含 `REPORT.md`、`results.csv`、`results.json`，是可提交的脱敏实测快照 |
+| 原生/WASM 对照 | `benchmarks/native-vs-wasm/` | MD5 源码、独立 Cargo.lock 和复现脚本；报告位于 `reports/md5-native-vs-wasm/` |
 | CI | `.github/workflows/test.yml` | 单元测试和 WASM 构建 |
 | 许可证 | `LICENSE`, `python/LICENSE` | MIT 全文；Python 包副本用于打包，须与根目录一致 |
 
@@ -80,7 +81,7 @@ git ls-files | grep -E '(^|/)(target|__pycache__|results|\.venv)(/|$)|\.wasm$|\.
 - [ ] 确认目标 Databend 版本支持 JS、WASM/Arrow ABI 和 Python BINARY schema。
 - [ ] 审阅部署地址、allowlist、TLS/网络、安全及资源限制；示例 loopback 地址不是远程生产配置。
 - [ ] 在 GitHub 实际运行 CI；提供 workflow 不代表已经通过 GitHub Actions。
-- [ ] 发布前审阅 `docs/TEST_REPORT.md` 及对应 JSON/CSV；已完成范围以报告列出的矩阵为准，不发布进行中的部分数据。源码有变更或需扩大测试范围时重新测量，不能复用其他接口的旧数字。
+- [ ] 发布前审阅 `reports/` 下各报告及对应 JSON/CSV；已完成范围以报告列出的矩阵为准，不发布进行中的部分数据。源码有变更或需扩大测试范围时重新测量，不能复用其他接口的旧数字。
 - [ ] 若发布 WASM artifact，附构建信息、校验值及所需第三方声明。
 
 建议仓库名：`databend-sm4-udf`。当前 CI 仅上传构建 artifact，不创建 GitHub Release，也不发布到包仓库。

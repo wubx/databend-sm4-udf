@@ -57,9 +57,10 @@ for the raw, default_iv and explicit_iv profiles. This smoke test verifies runne
 
 The published performance snapshot covers **explicit_iv / CBC decryption / 16,128,1024 B**,
 with one warmup and three formal repetitions per workload. The completed row counts are listed in
-[TEST_REPORT.md](TEST_REPORT.md), [benchmark-results.csv](benchmark-results.csv) and
-[test-results.json](test-results.json). These files describe the same fully completed run and include
+[REPORT.md](../reports/sm4-backends/REPORT.md), [results.csv](../reports/sm4-backends/results.csv) and
+[results.json](../reports/sm4-backends/results.json). These files describe the same fully completed run and include
 environment, source fingerprints and sanitized samples; they are not measurements of all modes/profiles.
+All published reports are indexed in [reports/README.md](../reports/README.md).
 
 To run the expanded 1k/10k/30k/50k report matrix on a dedicated test instance:
 

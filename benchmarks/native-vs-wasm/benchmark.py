@@ -35,7 +35,7 @@ def main():
     p.add_argument('--repeats',type=int,default=5)
     p.add_argument('--md5-only',action='store_true',help='Only compare native MD5 and WASM MD5; omit both identity baselines')
     p.add_argument('--output',type=Path,default=ROOT/'results/native-vs-wasm.json')
-    p.add_argument('--report-dir',type=Path,default=HERE,help='Publish completed results here; use a separate directory for a different matrix')
+    p.add_argument('--report-dir',type=Path,default=ROOT/'reports/md5-native-vs-wasm/rows-1-50k',help='Publish completed results here; use a separate directory for a different matrix')
     args=p.parse_args()
     counts=list(map(int,args.rows.split(',')));lengths=list(map(int,args.lengths.split(',')))
     assert all(n>0 for n in counts) and all(n>=16 for n in lengths) and args.repeats>=3

@@ -9,8 +9,7 @@
 - [三种 UDF 的执行架构与推荐场景](docs/ARCHITECTURE.md)
 - [部署总览：连接、权限、接口选择与备份](docs/DEPLOYMENT.md)
 - 详细部署：[JavaScript](docs/DEPLOY_JS.md) · [WASM](docs/DEPLOY_WASM.md) · [Python Server](docs/DEPLOY_PYTHON.md)
-- [SM4 三方测试报告](docs/TEST_REPORT.md) · [复现性能测试](docs/BENCHMARKS.md)
-- [内置 MD5 与 WASM：单行至 5 万行](benchmarks/native-vs-wasm/REPORT.md) · [10 万至 100 万行](benchmarks/native-vs-wasm/large/REPORT.md)
+- [测试与性能报告索引](reports/README.md)：[SM4 三端](reports/sm4-backends/REPORT.md) · [MD5 内置 vs WASM](reports/md5-native-vs-wasm/rows-1-50k/REPORT.md) · [测试方法](docs/BENCHMARKS.md)
 - [API](docs/API.md) · [字符串 key/IV 策略](docs/COMPATIBILITY.md)
 
 ## 在 ELT / Data Pipeline 中如何选择
@@ -193,33 +192,21 @@ bendsql --query="$(<sql/python.sql)"
 
 当前固定的 `databend-udf==0.2.20` 会建立明文 gRPC 监听，本项目不提供未经验证的原生 TLS 开关。生产/跨机部署需要自行配置合适的 TLS 终止网关或受保护网络，并验证 Databend 的信任证书、allowlist 和访问控制；生成器可使用实际的 `https://...` 网关地址。本项目不会自动搭建网关或修改实例安全设置。不要将明文示例直接暴露到公网，也不要为跑示例而关闭生产安全校验。
 
-## 测试报告
+## 测试与性能报告
 
 <!-- TEST_REPORT_SUMMARY_START -->
-已完成当前版本的三端正确性验证和一轮新版接口性能实测：
+**[SM4 三端](reports/sm4-backends/REPORT.md)**（[CSV](reports/sm4-backends/results.csv) · [JSON](reports/sm4-backends/results.json)）
 
-- 严格字节接口 **226 个向量 × 三端**，字符串 key/IV 策略 **244 个向量 × 三端**，共 **1,410 条共享向量断言通过**。
-- `explicit_iv`、CBC 解密，16/128/1,024 B × 1,000／10,000／30,000／50,000 行，共 12 个规模；每组预热一次、正式三次，**144 次计时查询完成**。
-- 报告列出环境版本、中位数、波动范围、吞吐、源码/工件指纹和复现命令；不是旧文本封装性能数字。
-
-**[查看完整测试报告](docs/TEST_REPORT.md)** · [性能 CSV](docs/benchmark-results.csv) · [脱敏测试证据 JSON](docs/test-results.json)
-
-不同规模的结果以报告实测数据为准；不意味着任何实现总是最快，也不构成性能保证。
+- 正确性：严格接口 226 + 字符串 key/IV 244 个向量 × 三端，共 **1,410 条断言通过**。
+- 性能：`explicit_iv`、CBC 解密，16/128/1,024 B × 1,000–50,000 行，144 次计时查询。1,024 B × 50,000 行中位耗时 WASM **0.871 s**、JS 79.525 s、Python 167.686 s。
 <!-- TEST_REPORT_SUMMARY_END -->
 
-### 已有内置函数时还需要 WASM 吗？
+**MD5 内置 vs WASM**：回答“已有内置函数时还需要 WASM 吗”，与 SM4 测量相互独立。
 
-另做了 MD5 对照：使用相同算法库版本、相同 STRING 输入和小写 Hex 输出，比较内置 `md5()` 与 WASM UDF。
-16/128/1,024 B × 1–50,000 行，共 432 次计时查询；本轮所有规模中内置更快。
-例如 1,024 B × 50,000 行，完整 SQL 中位耗时为内置 **81 ms**、WASM **330 ms**。
-这不是原生 SM4 的测量，也不意味着任何内置函数都有固定倍率优势。
+- [1–5 万行](reports/md5-native-vs-wasm/rows-1-50k/REPORT.md)：所有规模内置更快；1,024 B × 5 万行内置 **81 ms**、WASM **330 ms**。
+- [10–100 万行](reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md)：1,024 B × 100 万行内置 **1,471 ms**、WASM **3,730 ms**，耗时比降到约 2.54×。
 
-**已有语义合适的内置函数时优先考虑内置函数；WASM 主要补充自定义计算能力。**
-完整方法、范围和 identity 基线见 [小规模报告](benchmarks/native-vs-wasm/REPORT.md)。
-另补测只含 MD5 的 **10 万／30 万／100 万行**，共 108 次计时查询，不覆盖前一轮。
-1,024 B × 100 万行内置 **1,471 ms**、WASM **3,730 ms**，耗时比降到约 **2.54×**。
-规模增大后固定成本占比下降与观察相符，但剩余差距仍包含计算、target、ABI 和分配，不能全归因于加载。
-详见 [百万行报告](benchmarks/native-vs-wasm/large/REPORT.md)。
+**已有语义合适的内置函数时优先使用；WASM 主要补充自定义计算。** 所有数字为单机、单线程的完整服务端 SQL 耗时，不代表并发 QPS 或纯内核时间，也不构成性能保证。范围、口径和更新方式见 **[报告索引](reports/README.md)**。
 
 ## 运行测试
 
@@ -259,9 +246,9 @@ export SM4_PASSWORD=''
 
 CI 运行无服务器单元测试和 WASM 构建，不会连接任意数据库。
 
-## 性能测试
+## 运行性能测试
 
-六个严格接口函数均部署后（默认 `--profile raw`）：
+六个严格接口函数均部署、Python Server 已启动后（默认 `--profile raw`）：
 
 ```bash
 export SM4_URL=http://127.0.0.1:8000
@@ -270,11 +257,7 @@ export SM4_URL=http://127.0.0.1:8000
   --modes CBC --operations decrypt --repeats 3
 ```
 
-文章如需比较兼容入口，在三端都部署相同 profile 后，加 `--profile default_iv` 或 `--profile explicit_iv`；三端会使用相同的原文 key/IV 及参数归一化规则，不要混合不同接口的性能结果。
-
-默认脚本还可覆盖全部模式和加解密。数据准备不计时，返回字节经 hash 聚合消费并校验。耗时包括运行时、转换和 RPC，不是纯密码内核时间。大规模 Python 测试耗时较长，建议在 tmux 中运行。
-
-[基准方法与结果口径](docs/BENCHMARKS.md) 说明如何复现和判断结果完整性。当前已完成的 `explicit_iv` 矩阵见 [测试报告](docs/TEST_REPORT.md)，以报告实际列出的行数为准；其他 profile、模式、加密、并发及更大行数不可直接沿用这些数字。
+比较字符串 key/IV 入口时，三端部署相同 profile 后加 `--profile default_iv` 或 `--profile explicit_iv`；不要混合不同接口的结果。耗时包含运行时、转换和 RPC，不是纯密码内核时间；大规模 Python 测试较慢，建议在 tmux 中运行。测量口径、完整性要求和报告发布流程见 [BENCHMARKS](docs/BENCHMARKS.md)。
 
 ## 目录
 
@@ -283,9 +266,11 @@ javascript/       无外部依赖的 JS SM4
 wasm/             Rust/WASI + Arrow UDF 导出
 python/           gmssl 原始分组原语 + 统一模式/padding + Flight Server
 sql/              严格接口及两种 IV 策略入口的部署定义
-scripts/          SQL 生成、可选集成测试、基准工具
+scripts/          SQL 生成、可选集成测试、基准与报告生成工具
 tests/            三端共享向量与测试
-docs/             接口、兼容性、性能口径及发布清单
+docs/             接口、兼容性、部署、测试方法及发布清单
+reports/          已发布的测试与性能报告（REPORT.md + CSV + 脱敏 JSON）
+benchmarks/       独立对照实验源码（内置 MD5 vs WASM）
 ```
 
 ## 安全与发布状态

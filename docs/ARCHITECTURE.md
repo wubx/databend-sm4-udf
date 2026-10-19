@@ -86,7 +86,7 @@ SQL 端到端耗时
 - 预热一次不保证所有后续 SQL 都免去运行时初始化；报告仍包含真实每次 SQL 成本。
 - 当前报告是单查询、单线程设置，不是并发 QPS、峰值内存或所有 CPU 核心利用率的测试。
 
-具体数值只引用 [TEST_REPORT.md](TEST_REPORT.md) 已完成部分，测试方法见 [BENCHMARKS.md](BENCHMARKS.md)。
+具体数值只引用 [SM4 三端报告](../reports/sm4-backends/REPORT.md) 已完成部分，测试方法见 [BENCHMARKS.md](BENCHMARKS.md)。
 
 ## 5. 推荐场景
 
@@ -125,12 +125,12 @@ WASM 无需为该函数额外访问独立 Server，但仍有 ABI/转换/运行�
 
 ## 6. 与原生内置函数的边界
 
-另有 [MD5 原生/WASM 对照](../benchmarks/native-vs-wasm/REPORT.md)：16/128/1,024 B、单行到 5 万行，
+另有 [MD5 原生/WASM 对照](../reports/md5-native-vs-wasm/rows-1-50k/REPORT.md)：16/128/1,024 B、单行到 5 万行，
 每组预热一次、正式五次。本轮全部规模原生更快；1,024 B × 5 万行内置 81 ms、WASM 330 ms。
 这项实验说明当前 WASM 不是“比所有原生函数更快”的路径；其价值是扩展计算能力，并在合适场景下
 比当前 JS/纯 Python 实现更高效。它不提供原生 SM4 的实测数据，也不能把 MD5 的差距直接当成 SM4 的差距。
 
-又补测了只含 MD5 的 [10 万至 100 万行矩阵](../benchmarks/native-vs-wasm/large/REPORT.md)，不重跑 identity。
+又补测了只含 MD5 的 [10 万至 100 万行矩阵](../reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md)，不重跑 identity。
 1,024 B × 100 万行内置 1,471 ms、WASM 3,730 ms，相对耗时差收敛到 2.54×，原生仍更快。
 同轮 10 万至 100 万行的增量成本也在报告中列出，只用于规模趋势，不能当作已扣净固定开销的内核时间。
 

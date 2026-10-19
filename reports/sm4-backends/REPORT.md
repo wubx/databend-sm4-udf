@@ -1,9 +1,9 @@
-# 测试报告
+# SM4 三端测试报告
 
 **结论：当前源码快照的三端正确性检查通过，且以下新版接口性能矩阵已完整跑完。** 本报告由完成后的记录生成，不复用旧 CBC 文本封装的性能数字。
 
 - 本次隔离测试时间（UTC）：`2026-10-19T08:34:23.476695+00:00` 至 `2026-10-19T09:11:44.388903+00:00`。
-- 可提交证据：[test-results.json](test-results.json)；性能汇总：[benchmark-results.csv](benchmark-results.csv)。
+- 可提交证据：[results.json](results.json)；性能汇总：[results.csv](results.csv)；测试口径：[BENCHMARKS](../../docs/BENCHMARKS.md)；其他报告：[报告索引](../README.md)。
 - 这是本机共享开发环境的实测快照，不是安全审计、跨版本认证或性能保证。
 
 ## 1. 环境
@@ -119,7 +119,7 @@ Python Server 与 Query 同机，通过 loopback Flight RPC 调用；三种实�
 
 ## 5. 复现
 
-先按 [README](../README.md) 安装依赖、构建 WASM，在有权限的专用实例配置 UDF 访问策略：
+先按 [README](../../README.md) 安装依赖、构建 WASM，在有权限的专用实例配置 UDF 访问策略：
 
 ```bash
 make test
@@ -144,8 +144,8 @@ export SM4_PASSWORD=''
 ## 6. 边界与安全
 
 - 本报告不包含压力并发、峰值 RSS、网络跨机、TLS 或高可用测试；未做全版本 Databend ABI 认证。
-- 未调用外部数据库实例；兼容性仅限 [参数约定](COMPATIBILITY.md) 和固定参考向量。
+- 未调用外部数据库实例；兼容性仅限 [参数约定](../../docs/COMPATIBILITY.md) 和固定参考向量。
 - 默认 IV 是固定兼容值，不是安全的生产 IV 生成策略；示例密钥公开，不用于真实数据。
 - ECB/CBC/CFB128/OFB 不提供认证；解密非 NULL 不证明数据未篡改或密钥正确。
-- 实现未保证常数时间，未经密码学安全审计；详见 [SECURITY](../SECURITY.md)。
+- 实现未保证常数时间，未经密码学安全审计；详见 [SECURITY](../../SECURITY.md)。
 - 报告对应一份有源码/向量/工件 SHA256 的快照。后续修改实现，应重测而不是沿用本页数字。

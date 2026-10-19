@@ -2,6 +2,8 @@
 
 目的：比较 Databend **原生内置函数**与 **WASM UDF** 的完整 SQL 执行成本。
 独立于主 SM4 实现，使用单独的 Cargo 工程和工件，不向 SM4 WASM 添加无关的密码导出。
+本目录只放实验源码和工具；已发布的结果见 [1–5 万行](../../reports/md5-native-vs-wasm/rows-1-50k/REPORT.md)
+与 [10–100 万行](../../reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md) 报告。
 
 MD5 仅作易验证的性能样本，不推荐用于密码、签名或其他安全用途。
 
@@ -52,10 +54,9 @@ export SM4_PASSWORD=''
 
 ## 只比较 MD5，扩大到十万／百万行
 
-**已完成**：[大行数报告](large/REPORT.md) · [CSV](large/results.csv) · [脱敏逐次结果](large/results.json)。
+**已完成**：[大行数报告](../../reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md)。
 本次全部规模原生仍更快，1,024 B × 100 万行：内置 1,471 ms、WASM 3,730 ms。
 这与固定成本占比下降的预期相符，但不能精确分离模块加载和其他成本。
-
 
 `--md5-only` 只注册并调用 WASM MD5，不运行 SQL/WASM identity。可以将行数提高到
 100,000、300,000、1,000,000，保持相同字段长度和正式五次测量：
@@ -64,11 +65,11 @@ export SM4_PASSWORD=''
 .venv/bin/python benchmarks/native-vs-wasm/benchmark.py --md5-only \
   --rows 100000,300000,1000000 --lengths 16,128,1024 --repeats 5 \
   --output results/native-vs-wasm-large.json \
-  --report-dir benchmarks/native-vs-wasm/large
+  --report-dir reports/md5-native-vs-wasm/rows-100k-1m
 ```
 
 这轮共 108 次计时查询（18 次预热、90 次正式测量）。
-`--report-dir` 将已完成报告写入新目录，保留此前小规模的四路径报告。
+`--report-dir` 将已完成报告写入独立目录，保留此前小规模的四路径报告。
 若用自定义构建目录，请照常补充 `--wasm-file`。
 
 1,024 B × 100 万行仅原文就约 0.95 GiB，加上其他长度的输入表、运行时和中间结果，
@@ -78,7 +79,8 @@ export SM4_PASSWORD=''
 
 ## 结果与报告
 
-完成后生成：
+报告不放在本目录，统一发布到 [`reports/md5-native-vs-wasm/`](../../reports/README.md)：
+默认矩阵写入 `rows-1-50k/`，大行数矩阵通过 `--report-dir` 写入 `rows-100k-1m/`。每个目录包含：
 
 - `REPORT.md`：环境、耗时中位数、min/max、identity 基线及解释边界。
 - `results.csv`：汇总。

@@ -8,7 +8,7 @@ import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-from report_results import build,render,readme_summary
+from report_results import REPORT_DIR,build,render,readme_summary
 
 
 def inputs(row_counts=(1000,10000)):
@@ -61,8 +61,8 @@ class ReportChecks(unittest.TestCase):
         self.assertIn('测试报告',render(evidence))
 
     def test_published_snapshot_matches_renderer(self):
-        evidence=json.loads((ROOT/'docs/test-results.json').read_text())
-        self.assertEqual((ROOT/'docs/TEST_REPORT.md').read_text(),render(evidence))
+        evidence=json.loads((REPORT_DIR/'results.json').read_text())
+        self.assertEqual((REPORT_DIR/'REPORT.md').read_text(),render(evidence))
         self.assertTrue(evidence['benchmark']['complete'])
         workloads=len(evidence['benchmark']['lengths'])*len(evidence['benchmark']['rows'])*3
         self.assertEqual(len(evidence['benchmark']['samples']),workloads*4)
@@ -70,7 +70,7 @@ class ReportChecks(unittest.TestCase):
         text=(ROOT/'README.md').read_text()
         summary=text.split('<!-- TEST_REPORT_SUMMARY_START -->',1)[1].split('<!-- TEST_REPORT_SUMMARY_END -->',1)[0].strip()
         self.assertEqual(summary,readme_summary(evidence))
-        with (ROOT/'docs/benchmark-results.csv').open(newline='') as stream:
+        with (REPORT_DIR/'results.csv').open(newline='') as stream:
             rows=list(csv.DictReader(stream))
         self.assertEqual(len(rows),workloads)
         for row,expected in zip(rows,evidence['benchmark']['summary']):
@@ -84,7 +84,7 @@ class ReportChecks(unittest.TestCase):
         self.assertEqual(evidence['benchmark']['timed_query_count'],144)
         self.assertEqual(len(evidence['benchmark']['summary']),36)
         self.assertIn('50,000',render(evidence))
-        self.assertIn('144 次计时查询完成',readme_summary(evidence))
+        self.assertIn('144 次计时查询',readme_summary(evidence))
         records[1]['samples'].pop()
         self.assertRaises(AssertionError,build,*records)
 
