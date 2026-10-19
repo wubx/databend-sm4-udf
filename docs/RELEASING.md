@@ -13,8 +13,8 @@
 | Python 源码和依赖 | `python/sm4_udf/`, `python/pyproject.toml`, `python/requirements.lock` | UDF Server 与依赖复现 |
 | 部署 SQL | `sql/js.sql`, `sql/wasm.sql`, `sql/python.sql`, `sql/compat_*.sql` | 六个严格接口和十二个中性命名的 IV 策略入口；生成器校验同步 |
 | 测试及固定向量 | `tests/` | 共同 API 回归；`vectors.json` / `compat_vectors.json` 和 SQL smoke 用例是必要测试数据，应提交 |
-| 工具 | `scripts/` | SQL 生成、上传、集成测试、基准脚本 |
-| API 和使用文档 | `docs/` | 接口规则、部署、基准方法及发布清单 |
+| 工具 | `scripts/` | SQL 生成、上传、集成测试、基准、报告和图表生成脚本 |
+| API 和使用文档 | `docs/` | 接口规则、部署、基准方法及发布清单；`docs/images/` 的 SVG 由 `scripts/render_charts.py` 生成 |
 | 测试与性能报告 | `reports/` | 每个子目录含 `REPORT.md`、`results.csv`、`results.json`，是可提交的脱敏实测快照 |
 | 原生/WASM 对照 | `benchmarks/native-vs-wasm/` | MD5 源码、独立 Cargo.lock 和复现脚本；报告位于 `reports/md5-native-vs-wasm/` |
 | CI | `.github/workflows/test.yml` | 单元测试和 WASM 构建 |

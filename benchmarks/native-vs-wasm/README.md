@@ -16,7 +16,7 @@ MD5 仅作易验证的性能样本，不推荐用于密码、签名或其他安�
 | SQL identity | 直接返回输入，无 UDF |
 | `identity_wasm(data)` | WASM 直接返回输入，不计算摘要 |
 
-库版本对齐参考本地 Databend 源码及 Cargo.lock，不意味着对原生 Query 做了完全受控的同配置重编译。
+库版本对齐参考本地 Databend 源码及 Cargo.lock，未重编译原生 Query。
 Native 的列式结果 buffer、WASM 的 String 分配、target 和 ABI 仍不同。
 
 Identity 基线可观察固定执行成本，但输出长度不同，不能直接相减就当作精确的 MD5 计算成本。

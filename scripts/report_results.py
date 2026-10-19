@@ -126,12 +126,10 @@ def render(e):
             spread.append([length,f'{count:,}',*[f'{r["min_ms"]/1000:.3f}–{r["max_ms"]/1000:.3f}' for r in [p,j,w]]])
             throughput.append([length,f'{count:,}',*[f'{r["rows_per_second"]:,.0f}' for r in [p,j,w]]])
     text=['# SM4 三端测试报告\n',
-        '**结论：当前源码快照的三端正确性检查通过，且以下新版接口性能矩阵已完整跑完。** '
-        '本报告由完成后的记录生成，不复用旧 CBC 文本封装的性能数字。\n',
-        f'- 本次隔离测试时间（UTC）：`{e["test_interval"]["started_at"]}` 至 `{e["test_interval"]["finished_at"]}`。',
-        '- 可提交证据：[results.json](results.json)；性能汇总：[results.csv](results.csv)；'
-        '测试口径：[BENCHMARKS](../../docs/BENCHMARKS.md)；其他报告：[报告索引](../README.md)。',
-        '- 这是本机共享开发环境的实测快照，不是安全审计、跨版本认证或性能保证。\n',
+        '**结论：当前源码快照的三端正确性检查通过，以下性能矩阵已完整跑完。**\n',
+        f'- 测试时间（UTC）：`{e["test_interval"]["started_at"]}` 至 `{e["test_interval"]["finished_at"]}`。',
+        '- 数据：[results.json](results.json)；性能汇总：[results.csv](results.csv)；'
+        '测试口径：[BENCHMARKS](../../docs/BENCHMARKS.md)；其他报告：[报告索引](../README.md)。\n',
         '## 1. 环境\n',
         md_table(['项目','值'],[
             ['隔离测试 Databend',env['version'][0][0]],['CPU',env['cpu']],['宿主逻辑 CPU 数',env['logical_cpus']],
@@ -140,8 +138,7 @@ def render(e):
             *[[package,version] for package,version in env['packages'].items()],
             ['Rust',tools['rustc']],['Node.js（仅测试参考）',tools['node']],['OpenSSL（仅测试参考）',tools['openssl']],
             ['Arrow UDF revision',tools['arrow_udf_revision']]]),
-        '\nPython Server 与 Query 同机，通过 loopback Flight RPC 调用；三种实现顺序执行，不并发压测、不绑核。'
-        '逻辑 CPU 数不是查询线程数，不能把本结果解释成使用全部宿主 CPU 的吞吐。\n',
+        '\nPython Server 与 Query 同机，通过 loopback Flight RPC 调用；三种实现顺序执行，不并发、不绑核。\n',
         '## 2. 正确性覆盖\n',
         md_table(['检查','结果'],[
             ['Python unittest 方法',f'{c["python_unittest_methods"]} 个通过（内部循环共享向量）'],
@@ -162,7 +159,7 @@ def render(e):
         '- 明文按 `Hello Databend` 模式重复/截断，带固定宽度行号保证各行不同；16 B 时文字会被截断。',
         '- 密文预生成、写表和 Python 进程启动不计时；每行仍执行相同的 key/IV 处理，无密钥缓存。',
         '- 结果按 count/hash 聚合消费，每次与明文基线校验；不返回大量明文，避免客户端渲染主导。',
-        '- 时间是完整服务端 SQL 耗时，含扫描/hash、运行时创建/编译、Arrow 转换及 Python RPC，不是 SM4 内核时间。\n',
+        '- 时间是完整服务端 SQL 耗时，含扫描/hash、运行时创建/编译、Arrow 转换及 Python RPC。\n',
         '### 完整 SQL 耗时中位数（秒）\n',
         md_table(['明文 B/行','行数','Python Server','JS','WASM','Python/WASM','JS/WASM'],timing),
         '\n### 三次正式测量范围（秒）\n',
@@ -170,11 +167,9 @@ def render(e):
         '\n### 按中位数折算吞吐（行/秒）\n',
         md_table(['明文 B/行','行数','Python Server','JS','WASM'],throughput),
         f'\n共 {b["timed_query_count"]} 次计时查询：{workloads} 次预热、{workloads*b["repeats"]} 次正式测量。所有 workload 均有完整三次正式结果，checksum 一致。\n',
-        '这些结果仅适用于当前实现和测试矩阵。不能将其推广为“WASM 在任何数据量都更快”，'
-        '也不能外推并发 QPS、其他模式/加密性能、真实业务表 IO，或未经测量的更多行数结果。\n',
         '## 4. 当前实例部署验证\n',
         f'- 部署实例版本：`{e["deployment"]["version"]}`，与上面的隔离性能实例版本可能不同。',
-        '- 本节不是另一组性能数据：只验证已部署的中性命名 JS/WASM 字符串入口。',
+        '- 本节只验证已部署的中性命名 JS/WASM 字符串入口。',
         f'- JS/WASM 各 {e["deployment"]["adapter_vectors_per_backend"]} 个适配向量及 7 行文章 SQL 均通过。',
         '- 原严格字节函数定义未改变。当前实例没有注册本项目 Python 入口；三端完整验证在独立实例完成。',
         f'- 新部署/隔离测试工件 SHA256：`{e["fingerprints"]["wasm_sha256"]}`。\n',
@@ -185,14 +180,14 @@ def render(e):
         '如果只跑性能且已注册公开函数、Python Server 也已启动：\n',
         f'```bash\n.venv/bin/python scripts/benchmark.py --profile explicit_iv \\\n  --lengths 16,128,1024 --rows {row_spec} --modes CBC \\\n  --operations decrypt --repeats 3\n```\n',
         '原始 `results/` 仍被 Git 忽略。`scripts/report_results.py` 接受完整本地记录，校验完成标志、'
-        '重复次数、checksum 和源码指纹，输出本报告及脱敏摘要；不会从数据库自动取凭证或隐式执行 SQL。\n',
+        '重复次数、checksum 和源码指纹，输出本报告及脱敏摘要。\n',
         '## 6. 边界与安全\n',
-        '- 本报告不包含压力并发、峰值 RSS、网络跨机、TLS 或高可用测试；未做全版本 Databend ABI 认证。',
-        '- 未调用外部数据库实例；兼容性仅限 [参数约定](../../docs/COMPATIBILITY.md) 和固定参考向量。',
-        '- 默认 IV 是固定兼容值，不是安全的生产 IV 生成策略；示例密钥公开，不用于真实数据。',
+        '- 未测：压力并发、峰值 RSS、跨机网络、TLS、高可用。',
+        '- 兼容性范围见 [参数约定](../../docs/COMPATIBILITY.md) 和固定参考向量。',
+        '- 默认 IV 是固定兼容值，不适合作为生产 IV 策略；示例密钥公开，不用于真实数据。',
         '- ECB/CBC/CFB128/OFB 不提供认证；解密非 NULL 不证明数据未篡改或密钥正确。',
         '- 实现未保证常数时间，未经密码学安全审计；详见 [SECURITY](../../SECURITY.md)。',
-        '- 报告对应一份有源码/向量/工件 SHA256 的快照。后续修改实现，应重测而不是沿用本页数字。\n']
+        '- 修改实现后需重新测量。\n']
     return '\n'.join(text).rstrip()+'\n'
 
 

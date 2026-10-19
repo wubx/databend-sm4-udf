@@ -1,0 +1,15 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 218' width='760' height='218' role='img' aria-labelledby='t d' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif'>
+<title id='t'>SM4 CBC 解密：1,024 B × 50,000 行（耗时越短越好）</title>
+<desc id='d'>WASM、JS、Python Server 三种 UDF 完成同一查询的中位耗时（秒）。</desc>
+<rect width='100%' height='100%' fill='#ffffff'/>
+<text x='20.0' y='30.0' font-size='17' text-anchor='start' fill='#333' font-weight='bold'>SM4 CBC 解密：1,024 B × 50,000 行（耗时越短越好）</text>
+<text x='138.0' y='77.0' font-size='14' text-anchor='end' fill='#333' font-weight='normal'>WASM</text>
+<rect x='150' y='62' width='3.0' height='22' rx='3' fill='#2f6fde'/>
+<text x='161.0' y='78.0' font-size='13' text-anchor='start' fill='#333' font-weight='bold'>0.871 s</text>
+<text x='138.0' y='123.0' font-size='14' text-anchor='end' fill='#333' font-weight='normal'>JavaScript</text>
+<rect x='150' y='108' width='232.4' height='22' rx='3' fill='#e8a33d'/>
+<text x='390.4' y='124.0' font-size='13' text-anchor='start' fill='#333' font-weight='bold'>79.525 s</text>
+<text x='138.0' y='169.0' font-size='14' text-anchor='end' fill='#333' font-weight='normal'>Python Server</text>
+<rect x='150' y='154' width='490.0' height='22' rx='3' fill='#4c9a6a'/>
+<text x='648.0' y='170.0' font-size='13' text-anchor='start' fill='#333' font-weight='bold'>167.686 s</text>
+</svg>

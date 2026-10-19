@@ -8,17 +8,16 @@
 | Rust/WASM | Databend Query 内的 WASM 运行时 | 无；需要上传工件 | [部署 WASM](DEPLOY_WASM.md) |
 | Python | 外部 Python UDF Server | 有，Arrow Flight RPC | [部署 Python Server](DEPLOY_PYTHON.md) |
 
-架构和边界见 [ARCHITECTURE.md](ARCHITECTURE.md)。操作示例不是生产安全配置或跨版本兼容保证。
+架构和选型见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
 ### ELT / Data Pipeline 的选型
 
-三种 UDF 都可以被 SQL 转换作业调用，不应把 WASM 限定为查询、把 Pipeline 限定为 Python。
-已有内置函数满足需求时优先使用；批量 CPU 密集且不依赖外部服务的自定义 T 可优先评估 WASM，
-轻量转换/快速迭代可评估 JS；依赖 Python 生态或独立服务治理时评估 Python Remote UDF。
+三种 UDF 都可以被 SQL 转换作业调用。
+已有内置函数满足需求时优先使用；批量 CPU 密集且不依赖外部服务的自定义 T 优先评估 WASM，
+轻量转换/快速迭代评估 JS；依赖 Python 生态或独立服务治理时评估 Python Remote UDF。
 
-部署成功和函数校验通过不等于整条 ELT 验收。应在目标环境测量源表读取、转换、目标表写入/提交的总耗时，
-并验证峰值内存、并发、失败/重试、结果校验及 SLA；UDF 本身不是调度或 exactly-once 系统。
-当前报告仍是函数级 SQL 测试，不是端到端 ELT 压测。
+上线前在目标环境测量源表读取、转换、目标表写入/提交的总耗时，
+并验证峰值内存、并发、失败/重试、结果校验及 SLA；调度和 exactly-once 需由作业层提供。
 
 ## 1. 确认目标和权限
 

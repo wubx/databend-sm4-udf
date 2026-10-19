@@ -8,14 +8,14 @@
 | [MD5 内置 vs WASM：1–5 万行](md5-native-vs-wasm/rows-1-50k/REPORT.md)<br>[CSV](md5-native-vs-wasm/rows-1-50k/results.csv) · [JSON](md5-native-vs-wasm/rows-1-50k/results.json) | 已有内置函数时，WASM 慢多少？ | 内置 / WASM MD5 + 两种 identity 基线，16/128/1,024 B × 1–50,000 行，432 次计时查询 | 所有规模内置更快；1,024 B × 5 万行内置 81 ms、WASM 330 ms |
 | [MD5 内置 vs WASM：10–100 万行](md5-native-vs-wasm/rows-100k-1m/REPORT.md)<br>[CSV](md5-native-vs-wasm/rows-100k-1m/results.csv) · [JSON](md5-native-vs-wasm/rows-100k-1m/results.json) | 行数增大后，WASM 固定成本是否被摊薄？ | 仅内置 / WASM MD5，16/128/1,024 B × 10 万/30 万/100 万行，108 次计时查询 | 内置仍更快；1,024 B × 100 万行内置 1,471 ms、WASM 3,730 ms，耗时比降到约 2.54× |
 
-**结论：自定义计算场景下，WASM 是当前三种 SM4 后端里批量最快的；但已有语义合适的内置函数时，应优先使用内置函数。** MD5 对照不代表原生 SM4 的性能，也不意味着内置函数有固定倍率优势。
+**结论：自定义计算场景下，WASM 是当前三种 SM4 后端里批量最快的；已有语义合适的内置函数时，应优先使用内置函数。**
 
 ## 共同口径
 
 - 环境：AMD Ryzen 9 5950X 单机，Databend Query v1.2.947-nightly，2026-10-19（UTC）测量。
 - 设置：`max_threads=1`、`max_block_size=8192`、Memory 表、结果缓存关闭；每组预热 1 次，正式 3 次（SM4）或 5 次（MD5），取中位数。
 - 计时：完整服务端 SQL 耗时，包含扫描、运行时创建/编译、Arrow 转换及 Python RPC；数据准备不计时。
-- 不覆盖：并发 QPS、峰值内存、跨机网络/TLS、多线程扩展、纯内核计算时间，也不构成性能保证。
+- 未覆盖：并发 QPS、峰值内存、跨机网络/TLS、多线程扩展、纯内核计算时间。
 
 详细方法见 [BENCHMARKS](../docs/BENCHMARKS.md)。
 

@@ -104,4 +104,15 @@ class ReportChecks(unittest.TestCase):
                 self.assertRaises(AssertionError,build,i,b,u,d)
 
 
+class ChartTest(unittest.TestCase):
+    def test_published_charts_match_report_csv(self):
+        import tempfile
+        from unittest.mock import patch
+        import render_charts
+        with tempfile.TemporaryDirectory() as tmp,patch.object(render_charts,'OUT',Path(tmp)):
+            render_charts.main()
+            for chart in Path(tmp).glob('*.svg'):
+                self.assertEqual((ROOT/'docs/images'/chart.name).read_bytes(),chart.read_bytes(),chart.name)
+
+
 if __name__=='__main__':unittest.main()

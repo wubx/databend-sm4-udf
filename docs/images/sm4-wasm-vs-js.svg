@@ -1,0 +1,47 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 380' width='760' height='380' role='img' aria-labelledby='t d' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif'>
+<title id='t'>SM4：WASM 比 JS 快多少倍（JS 耗时 ÷ WASM 耗时）</title>
+<desc id='d'>不同明文长度下，随行数增加 WASM 相对 JS 的加速倍数；低于 1 表示 JS 更快。</desc>
+<rect width='100%' height='100%' fill='#ffffff'/>
+<text x='20.0' y='30.0' font-size='17' text-anchor='start' fill='#333' font-weight='bold'>SM4：WASM 比 JS 快多少倍（JS 耗时 ÷ WASM 耗时）</text>
+<line x1='70' x2='590' y1='316.0' y2='316.0' stroke='#e5e5e5'/>
+<text x='62.0' y='320.0' font-size='12' text-anchor='end' fill='#666' font-weight='normal'>0</text>
+<line x1='70' x2='590' y1='264.2' y2='264.2' stroke='#e5e5e5'/>
+<text x='62.0' y='268.2' font-size='12' text-anchor='end' fill='#666' font-weight='normal'>20</text>
+<line x1='70' x2='590' y1='212.4' y2='212.4' stroke='#e5e5e5'/>
+<text x='62.0' y='216.4' font-size='12' text-anchor='end' fill='#666' font-weight='normal'>40</text>
+<line x1='70' x2='590' y1='160.7' y2='160.7' stroke='#e5e5e5'/>
+<text x='62.0' y='164.7' font-size='12' text-anchor='end' fill='#666' font-weight='normal'>60</text>
+<line x1='70' x2='590' y1='108.9' y2='108.9' stroke='#e5e5e5'/>
+<text x='62.0' y='112.9' font-size='12' text-anchor='end' fill='#666' font-weight='normal'>80</text>
+<line x1='70' x2='590' y1='57.1' y2='57.1' stroke='#e5e5e5'/>
+<text x='62.0' y='61.1' font-size='12' text-anchor='end' fill='#666' font-weight='normal'>100</text>
+<line x1='70' x2='590' y1='313.4' y2='313.4' stroke='#c0392b' stroke-dasharray='5 4'/>
+<text x='584.0' y='307.4' font-size='12' text-anchor='end' fill='#c0392b' font-weight='normal'>1× 持平线</text>
+<text x='70.0' y='336.0' font-size='12' text-anchor='middle' fill='#666' font-weight='normal'>1K</text>
+<text x='376.1' y='336.0' font-size='12' text-anchor='middle' fill='#666' font-weight='normal'>10K</text>
+<text x='522.1' y='336.0' font-size='12' text-anchor='middle' fill='#666' font-weight='normal'>30K</text>
+<text x='590.0' y='336.0' font-size='12' text-anchor='middle' fill='#666' font-weight='normal'>50K</text>
+<text x='330.0' y='366.0' font-size='12' text-anchor='middle' fill='#666' font-weight='normal'>行数（对数刻度）</text>
+<text x='18' y='186.0' font-size='12' fill='#666' text-anchor='middle' transform='rotate(-90 18 186.0)'>加速倍数</text>
+<polyline points='70.0,314.0 376.1,299.0 522.1,269.3 590.0,250.8' fill='none' stroke='#9bbcf2' stroke-width='2.5'/>
+<circle cx='70.0' cy='314.0' r='4' fill='#9bbcf2'/>
+<circle cx='376.1' cy='299.0' r='4' fill='#9bbcf2'/>
+<circle cx='522.1' cy='269.3' r='4' fill='#9bbcf2'/>
+<circle cx='590.0' cy='250.8' r='4' fill='#9bbcf2'/>
+<rect x='614' y='64' width='14' height='4' fill='#9bbcf2'/>
+<text x='634.0' y='70.0' font-size='12' text-anchor='start' fill='#333' font-weight='normal'>16 B/行：25.2×</text>
+<polyline points='70.0,311.1 376.1,276.3 522.1,220.7 590.0,184.5' fill='none' stroke='#5a8fe6' stroke-width='2.5'/>
+<circle cx='70.0' cy='311.1' r='4' fill='#5a8fe6'/>
+<circle cx='376.1' cy='276.3' r='4' fill='#5a8fe6'/>
+<circle cx='522.1' cy='220.7' r='4' fill='#5a8fe6'/>
+<circle cx='590.0' cy='184.5' r='4' fill='#5a8fe6'/>
+<rect x='614' y='88' width='14' height='4' fill='#5a8fe6'/>
+<text x='634.0' y='94.0' font-size='12' text-anchor='start' fill='#333' font-weight='normal'>128 B/行：50.8×</text>
+<polyline points='70.0,289.1 376.1,180.9 522.1,99.5 590.0,79.6' fill='none' stroke='#2f6fde' stroke-width='2.5'/>
+<circle cx='70.0' cy='289.1' r='4' fill='#2f6fde'/>
+<circle cx='376.1' cy='180.9' r='4' fill='#2f6fde'/>
+<circle cx='522.1' cy='99.5' r='4' fill='#2f6fde'/>
+<circle cx='590.0' cy='79.6' r='4' fill='#2f6fde'/>
+<rect x='614' y='112' width='14' height='4' fill='#2f6fde'/>
+<text x='634.0' y='118.0' font-size='12' text-anchor='start' fill='#333' font-weight='normal'>1,024 B/行：91.3×</text>
+</svg>

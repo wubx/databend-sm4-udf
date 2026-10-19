@@ -1,10 +1,9 @@
 # SM4 三端测试报告
 
-**结论：当前源码快照的三端正确性检查通过，且以下新版接口性能矩阵已完整跑完。** 本报告由完成后的记录生成，不复用旧 CBC 文本封装的性能数字。
+**结论：当前源码快照的三端正确性检查通过，以下性能矩阵已完整跑完。**
 
-- 本次隔离测试时间（UTC）：`2026-10-19T08:34:23.476695+00:00` 至 `2026-10-19T09:11:44.388903+00:00`。
-- 可提交证据：[results.json](results.json)；性能汇总：[results.csv](results.csv)；测试口径：[BENCHMARKS](../../docs/BENCHMARKS.md)；其他报告：[报告索引](../README.md)。
-- 这是本机共享开发环境的实测快照，不是安全审计、跨版本认证或性能保证。
+- 测试时间（UTC）：`2026-10-19T08:34:23.476695+00:00` 至 `2026-10-19T09:11:44.388903+00:00`。
+- 数据：[results.json](results.json)；性能汇总：[results.csv](results.csv)；测试口径：[BENCHMARKS](../../docs/BENCHMARKS.md)；其他报告：[报告索引](../README.md)。
 
 ## 1. 环境
 
@@ -26,7 +25,7 @@
 | OpenSSL（仅测试参考） | 3.5.5 |
 | Arrow UDF revision | c1de708add62ecd1afa2721b2e5c639f29be1f9d |
 
-Python Server 与 Query 同机，通过 loopback Flight RPC 调用；三种实现顺序执行，不并发压测、不绑核。逻辑 CPU 数不是查询线程数，不能把本结果解释成使用全部宿主 CPU 的吞吐。
+Python Server 与 Query 同机，通过 loopback Flight RPC 调用；三种实现顺序执行，不并发、不绑核。
 
 ## 2. 正确性覆盖
 
@@ -52,7 +51,7 @@ Python Server 与 Query 同机，通过 loopback Flight RPC 调用；三种实�
 - 明文按 `Hello Databend` 模式重复/截断，带固定宽度行号保证各行不同；16 B 时文字会被截断。
 - 密文预生成、写表和 Python 进程启动不计时；每行仍执行相同的 key/IV 处理，无密钥缓存。
 - 结果按 count/hash 聚合消费，每次与明文基线校验；不返回大量明文，避免客户端渲染主导。
-- 时间是完整服务端 SQL 耗时，含扫描/hash、运行时创建/编译、Arrow 转换及 Python RPC，不是 SM4 内核时间。
+- 时间是完整服务端 SQL 耗时，含扫描/hash、运行时创建/编译、Arrow 转换及 Python RPC。
 
 ### 完整 SQL 耗时中位数（秒）
 
@@ -107,12 +106,10 @@ Python Server 与 Query 同机，通过 loopback Flight RPC 调用；三种实�
 
 共 144 次计时查询：36 次预热、108 次正式测量。所有 workload 均有完整三次正式结果，checksum 一致。
 
-这些结果仅适用于当前实现和测试矩阵。不能将其推广为“WASM 在任何数据量都更快”，也不能外推并发 QPS、其他模式/加密性能、真实业务表 IO，或未经测量的更多行数结果。
-
 ## 4. 当前实例部署验证
 
 - 部署实例版本：`Databend Query v1.2.949-nightly-2f5710f863(rust-1.100.0-nightly-2026-09-27T22:16:15.528174028Z)`，与上面的隔离性能实例版本可能不同。
-- 本节不是另一组性能数据：只验证已部署的中性命名 JS/WASM 字符串入口。
+- 本节只验证已部署的中性命名 JS/WASM 字符串入口。
 - JS/WASM 各 244 个适配向量及 7 行文章 SQL 均通过。
 - 原严格字节函数定义未改变。当前实例没有注册本项目 Python 入口；三端完整验证在独立实例完成。
 - 新部署/隔离测试工件 SHA256：`d6e0f06b676823bd6ee41a037aa5dbba72ee32e3ebaf6aaf617f9ccdc1a17728`。
@@ -139,13 +136,13 @@ export SM4_PASSWORD=''
   --operations decrypt --repeats 3
 ```
 
-原始 `results/` 仍被 Git 忽略。`scripts/report_results.py` 接受完整本地记录，校验完成标志、重复次数、checksum 和源码指纹，输出本报告及脱敏摘要；不会从数据库自动取凭证或隐式执行 SQL。
+原始 `results/` 仍被 Git 忽略。`scripts/report_results.py` 接受完整本地记录，校验完成标志、重复次数、checksum 和源码指纹，输出本报告及脱敏摘要。
 
 ## 6. 边界与安全
 
-- 本报告不包含压力并发、峰值 RSS、网络跨机、TLS 或高可用测试；未做全版本 Databend ABI 认证。
-- 未调用外部数据库实例；兼容性仅限 [参数约定](../../docs/COMPATIBILITY.md) 和固定参考向量。
-- 默认 IV 是固定兼容值，不是安全的生产 IV 生成策略；示例密钥公开，不用于真实数据。
+- 未测：压力并发、峰值 RSS、跨机网络、TLS、高可用。
+- 兼容性范围见 [参数约定](../../docs/COMPATIBILITY.md) 和固定参考向量。
+- 默认 IV 是固定兼容值，不适合作为生产 IV 策略；示例密钥公开，不用于真实数据。
 - ECB/CBC/CFB128/OFB 不提供认证；解密非 NULL 不证明数据未篡改或密钥正确。
 - 实现未保证常数时间，未经密码学安全审计；详见 [SECURITY](../../SECURITY.md)。
-- 报告对应一份有源码/向量/工件 SHA256 的快照。后续修改实现，应重测而不是沿用本页数字。
+- 修改实现后需重新测量。

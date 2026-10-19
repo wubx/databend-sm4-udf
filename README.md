@@ -6,7 +6,7 @@
 
 ## 文档导航
 
-- [三种 UDF 的执行架构与推荐场景](docs/ARCHITECTURE.md)
+- [JS、WASM、Python 三种 UDF 怎么选（含性能对比图）](docs/ARCHITECTURE.md)
 - [部署总览：连接、权限、接口选择与备份](docs/DEPLOYMENT.md)
 - 详细部署：[JavaScript](docs/DEPLOY_JS.md) · [WASM](docs/DEPLOY_WASM.md) · [Python Server](docs/DEPLOY_PYTHON.md)
 - [测试与性能报告索引](reports/README.md)：[SM4 三端](reports/sm4-backends/REPORT.md) · [MD5 内置 vs WASM](reports/md5-native-vs-wasm/rows-1-50k/REPORT.md) · [测试方法](docs/BENCHMARKS.md)
@@ -28,10 +28,8 @@
 | JS UDF | 轻量转换、快速迭代，或固定开销更重要的小批量计算 |
 | Python Remote UDF | 需要 Python 生态、模型/外部依赖或独立服务治理的处理环节；需验证 RPC、SDK 和服务资源成本 |
 
-不要简单划分为“Python 做 Pipeline、WASM 做查询”，也不要把 Data Pipeline 理解为不需要性能。
-当前证据是函数级 SQL 测试，不是整条 ELT 作业压测；生产前还需验证读取、转换、写入的端到端吞吐、
-内存/并发、失败恢复与结果正确性。UDF 不替代作业编排，也不天然提供幂等或 exactly-once。
-更多架构和选择边界见 [ARCHITECTURE](docs/ARCHITECTURE.md)。
+生产前还需验证读取、转换、写入的端到端吞吐、内存/并发、失败恢复与结果正确性；幂等和 exactly-once 需由作业层保证。
+更多架构和选型见 [ARCHITECTURE](docs/ARCHITECTURE.md)。
 
 ## 字符串 key/IV 示例（推荐文章演示使用）
 
@@ -206,7 +204,7 @@ bendsql --query="$(<sql/python.sql)"
 - [1–5 万行](reports/md5-native-vs-wasm/rows-1-50k/REPORT.md)：所有规模内置更快；1,024 B × 5 万行内置 **81 ms**、WASM **330 ms**。
 - [10–100 万行](reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md)：1,024 B × 100 万行内置 **1,471 ms**、WASM **3,730 ms**，耗时比降到约 2.54×。
 
-**已有语义合适的内置函数时优先使用；WASM 主要补充自定义计算。** 所有数字为单机、单线程的完整服务端 SQL 耗时，不代表并发 QPS 或纯内核时间，也不构成性能保证。范围、口径和更新方式见 **[报告索引](reports/README.md)**。
+**已有语义合适的内置函数时优先使用；WASM 主要补充自定义计算。** 所有数字为单机、单线程的完整服务端 SQL 耗时，范围、口径和更新方式见 **[报告索引](reports/README.md)**。
 
 ## 运行测试
 

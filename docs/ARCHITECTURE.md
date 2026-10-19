@@ -1,140 +1,147 @@
-# 三种 UDF 的架构与选择
+# 在 Databend 里跑 SM4：JS、WASM、Python 三种 UDF 怎么选
 
-本项目比较的是三条 UDF 执行路径，不是 Databend 全部 UDF 机制的清单，也不是不同编程语言的通用跑分。
-三端通过相同模式、输入数据及参数策略比较，公开明文示例统一为 `Hello Databend`。
+Databend 内置函数里没有 SM4。要在 SQL 里做国密加解密，就得自己写 UDF。Databend 提供了几种写法，本项目用 JavaScript、Rust/WASM 和 Python Server 各实现了一遍同样的 SM4，并在同一台机器上跑了对比。
 
-## 1. UDF 在做什么
+先说结论：
 
-UDF（用户定义函数）把自定义逻辑接入 SQL 表达式，例如：
+- **批量加解密选 WASM。** 1 万行起，WASM 在所有测试规模都最快；1,024 B × 5 万行时比 JS 快约 90 倍。
+- **几百上千行的小查询，JS 就够用。** WASM 每次查询有一百多毫秒的固定启动成本，量小时 JS 反而更快。
+- **Python Server 胜在生态，不在速度。** 需要调用 Python 库、模型或外部系统时再用它。
+- **有内置函数就用内置函数。** 拿 MD5 对比，内置函数在所有规模都比 WASM 快。
+
+## 1. UDF 是怎么接进 SQL 的
+
+UDF 用起来和普通函数一样：
 
 ```sql
 SELECT sm4_encrypt_explicit_iv_wasm(data, key_text, iv_text, 'CBC') FROM source_table;
 ```
 
-SQL 仍由 Databend 规划和执行；函数体的执行位置、数据跨边界方式、运行时和运维成本有所区别。
-算法、输入接口、实现是否优化、块大小和并发都会影响性能，不是只看函数名后缀。
-
-## 2. 执行架构
-
-```mermaid
-flowchart TD
-    SQL[SQL / Query plan] --> Q[Databend Query execution]
-    Q --> JB[JS data bridge]
-    JB --> JS[Embedded JS runtime]
-    JS --> JSM[Scalar JavaScript SM4]
-    Q --> WB[Arrow UDF ABI / WASM memory]
-    WB --> W[Embedded WASM runtime]
-    W --> WM[Compiled Rust SM4]
-    Q --> RPC[Arrow Flight RPC]
-    RPC --> PY[External Python UDF Server]
-    PY --> PM[gmssl block primitive + mode adapters]
-    JSM --> R[BINARY result / SQL aggregation]
-    WM --> R
-    PM --> RPC
-    RPC --> R
-```
-
-这是架构示意，不是抓包、实际线程图或真实客户端截图。箭头不表示零拷贝或忽略初始化成本。
-
-### JavaScript
-
-源码在 CREATE FUNCTION 中内联，由 Query 的 JS 运行时处理，不需单独部署计算服务。
-项目已测版本使用 QuickJS，不能把本地 Node.js/V8 的 JIT 性能当作 Query 的实际性能。
-宿主需要完成数据桥接、函数调用和结果转换；当前实现还存在逐行动态数组/整数运算成本。
-
-### WASM
-
-Rust 源码先编译为 `.wasm`，工件通过 stage 提供给 Query。运行时加载模块并通过 Arrow UDF ABI 调用导出。
-不是宿主直接运行一个 Rust 可执行文件，也不是把任意 `.wasm` 上传就能自动识别函数。
-模块使用独立线性内存，输入/输出 ABI、内存和运行时转换都有成本；沙箱还需宿主的资源/能力限制。
-当前测量包含每次 SQL 的初始化/编译开销，不是提前创建一次模块后单独测内核循环。
-
-### Python Server
-
-Query 通过 Arrow Flight RPC 调用外部 Python 进程。服务可独立部署和治理，但需要处理网络、SDK/Arrow schema、
-超时和可用性；不在 Query 内嵌 JS/WASM 沙箱中运行。Python 环境的 OS/容器权限由服务部署负责。
-本项目使用纯 Python gmssl 原语，不能据此判定所有 Python Server 或原生密码库的性能。
-
-## 3. 对比维度
-
-| 项目 | JS | WASM | Python Server |
-|---|---|---|---|
-| Query 外的常驻计算服务 | 不需要 | 不需要 | 需要 |
-| 发布内容 | 内联 JS SQL | WASM 工件 + SQL | 服务代码/依赖 + 注册 SQL |
-| 本项目的计算实现 | JS 标量算法 | Rust 编译后标量算法 | gmssl 原始分组原语 |
-| Query 与外部服务 RPC | 无 | 无 | 有 |
-| 主要额外边界 | JS 运行时/数据桥接 | 初始化、ABI/线性内存转换 | Arrow SDK、RPC、服务运行时 |
-| 依赖管理重点 | 避免 Node 专属依赖 | 编译目标、ABI、版本化工件 | Python/Arrow/库版本、网络和进程 |
-| 隔离范围 | 由宿主 JS 运行时控制 | 由宿主 WASM/WASI 能力控制 | 服务自身的 OS/容器与网络策略 |
-| 运维重点 | SQL 版本和 Query 资源 | 工件/导出版本和 Query 资源 | 进程、资源、健康检查、网络/安全 |
-
-“无外部 RPC”不等于零开销；“外部服务”不等于一定更慢。要按实际负载测端到端成本。
-
-## 4. 如何解释性能数据
-
-```text
-SQL 端到端耗时
-≈ 扫描/调度 + 数据转换/ABI + 运行时初始化 + 函数计算
-  + 外部 SDK/RPC（如果有） + 结果 hash/聚合
-```
-
-这只是成本分解示意，不是通过减法得到的精确剖析。若要确定每一项占比，需要额外的 profile/微基准。
-
-- 小规模：固定成本占比高，本项目一些场景 JS 更快。
-- 大行数或长字段：计算占比上升，当前 WASM 实现的优势更明显。
-- Python：SDK/RPC 和纯 Python 运算共同影响结果，不能把全部差距归因于网络。
-- 预热一次不保证所有后续 SQL 都免去运行时初始化；报告仍包含真实每次 SQL 成本。
-- 当前报告是单查询、单线程设置，不是并发 QPS、峰值内存或所有 CPU 核心利用率的测试。
-
-具体数值只引用 [SM4 三端报告](../reports/sm4-backends/REPORT.md) 已完成部分，测试方法见 [BENCHMARKS.md](BENCHMARKS.md)。
-
-## 5. 推荐场景
-
-| 需求 | 优先评估 | 原因与边界 |
-|---|---|---|
-| 已有内置函数满足所需语义 | 原生内置函数 | 优先复用；本项目 MD5 对照中原生在全部已测规模更快，不代表任何函数的固定倍率 |
-| 快速实现轻量逻辑、少量行、少依赖 | JS | 部署简单；不能将当前 SM4 的小批量结果推广为所有 JS 逻辑 |
-| ELT 的批量、CPU 密集转换，或长字段加解密；不依赖外部服务 | WASM | 将自定义计算留在 Query 中，无需额外 UDF Server；确认 ABI/资源边界并复测整条作业 |
-| Data Pipeline 中依赖 Python 生态、已有业务组件或外部依赖，并需要独立发布/服务治理 | Python Remote UDF | 集成灵活，适合可接受 RPC 和服务调度成本的处理链路；需要测量端到端吞吐和失败重试成本 |
-| 新设计的安全加密协议 | 审计过的安全方案 | 本项目不提供认证加密，不因 UDF 性能好就适合直接设计新协议 |
-
-**Python Remote UDF 的主要价值是生态和工程集成，不是默认获得最低延迟。** 对低延迟查询、逐行 CPU 密集计算或吞吐要求严格的关键路径，不建议优先采用本项目这种纯 Python 标量实现，应优先评估内嵌执行、原生库、向量化或批处理方案。
-
-Data Pipeline 本身也可能有严格的吞吐/时效要求，不能简单说“Pipeline 不需要性能”。Remote UDF 既不是完整的 Pipeline 编排系统，也不天然提供重试幂等、背压或 exactly-once；如果函数调用外部系统或产生副作用，还需按实际执行/重试语义设计限流、超时和幂等。
-本次数字来自纯 Python gmssl、固定 SDK 和单查询场景，不能推广为所有 Python Remote UDF 的性能上限。
-
-三条路线不是互斥的：可让不同业务逻辑选择不同后端，但密文互通必须保证相同实际 key/IV、模式与 padding。
-
-### ELT 的 T 不只属于 Python Remote UDF
-
-**WASM UDF 同样适合 ELT 的转换环节，尤其是批量、计算密集且不依赖外部服务的自定义逻辑；Python Remote UDF 更侧重生态与依赖的扩展。**
+查询的解析、规划、扫描和聚合仍由 Databend 完成，只有函数体换成了你写的代码。三种 UDF 的区别在于这段代码**在哪里运行**、**数据怎么送过去**：
 
 ```mermaid
 flowchart LR
-    L[数据先加载到 Databend] --> S[内置 SQL: 过滤 / 关联 / 聚合]
-    S --> T[需要时调用自定义 UDF 转换]
+    SQL[SQL 查询] --> Q[Databend Query]
+    Q -->|进程内| JS[JS 运行时<br/>QuickJS]
+    Q -->|进程内| W[WASM 运行时<br/>Rust 编译产物]
+    Q -->|Arrow Flight RPC| PY[外部 Python 服务]
+    JS --> R[结果回到 SQL]
+    W --> R
+    PY --> R
+```
+
+JS 和 WASM 跑在 Query 进程里面，Python 跑在 Query 外面的独立服务里。这一点决定了它们的性能特点和运维方式。
+
+## 2. 三种 UDF 各是什么样
+
+### JavaScript：写完就能用
+
+JS 代码直接写在 `CREATE FUNCTION` 语句里，Query 内置的 QuickJS 引擎负责执行，不用上传文件，也不用起服务。改一行代码、重新建一次函数就生效，最适合轻量逻辑和快速迭代。
+
+要注意的是，QuickJS 是解释执行的，没有 Node.js/V8 那样的 JIT。在本地 Node 里跑得很快的代码，放进 Databend 会慢不少。SM4 这类逐字节的位运算对它来说负担较重，所以数据量一大就落后了。
+
+### WASM：编译一次，跑得最快
+
+Rust 代码先编译成 `.wasm` 文件，上传到 stage，再用 `CREATE FUNCTION` 注册。Query 加载模块后，按 Arrow UDF 接口把一批数据交给它处理。
+
+编译后的代码执行效率接近原生，这是 WASM 批量快的原因。代价是每次查询都要创建运行时、编译模块，大约一百多毫秒；数据还要在 Query 和 WASM 的独立内存之间来回拷贝。所以 WASM 适合“一次处理很多数据”，不适合“一次只处理几行”。
+
+### Python Server：生态最全，链路最长
+
+Python 代码跑在单独部署的服务里，Query 通过 Arrow Flight RPC 把数据发过去、再把结果取回来。好处是能直接用 Python 生态，服务可以独立发布、扩容和监控。
+
+代价是多了一层网络调用，还要自己管进程、超时和可用性。本项目用的 gmssl 是纯 Python 实现，计算本身也偏慢。如果换成调用 C 实现的密码库，或者做向量化批处理，性能会有很大差别，需要重新测量。
+
+### 一张表看区别
+
+| | JavaScript | WASM | Python Server |
+|---|---|---|---|
+| 代码在哪跑 | Query 内 | Query 内 | Query 外的独立服务 |
+| 要部署什么 | 一条 SQL | `.wasm` 文件 + SQL | 服务进程 + 注册 SQL |
+| 网络调用 | 无 | 无 | 有（Flight RPC） |
+| 主要额外成本 | 解释执行 | 每次查询的启动编译、内存拷贝 | RPC、序列化、Python 运算 |
+| 运维重点 | SQL 版本 | 文件版本、编译目标 | 进程、资源、健康检查、网络安全 |
+
+## 3. 实测：谁更快
+
+测试做的是 CBC 解密，明文 16 B、128 B、1,024 B 三种长度，每种 1,000 到 50,000 行，单线程执行，每组取三次的中位数。
+
+### 数据量一大，WASM 遥遥领先
+
+![SM4 CBC 解密 1,024 B × 50,000 行：WASM 0.871 秒，JavaScript 79.525 秒，Python Server 167.686 秒](images/sm4-1024b-50k.svg)
+
+同样解密 5 万行 1 KB 的数据，WASM 不到 1 秒，JS 要 80 秒，Python 要近 3 分钟。在所有规模下，Python 大约都比 JS 慢一倍。
+
+### 量小时 JS 更快，量大时差距越拉越大
+
+![WASM 相对 JS 的加速倍数随行数增加：16 B/行从 0.8 倍到 25 倍，128 B/行从 1.9 倍到 51 倍，1,024 B/行从 10 倍到 91 倍](images/sm4-wasm-vs-js.svg)
+
+线越高，WASM 领先越多；低于红色虚线表示 JS 更快。
+
+- 16 B × 1,000 行时，JS 用 110 ms，WASM 用 142 ms，JS 胜出。这个量级下 WASM 的时间主要花在启动上，真正的计算只占一小部分。
+- 行数越多、每行越长，计算占比越高，WASM 的优势就越明显。
+- WASM 的耗时增长很慢：16 B 从 1,000 行到 50,000 行只从 142 ms 涨到 189 ms，JS 却从 110 ms 涨到 4.8 s。
+
+## 4. 和内置函数比呢
+
+WASM 比 JS、Python 快，但和 Databend 的原生内置函数比又如何？SM4 没有内置版本，所以改用 MD5：同一个算法库、同样的输入输出，分别跑内置 `md5()` 和 WASM 版本。
+
+![WASM MD5 与内置 md5() 的耗时比：1 行时约 26 倍，随行数增加下降，100 万行时 16 B/行约 3.3 倍、1,024 B/行约 2.5 倍](images/md5-native-vs-wasm.svg)
+
+线越接近红色虚线，两者差距越小。
+
+- 只查 1 行时，内置函数 5 ms，WASM 135 ms，差距主要就是那一百多毫秒的启动成本。
+- 到了 100 万行，1,024 B 的数据内置函数 1.47 s，WASM 3.73 s，差距缩小到 2.5 倍左右，但内置函数始终更快。
+- 剩下的差距来自数据在 WASM 内存里的进出拷贝、逐行分配结果，以及编译目标本身的差异。
+
+所以顺序很清楚：**先找内置函数，没有合适的再写 UDF。** WASM 的价值是补上内置函数做不到的计算，而不是替代它们。
+
+## 5. 怎么选
+
+```mermaid
+flowchart TD
+    A[需要一个 SQL 里没有的函数] --> B{有语义合适的内置函数?}
+    B -->|有| N[用内置函数]
+    B -->|没有| C{需要 Python 库、模型<br/>或访问外部系统?}
+    C -->|需要| P[Python Remote UDF]
+    C -->|不需要| D{批量、计算密集?}
+    D -->|是| W[WASM UDF]
+    D -->|否，逻辑轻、量小| J[JS UDF]
+```
+
+| 场景 | 推荐 | 理由 |
+|---|---|---|
+| 内置函数已能满足 | 内置函数 | 没有额外边界，所有规模都最快 |
+| 轻量逻辑、几百上千行 | JS | 一条 SQL 就能部署，小批量时固定成本最低 |
+| 批量加解密、编码转换、解析等计算密集逻辑 | WASM | 计算留在 Query 内，不用维护额外服务 |
+| 依赖 Python 生态、已有业务组件或外部系统 | Python Remote UDF | 集成灵活，可独立发布和治理 |
+| 设计新的加密方案 | 经过审计的认证加密方案 | 本项目的 SM4 模式不提供完整性校验 |
+
+三种方式可以并存。不同业务逻辑可以选不同后端，只要 key、IV、模式和填充方式一致，三端产生的密文可以互相解密。
+
+Remote UDF 本身不提供幂等、背压或 exactly-once。如果函数会写外部系统或产生其他副作用，要考虑查询重试导致的重复调用，自行设计超时、限流和幂等。
+
+## 6. 放到 ELT 里用
+
+在 ELT 流程中，UDF 负责的是 T（转换）这一步：
+
+```mermaid
+flowchart LR
+    L[数据加载进 Databend] --> S[内置 SQL<br/>过滤 / 关联 / 聚合]
+    S --> T[UDF 转换<br/>如批量加解密]
     T --> W[写入目标表]
 ```
 
-这是逻辑示意，不规定优化器的实际算子顺序。UDF 可以出现在 SQL 转换作业中，不是只服务于交互查询。
-先用内置能力；缺少的计算密集逻辑可用 WASM，轻量转换可用 JS，需要 Python 库/模型/外部依赖时评估 Remote UDF。
-WASM 无需为该函数额外访问独立 Server，但仍有 ABI/转换/运行时开销，并消耗 Query 的 CPU/内存；不能据此承诺所有数据处理都没有网络或 IO。
+能用内置 SQL 做的先用内置 SQL，缺的计算密集逻辑交给 WASM，轻量转换用 JS，需要 Python 依赖时再用 Remote UDF。WASM 不需要额外服务，但会占用 Query 节点的 CPU 和内存，并发高时要留出余量。
 
-函数级测试只说明当前计算负载的表现。真实 ELT 上线还需验证源表读取、JOIN/聚合、自定义转换、目标表写入与提交的总成本，
-以及并发、内存限制、超时、失败恢复、重试幂等和数据校验。不要把“函数较快”写成“整条 Pipeline 已验证高性能”。
+上线前，建议在目标环境把整条作业跑一遍：读取、转换、写入的总耗时，峰值内存，并发表现，以及失败重跑后数据是否正确。
 
-## 6. 与原生内置函数的边界
+## 测试环境与延伸阅读
 
-另有 [MD5 原生/WASM 对照](../reports/md5-native-vs-wasm/rows-1-50k/REPORT.md)：16/128/1,024 B、单行到 5 万行，
-每组预热一次、正式五次。本轮全部规模原生更快；1,024 B × 5 万行内置 81 ms、WASM 330 ms。
-这项实验说明当前 WASM 不是“比所有原生函数更快”的路径；其价值是扩展计算能力，并在合适场景下
-比当前 JS/纯 Python 实现更高效。它不提供原生 SM4 的实测数据，也不能把 MD5 的差距直接当成 SM4 的差距。
+以上数据来自一台 AMD Ryzen 9 5950X 单机，Databend Query v1.2.947-nightly，设置 `max_threads=1`，使用 Memory 表并关闭结果缓存。计时是完整的服务端 SQL 耗时，包含扫描、运行时初始化、数据转换和 RPC。并发、多线程和跨机网络场景没有测，你的环境中的数字会不同。
 
-又补测了只含 MD5 的 [10 万至 100 万行矩阵](../reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md)，不重跑 identity。
-1,024 B × 100 万行内置 1,471 ms、WASM 3,730 ms，相对耗时差收敛到 2.54×，原生仍更快。
-同轮 10 万至 100 万行的增量成本也在报告中列出，只用于规模趋势，不能当作已扣净固定开销的内核时间。
+- 完整数据：[SM4 三端报告](../reports/sm4-backends/REPORT.md) · [MD5 1–5 万行](../reports/md5-native-vs-wasm/rows-1-50k/REPORT.md) · [MD5 10–100 万行](../reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md)
+- 测试方法：[BENCHMARKS.md](BENCHMARKS.md)
+- 部署：[部署总览](DEPLOYMENT.md) · [JS](DEPLOY_JS.md) · [WASM](DEPLOY_WASM.md) · [Python Server](DEPLOY_PYTHON.md)
 
-## 7. 下一步
-
-- [部署总览](DEPLOYMENT.md)：权限、目标一致性、备份、接口选择。
-- [JS 部署](DEPLOY_JS.md)、[WASM 部署](DEPLOY_WASM.md)、[Python 部署](DEPLOY_PYTHON.md)。
+文中图表由 `scripts/render_charts.py` 根据报告 CSV 生成，重新测量后运行它即可更新。

@@ -100,17 +100,16 @@ SELECT to_string(sm4_decrypt_default_iv_wasm(
 
 ## 边界与来源
 
-- 这是一套明确的参数适配规则，不是完整仿真其他数据库的 SQL 行为或全版本认证。
+- 本页是参数适配规则，不模拟其他数据库的完整 SQL 行为。
 - mode 始终显式传入，不读取会话变量，不模拟可选参数和历史版本问题。
-- 非法参数统一 NULL，不能声称与外部数据库的错误语义完全一致。
+- 非法参数统一返回 NULL，错误语义与外部数据库不同。
 - 不提供 CTR/GCM/CFB8；STRING/BINARY、字符编码和客户端显示需单独理解。
 - `sm4_encrypt_wasm` 等严格接口仍要求实际 16 字节 key/IV，不自动使用本页规则。
-- 没有连接实际外部数据库服务。测试参考包括公开文档的固定密文及独立 OpenSSL 输出；文章不得写成在线跨库认证。
+- 测试参考来自公开文档的固定密文及独立 OpenSSL 输出，未连接外部数据库。
 
 ## References
 
-以下仅列出显式 IV 策略的公开参考资料；不表示其中的来源定义了本项目全部策略。
-默认 IV 的完整行为和固定字节已在上文明确约定。函数名、测试标签和演示结果不使用来源产品名。
+显式 IV 策略的公开参考资料如下；默认 IV 的行为和固定字节见上文。函数名、测试标签和演示结果不使用来源产品名。
 
 - [OceanBase SM4_ENCRYPT](https://www.oceanbase.com/docs/common-oceanbase-database-ai-1000000006781744)
 - [OceanBase SM4_DECRYPT](https://www.oceanbase.com/docs/common-oceanbase-database-ai-1000000006781762)
