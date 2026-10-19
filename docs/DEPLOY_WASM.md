@@ -1,17 +1,18 @@
-# WASM UDF 部署
-
-## 1. 架构与前置条件
+# 部署 WASM UDF
 
 ```text
-Rust 源码 → wasm32-wasip1 编译 → .wasm → Databend stage
-SQL → Query 的 WASM 运行时 → Arrow UDF ABI → SM4 → BINARY
+构建：Rust 源码 → 编译为 wasm32-wasip1 → .wasm 文件 → 上传到 Databend stage
+调用：SQL → Query 内的 WASM 运行时 → Arrow UDF 接口 → SM4 → BINARY 结果
 ```
 
-需要支持 `LANGUAGE wasm` 和本项目 Arrow ABI/WASI 能力的 Databend，以及 stage/UDF 权限。
-不是任意 `.wasm` 都能直接当 Databend UDF；项目固定 SDK git revision、Cargo.lock 和函数签名。
-运行节点不需要 Rust，也不需要外部 UDF Server。构建环境需要 Rust/Cargo 和网络获取依赖（或已有缓存）。
+Databend 节点上不需要 Rust，也不需要额外服务。需要准备：
 
-## 2. 测试与构建
+- 构建机：Rust/Cargo，首次构建需要联网下载依赖。
+- Databend：支持 `LANGUAGE wasm`，并有 stage 和 UDF 权限。
+
+`.wasm` 文件要按 Arrow UDF 接口导出函数，Databend 才能识别，项目已固定 SDK 版本和 `Cargo.lock`。权限、备份和接口选择先看 [部署总览](DEPLOYMENT.md)。
+
+## 1. 测试与构建
 
 ```bash
 rustup target add wasm32-wasip1
@@ -19,18 +20,17 @@ cargo test --locked --manifest-path wasm/Cargo.toml
 cargo build --locked --release --target wasm32-wasip1 --manifest-path wasm/Cargo.toml
 ```
 
-默认工件：
+产物位置：
 
 ```text
 wasm/target/wasm32-wasip1/release/databend_sm4_udf.wasm
 ```
 
-如果设置 `CARGO_TARGET_DIR`，工件会在该目录下，应同步修改下面的文件路径。
-不要用宿主架构的 `.so` / 可执行文件，也不要把其他 ABI 的 WASM 改名后上传。
+设置了 `CARGO_TARGET_DIR` 的话，产物在对应目录下，后续命令的路径也要跟着改。
 
-## 3. 用内容校验值准备版本化工件
+## 2. 用内容哈希命名发布文件
 
-以下是 Linux/Bash 示例，从项目根目录执行；macOS 可以用相应 SHA256 工具：
+每次发布用新文件名，旧函数仍指向旧文件，回滚时只需切回去。用 SHA256 命名最方便（Linux 示例，macOS 可用 `shasum -a 256`）：
 
 ```bash
 mkdir -p results/releases
@@ -41,36 +41,39 @@ cp "$ARTIFACT" "results/releases/$RELEASE_FILE"
 printf 'SHA256=%s\n' "$SHA"
 ```
 
-示例和旧工件路径不同，便于回滚。**不要原地覆盖仍被现有函数引用的 WASM。**
+**不要原地覆盖仍被函数引用的 `.wasm` 文件。**
 
-## 4. 上传并生成部署 SQL
+## 3. 上传并注册
 
-按 [共同部署约定](DEPLOYMENT.md) 安装 Python 工具依赖，配置 HTTP 工具与 bendsql 为同一实例。
+先配置连接，确保和 bendsql 指向同一个实例：
 
 ```bash
 export SM4_URL=http://127.0.0.1:8000
 export SM4_USER=root
 export SM4_PASSWORD=''
+```
 
+上传文件、生成 SQL、保存发布记录，然后注册：
+
+```bash
 .venv/bin/python scripts/upload_wasm.py \
   --stage sm4_udf --file "results/releases/$RELEASE_FILE"
 
 python3 scripts/generate_sql.py --wasm-path "@sm4_udf/$RELEASE_FILE"
 
-# 存档本次实际执行的 SQL，不提交私人部署地址/路径
+# 保存本次实际执行的 SQL，回滚时用
 cp sql/wasm.sql "results/releases/${SHA}_wasm.sql"
 cp sql/compat_wasm.sql "results/releases/${SHA}_compat_wasm.sql"
 
-# 严格字节接口；可按需只部署其中一种接口
-bendsql --query="$(<sql/wasm.sql)"
-bendsql --query="$(<sql/compat_wasm.sql)"
+bendsql --query="$(<sql/wasm.sql)"          # 严格接口
+bendsql --query="$(<sql/compat_wasm.sql)"   # 字符串参数入口
 ```
 
-上传脚本只上传，不注册函数；注册 SQL 只绑定路径，不会帮你构建或上传。
-脚本可能替换 stage 内同名文件，因此使用内容哈希文件名并复核发布记录，不依赖覆盖实现版本切换。
-生成器会重写六个部署文件；自定义过 Python 地址时也应传入 `--python-address`，见 [共同约定](DEPLOYMENT.md)。
+上传脚本会在 stage 不存在时创建它，只负责上传，不注册函数。如果 stage 里有同名文件会被替换，所以用哈希文件名。生成器每次会重写全部六个 SQL 文件，如果 Python 地址也有自定义值，要同时传 `--python-address`。
 
-## 5. 验证实例实际加载的版本
+## 4. 验证实例加载的版本
+
+先确认函数定义指向了新文件：
 
 ```sql
 SELECT name, definition
@@ -79,14 +82,16 @@ WHERE name IN ('sm4_encrypt_wasm', 'sm4_decrypt_wasm',
   'sm4_encrypt_explicit_iv_wasm', 'sm4_decrypt_explicit_iv_wasm');
 ```
 
-确认 definition 中的新 stage 路径和 HANDLER，再执行：
+再运行检查：
 
 ```bash
 .venv/bin/python scripts/check_deployment.py --impl wasm
-bendsql --query="$(<tests/compat_smoke.sql)"  # 要求已注册字符串策略函数
+bendsql --query="$(<tests/compat_smoke.sql)"   # 需要已注册字符串参数入口
 ```
 
-严格接口示例：
+`compat_smoke.sql` 每一行的 `actual` 都必须等于 `expected`，出现 NULL 也算失败。
+
+手动验证严格接口：
 
 ```sql
 SELECT upper(hex(sm4_encrypt_wasm(
@@ -104,39 +109,28 @@ SELECT to_string(sm4_decrypt_wasm(
 -- Hello Databend
 ```
 
-`tests/compat_smoke.sql` 的每行 actual 必须等于 expected。它不是只要 SQL 成功就通过；NULL 也应视为失败。
+## 5. 升级与回滚
 
-## 6. 升级和回滚
+1. 记录旧函数定义、旧发布 SQL、stage 路径和 SHA256，保留旧文件。
+2. 新版本用新文件名上传，先在测试环境验证，再注册到目标实例。
+3. 检查固定示例、各种模式、业务样本和资源占用。
+4. 出问题时重新执行旧的发布 SQL，函数就会指回旧文件，不需要重新编译。
+5. 确认没有查询再用旧文件后，再按组织策略清理。
 
-1. 记录旧函数定义、旧发布 SQL、stage 路径与 SHA256；保留旧工件。
-2. 新版本使用新文件名/路径，先在测试环境验证，再执行对应 SQL。
-3. 检查常量示例、各模式、业务样本和资源开销。
-4. 出现问题时重新执行旧发布 SQL，使函数指回旧工件；无需重新编译旧源代码。
-5. 确认没有旧查询/函数需要旧路径后，再按组织策略回收旧工件，不立刻删除。
+提交代码前运行 `python3 scripts/generate_sql.py`，把 `sql/` 恢复为默认路径。`.wasm` 文件通过 CI artifact 或 Release 分发，`wasm/target/`、`results/` 不进入 Git。
 
-准备提交源码时恢复标准 SQL：`python3 scripts/generate_sql.py`；这不改变已部署函数。
-工件通过 CI artifact/Release 分发，`wasm/target/`、`.wasm`、`results/` 不进入源码提交。
+## 6. 常见问题
 
-## 7. 常见问题
-
-| 现象 | 检查方向 |
+| 现象 | 排查方向 |
 |---|---|
-| `LANGUAGE wasm` 不支持 | 目标 Databend 版本/构建能力，不能仅凭本地编译成功判断 |
-| stage 文件不存在/无权限 | 上传目标是否与 bendsql 相同，文件名和路径是否精确，Query 是否可读 |
-| 找不到 HANDLER | 上传了旧工件或错误 ABI；新字符串策略导出需匹配新版工件 |
-| `CBC` 返回 NULL | 用只读检查区别旧版本问题与非法参数；源码修改不会自动升级已部署模块 |
-| 新版仍旧结果 | 复核实际函数 definition 的路径和所用实例；用唯一文件名重注册，别原地覆盖 |
-| 单行比 JS 慢 | 完整 SQL 包含初始化/编译和 Arrow 转换；当前实现不是常驻零开销函数调用 |
-| 大查询耗尽 CPU/内存 | 检查块大小、并发和宿主资源限制；不要把沙箱理解为自动消除资源风险 |
+| 不支持 `LANGUAGE wasm` | 目标 Databend 版本或构建是否支持 WASM UDF |
+| stage 文件不存在或无权限 | 上传和 bendsql 是否是同一个实例；文件名、路径是否完全一致；Query 是否有读权限 |
+| 找不到 HANDLER | 上传了旧版或其他工程的 `.wasm`；字符串参数入口需要包含新导出的版本 |
+| `CBC` 返回 NULL | 用只读检查区分是旧版本还是参数非法；改了源码不会自动更新已部署的模块 |
+| 升级后结果没变 | 核对函数 `definition` 里的路径和实例；用新文件名重新注册 |
+| 单行查询比 JS 慢 | 每次查询有约一百多毫秒的运行时初始化和编译，量小时这部分占主导 |
+| 大查询 CPU 或内存吃紧 | 检查块大小、并发，以及 Query 节点的资源限制 |
 
-## 8. 适用场景
+## 7. 适合的场景
 
-**WASM UDF 可用于 ELT 的 T（Transform）。** 数据先加载进 Databend，再通过 SQL
-调用 WASM 执行批量、CPU 密集且不依赖外部服务的自定义计算，最后写入目标表。
-典型场景包括批量加解密、编码转换、解析和自定义计算；本项目实测覆盖 SM4 和 MD5。
-
-已有内置函数满足需求时优先使用；缺少的批量计算用 WASM，无需为该函数维护 Python UDF Server。
-需要 Python 库、模型或外部依赖时用 Remote UDF。
-选型时综合考虑固定启动成本、ABI/版本支持、Query CPU/内存、构建与工件管理。
-
-上线前验证源表读取、JOIN/聚合、转换、写入/提交的完整链路，包括并发和峰值资源、超时、重试幂等及失败恢复。
+批量、计算密集、不依赖外部服务的自定义转换，例如 ELT 中的批量加解密、编码转换和解析。计算在 Query 内完成，不用维护额外服务，但会占用 Query 节点的 CPU 和内存。有合适的内置函数时优先用内置函数。选型对比和实测数据见 [三种 UDF 怎么选](ARCHITECTURE.md)。

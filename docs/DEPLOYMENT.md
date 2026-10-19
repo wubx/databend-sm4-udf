@@ -1,45 +1,40 @@
-# 部署指南：入口与共同约定
+# 部署总览
 
-从项目根目录运行本文及各实现指南中的命令。先在测试实例验证，不要直接替换生产函数。
+本文介绍三种实现共用的部署步骤：确认权限、选接口、备份、注册后检查。各实现的具体命令见：
 
-| 实现 | 执行位置 | 独立服务 | 详细指南 |
+| 实现 | 运行位置 | 需要额外部署 | 指南 |
 |---|---|---|---|
-| JavaScript | Databend Query 内的 JS 运行时 | 无 | [部署 JavaScript](DEPLOY_JS.md) |
-| Rust/WASM | Databend Query 内的 WASM 运行时 | 无；需要上传工件 | [部署 WASM](DEPLOY_WASM.md) |
-| Python | 外部 Python UDF Server | 有，Arrow Flight RPC | [部署 Python Server](DEPLOY_PYTHON.md) |
+| JavaScript | Databend Query 内的 JS 运行时 | 无 | [DEPLOY_JS](DEPLOY_JS.md) |
+| WASM | Databend Query 内的 WASM 运行时 | 上传 `.wasm` 文件到 stage | [DEPLOY_WASM](DEPLOY_WASM.md) |
+| Python | 独立的 Python UDF Server | 运行服务进程 | [DEPLOY_PYTHON](DEPLOY_PYTHON.md) |
 
-架构和选型见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+不确定选哪种，先看 [三种 UDF 怎么选](ARCHITECTURE.md)。所有命令都在项目根目录执行，建议先在测试实例上走一遍。
 
-### ELT / Data Pipeline 的选型
+## 1. 确认实例和权限
 
-三种 UDF 都可以被 SQL 转换作业调用。
-已有内置函数满足需求时优先使用；批量 CPU 密集且不依赖外部服务的自定义 T 优先评估 WASM，
-轻量转换/快速迭代评估 JS；依赖 Python 生态或独立服务治理时评估 Python Remote UDF。
+需要的权限：
 
-上线前在目标环境测量源表读取、转换、目标表写入/提交的总耗时，
-并验证峰值内存、并发、失败/重试、结果校验及 SLA；调度和 exactly-once 需由作业层提供。
+- 所有实现：创建和替换函数。
+- WASM：创建 stage、上传和读取文件。
+- Python：管理员预先允许 Query 访问 UDF 服务地址。不同版本和平台的配置方式不同。
 
-## 1. 确认目标和权限
-
-需要目标版本支持相应 UDF、创建/替换函数的权限；WASM 另需 stage 创建/上传/读取权限。
-Python 另需管理员预先配置网络和外部 UDF 安全策略。权限名称和配置入口取决于版本/平台。
+先确认 bendsql 连的是目标实例：
 
 ```bash
 bendsql --query='SELECT version(), current_database();'
 ```
 
-HTTP 工具使用独立环境变量；**不会自动读取 bendsql 的连接配置**：
+项目的上传、检查和测试脚本通过 HTTP 访问 Databend，使用独立的环境变量，**不会读取 bendsql 的配置**：
 
 ```bash
 export SM4_URL=http://127.0.0.1:8000
 export SM4_USER=root
-export SM4_PASSWORD=''  # 仅本地示例；真实密码使用组织批准的注入方式
+export SM4_PASSWORD=''   # 本地示例；真实密码请用组织批准的方式注入
 ```
 
-确认这些变量与 bendsql 指向同一实例、租户和目标上下文。Cloud/远程服务使用真实的 HTTPS 地址和授权身份。
-不要把凭证写到 Git、截图、命令历史或公开日志。本文的 loopback/root 示例不用于公网。
+确保这些变量和 bendsql 指向同一个实例和租户。云上或远程实例使用实际的 HTTPS 地址和账号。不要把密码写进 Git、截图或公开日志。
 
-Python 工具依赖安装（JS 源码在 Query 中运行不需要这些包；这是客户端工具环境）：
+安装客户端工具依赖（仅本地脚本需要，Databend 节点上不用装）：
 
 ```bash
 python3 -m venv .venv
@@ -47,30 +42,23 @@ python3 -m venv .venv
 .venv/bin/python -m pip install --no-deps -e python
 ```
 
-不要在本文尚未运行完的共享测试环境里另起同端口的服务。
+## 2. 选择接口
 
-## 2. 选择接口，不要混用
+每种实现都提供两类接口，`<后端>` 是 `js`、`wasm` 或 `python`：
 
-| 入口 | 参数 | 规则 |
-|---|---|---|
-| `sm4_encrypt_<backend>` / `sm4_decrypt_<backend>` | `BINARY,BINARY,BINARY,STRING` | 实际 key 必须 16 B；非 ECB 的 IV 必须 16 B |
-| `sm4_encrypt_default_iv_<backend>` / 对应 decrypt | `BINARY,STRING,STRING,STRING` | 原文 key 折叠，支持默认/短 IV |
-| `sm4_encrypt_explicit_iv_<backend>` / 对应 decrypt | `BINARY,STRING,STRING,STRING` | 原文 key 折叠，非 ECB IV 至少 16 B，超出截断 |
+| 接口 | 参数类型 | key / IV 规则 | 部署文件 |
+|---|---|---|---|
+| `sm4_encrypt_<后端>` / `sm4_decrypt_<后端>` | `BINARY,BINARY,BINARY,STRING` | key 必须 16 字节；除 ECB 外 IV 必须 16 字节 | `sql/<后端>.sql`（2 个函数） |
+| `sm4_{encrypt,decrypt}_default_iv_<后端>` | `BINARY,STRING,STRING,STRING` | 原文 key 折叠；IV 可省略或较短 | `sql/compat_<后端>.sql`（4 个函数） |
+| `sm4_{encrypt,decrypt}_explicit_iv_<后端>` | 同上 | 原文 key 折叠；IV 至少 16 字节，超出部分截断 | 同上 |
 
-`<backend>` 为 `js`、`wasm`、`python`。mode 必须显式传入；支持 ECB、CBC、CFB128、OFB。
-严格接口见 [API](API.md)，字符串策略及空输入差异见 [COMPATIBILITY](COMPATIBILITY.md)。
+规则细节见 [API](API.md) 和 [COMPATIBILITY](COMPATIBILITY.md)。
 
-生成的 SQL 使用 `CREATE OR REPLACE FUNCTION`：
-
-| 文件 | 替换范围 |
-|---|---|
-| `sql/js.sql`, `sql/wasm.sql`, `sql/python.sql` | 各 2 个严格接口函数 |
-| `sql/compat_js.sql`, `sql/compat_wasm.sql`, `sql/compat_python.sql` | 各 4 个字符串策略函数 |
-
-只执行需要的文件，不必为了用 WASM 而注册 Python。HANDLER 指向实现导出，不能随意改名；
-若自定义 SQL 公开名，只改 CREATE FUNCTION 的名字并维护自己的部署文件。
+只执行需要的文件即可，例如只用 WASM 就不必注册 Python。如果想换一个 SQL 函数名，只改 `CREATE FUNCTION` 后的名字，`HANDLER` 要保持不变，它对应实现里导出的函数。
 
 ## 3. 部署前备份
+
+生成的 SQL 使用 `CREATE OR REPLACE FUNCTION`，会覆盖同名函数。先保存现有定义：
 
 ```sql
 SELECT name, definition
@@ -78,11 +66,9 @@ FROM system.user_functions
 WHERE name LIKE 'sm4%';
 ```
 
-把输出及**上一次真正执行过的完整 CREATE FUNCTION SQL**安全保存。
-`definition` 列并不一定是一条可直接执行的 CREATE 语句，不要不检查就当回滚脚本运行。
-WASM 还需保留旧 stage 工件，Python 需保留旧服务版本及路由；源代码备份不能替代运行环境备份。
+回滚时最可靠的是**上一次实际执行过的完整 SQL**，请和查询结果一起保存。`definition` 列不一定能直接当 `CREATE` 语句执行。
 
-本地发布 SQL、验证输出等建议放在被忽略的 `results/`，需要留存的回滚材料另行安全归档。
+另外还要保留运行环境：WASM 保留旧的 stage 文件，Python 保留旧服务版本和路由。只备份源码不够。本地的发布 SQL 和验证输出可以放在 `results/`（已被 Git 忽略）。
 
 ## 4. 注册后检查
 
@@ -92,21 +78,19 @@ WASM 还需保留旧 stage 工件，Python 需保留旧服务版本及路由；�
 .venv/bin/python scripts/check_deployment.py --impl python
 ```
 
-只检查已经注册的后端。`--impl all` 要求三端严格函数都存在且 Python Server 可达。
-检查器**不创建、不上传、不替换函数**，发现 NULL、错误密文或模式别名不一致时非零退出。
-
-固定的严格接口输入 `Hello Databend`，CBC 期望密文：
+只检查已注册的实现；`--impl all` 要求三端都已部署且 Python 服务可达。这个检查是只读的，用固定输入 `Hello Databend` 验证 CBC 密文和 mode 别名，结果不对时以非零状态退出。期望的严格接口 CBC 密文是：
 
 ```text
 DA12F33F321D4D551A76D8800F5AE244
 ```
 
-字符串入口还需运行各指南提供的 round-trip SQL。WASM 可执行 `tests/compat_smoke.sql` 验证 7 个示例。
+字符串参数入口可以用各指南里的加解密示例验证，WASM 还可以执行 `tests/compat_smoke.sql`（7 个用例）。
 
-检查函数返回类型为 BINARY；客户端可能用 Hex 显示它。复制 Hex 文本回来解密时用 `unhex()`；
-如果密文已是 BINARY 列，就直接传列。不要对任意密文调用 `to_string()`。
+函数返回 BINARY，客户端可能以 Hex 显示。把显示出来的 Hex 复制回来解密时要先 `unhex()`；如果密文本来就存在 BINARY 列里，直接传列即可。
 
-## 5. 生成器与源码提交
+## 5. 自定义 stage 路径和服务地址
+
+`sql/` 下的文件由生成器产生。WASM 文件放在别的 stage 路径，或 Python 服务有其他地址时，重新生成：
 
 ```bash
 python3 scripts/generate_sql.py \
@@ -114,22 +98,20 @@ python3 scripts/generate_sql.py \
   --python-address https://my-gateway.example:443
 ```
 
-此命令只生成文件，不访问实例；**每次会重写全部六个 `sql/*.sql`**。按需同时传入两个自定义参数，
-避免把另一实现的本地路径/地址意外重置。执行前审阅 SQL，并保存每次发布的版本化副本。
+生成器只写本地文件，不访问实例，但**每次都会重写全部六个 SQL 文件**。如果两项都有自定义值，要一起传入，否则没传的那项会被恢复成默认值。执行前请审阅生成的 SQL，并保存这次发布的副本。
 
-提交源码时不要带个人服务地址、凭证或不可访问的私有 stage。仓库标准文件应恢复为默认生成结果：
+提交代码前，把仓库里的 SQL 恢复成默认值，避免把个人地址或私有 stage 提交上去：
 
 ```bash
 python3 scripts/generate_sql.py
 python3 scripts/generate_sql.py --check
 ```
 
-这只恢复本地文件，不会更改已部署函数。自定义发布 SQL 应留在自己的安全发布记录中。
+这只改本地文件，不影响已部署的函数。
 
-## 6. 使用和运维边界
+## 6. 运维提示
 
-- 示例 key/IV 是公开测试数据，不用于真实信息；默认固定 IV 不是推荐的生产 IV 策略。
-- 非法输入统一 NULL，业务应统计失败；NULL 不是密文认证或访问控制。
-- 关注 Query CPU/内存、运行时限制和 Python RPC 超时；不要依赖本文默认值适配所有工作负载。
-- 对混合升级保留回滚路径；不要立即删掉可能仍被查询引用的旧工件/服务。
-- 项目采用 MIT，但没有经过密码学安全审计；更多边界见 [SECURITY](../SECURITY.md)。
+- 非法输入返回 NULL，建议在业务里统计 NULL 数量，及时发现 key、IV 或数据问题。
+- 关注 Query 节点的 CPU 和内存，以及 Python RPC 的超时。
+- 升级时保留回滚路径，不要马上删除可能仍被引用的旧 WASM 文件或旧服务。
+- 示例 key、IV 和默认固定 IV 只用于演示，生产中的 IV 应由业务按模式要求生成。更多安全注意事项见 [SECURITY](../SECURITY.md)。

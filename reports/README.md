@@ -8,7 +8,7 @@
 | [MD5 内置 vs WASM：1–5 万行](md5-native-vs-wasm/rows-1-50k/REPORT.md)<br>[CSV](md5-native-vs-wasm/rows-1-50k/results.csv) · [JSON](md5-native-vs-wasm/rows-1-50k/results.json) | 已有内置函数时，WASM 慢多少？ | 内置 / WASM MD5 + 两种 identity 基线，16/128/1,024 B × 1–50,000 行，432 次计时查询 | 所有规模内置更快；1,024 B × 5 万行内置 81 ms、WASM 330 ms |
 | [MD5 内置 vs WASM：10–100 万行](md5-native-vs-wasm/rows-100k-1m/REPORT.md)<br>[CSV](md5-native-vs-wasm/rows-100k-1m/results.csv) · [JSON](md5-native-vs-wasm/rows-100k-1m/results.json) | 行数增大后，WASM 固定成本是否被摊薄？ | 仅内置 / WASM MD5，16/128/1,024 B × 10 万/30 万/100 万行，108 次计时查询 | 内置仍更快；1,024 B × 100 万行内置 1,471 ms、WASM 3,730 ms，耗时比降到约 2.54× |
 
-**结论：自定义计算场景下，WASM 是当前三种 SM4 后端里批量最快的；已有语义合适的内置函数时，应优先使用内置函数。**
+**结论：自定义计算场景下，WASM 是三种 SM4 实现里批量最快的；有语义合适的内置函数时，优先用内置函数。** 图表版的对比和解读见 [三种 UDF 怎么选](../docs/ARCHITECTURE.md)。
 
 ## 共同口径
 
@@ -27,4 +27,4 @@
 | `md5-native-vs-wasm/rows-1-50k/` | `benchmarks/native-vs-wasm/report.py`（默认目录） | `results/native-vs-wasm.json` |
 | `md5-native-vs-wasm/rows-100k-1m/` | `benchmarks/native-vs-wasm/report.py --report-dir reports/md5-native-vs-wasm/rows-100k-1m` | `results/native-vs-wasm-large.json` |
 
-`REPORT.md` 由同目录 `results.json` 渲染，单元测试会校验两者一致，不要手工编辑。源码变化或测试范围扩大后应重新测量，并用新目录发布不同矩阵，而不是覆盖或拼接旧结果。测试工具和 MD5 实验源码分别在 [`scripts/`](../scripts/) 与 [`benchmarks/native-vs-wasm/`](../benchmarks/native-vs-wasm/README.md)。
+`REPORT.md` 由同目录的 `results.json` 渲染，单元测试会校验两者一致，请不要手工编辑。重新测量后，运行 `python3 scripts/render_charts.py` 更新文章里的图表。测试矩阵不同时发布到新目录，不要覆盖或拼接旧结果。测试工具和 MD5 实验源码分别在 [`scripts/`](../scripts/) 与 [`benchmarks/native-vs-wasm/`](../benchmarks/native-vs-wasm/README.md)。

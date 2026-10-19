@@ -1,85 +1,75 @@
-# Python UDF Server 部署
-
-## 1. 架构与前置条件
+# 部署 Python UDF Server
 
 ```text
-SQL → Databend Query → Arrow Flight RPC → Python UDF Server → gmssl → RPC 结果
+SQL → Databend Query → Arrow Flight RPC → Python UDF Server → gmssl → 结果返回 Query
 ```
 
-与内嵌 JS/WASM 不同，Python 代码不在 Query 的 WASM/JS 沙箱里执行。
-需要独立进程的发布、网络、访问控制和监控；Query 的线程数也不等于 Python 计算并行度。
-本项目使用 gmssl 的原始 SM4 分组原语，在项目代码中统一实现模式和 padding，不调用库的自动二次去填充路径。
+Python 代码跑在独立的服务进程里，需要自己负责发布、网络、访问控制和监控。项目使用 gmssl 的 SM4 分组原语，模式和 padding 由项目代码统一实现，保证和 JS、WASM 结果一致。
 
-准备 Python 3.10+、虚拟环境工具、支持外部 UDF 的 Databend，以及管理员批准的 UDF 地址策略。
-本指南分为本机开发示例和生产运行建议；**固定 SDK 默认明文 gRPC，不能把示例直接暴露到公网**。
+需要准备：Python 3.10+，支持外部 UDF 的 Databend，以及管理员允许的 UDF 服务地址。权限、备份和接口选择先看 [部署总览](DEPLOYMENT.md)。
 
-## 2. 安装依赖
+> 服务使用明文 gRPC，示例配置只适合本机测试，**不要直接暴露到公网**。
+
+## 1. 安装依赖
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r python/requirements.lock
 .venv/bin/python -m pip install --no-deps -e python
 
-# 查看命令帮助及依赖
 .venv/bin/python -m sm4_udf.server --help
-.venv/bin/python -m pip show databend-udf gmssl pyarrow
 ```
 
-按锁文件复现经过验证的版本；不要在生产原地随意升级 PyArrow、SDK 或密码库。
+依赖版本按锁文件安装。PyArrow、databend-udf、gmssl 升级都需要重新回归。
 
-## 3. 本机测试启动
+## 2. 本机启动
 
-确认 8815 没有被其他进程占用，然后在 Query 所在机器启动：
+确认 8815 端口空闲，在 Query 所在机器上启动：
 
 ```bash
 .venv/bin/python -m sm4_udf.server --bind 127.0.0.1:8815
 ```
 
-另一个终端检查监听（Linux）：
+另开终端确认在监听（Linux）：
 
 ```bash
 ss -ltnp | grep ':8815'
 ```
 
-监听端口只证明进程起来，不证明 Flight schema、网络策略或 SM4 正确；还需要后续注册和 SQL 验证。
-`127.0.0.1` 是 **每个发起调用的 Query 节点看到的本机地址**。
-如果 Query 在容器、不同机器或多节点 warehouse 中，loopback 通常不是你想连接的服务。
+端口在监听只说明进程起来了，还要注册函数并用 SQL 验证。
 
-## 4. Databend 网络与安全配置
+注意 `127.0.0.1` 是从 **Query 节点** 看到的本机。如果 Query 跑在容器里、其他机器上，或是多节点 warehouse，就要换成每个 Query 节点都能访问的地址。
 
-注册前由管理员确认：
+## 3. 网络与安全配置
 
-- 目标版本已启用外部 UDF 能力；服务 URL 在允许范围内。
-- 每个可能执行查询的 Query 节点都能通过选定地址调用服务。
-- URI scheme、TLS 信任链、DNS、网关 HTTP/2/gRPC 转发和防火墙规则匹配。
-- 明文仅限批准的隔离本机开发环境；若实例禁止明文，应保留该限制并采用受批准的 TLS/网络方案。
+注册函数前，请管理员确认：
 
-当前 `databend-udf==0.2.20` 的此 CLI 没有原生 TLS 监听选项。
-跨机示例中的 `https://...` 代表你**另行配置并验证**的 TLS 终止网关，不是给本 Server 加一个参数就自动有 TLS。
-网关的可用性、超时和权限不属于本项目已验证保证。
-不要为了跑 demo 全局关闭生产校验。不同平台配置项可能不同，应以所用 Databend 版本/托管平台为准。
+- 实例已启用外部 UDF，服务地址在允许列表中。
+- 每个可能执行查询的 Query 节点都能访问该地址。
+- URI scheme、TLS 证书、DNS、网关的 HTTP/2/gRPC 转发和防火墙配置正确。
+- 明文连接只用于隔离的本机开发环境。实例禁止明文时，保持这个限制，改用 TLS 方案。
 
-## 5. 注册函数
+当前的 `databend-udf==0.2.20` 没有内置 TLS 监听。跨机部署时，需要在服务前面另外配置 TLS 终止网关（比如 Nginx、Envoy），下文示例里的 `https://...` 指的就是这个网关。具体配置项以所用 Databend 版本或托管平台为准，不要为了跑通示例关闭生产环境的安全校验。
 
-同机、获准明文测试时：
+## 4. 注册函数
+
+同机测试：
 
 ```bash
 python3 scripts/generate_sql.py --python-address http://127.0.0.1:8815
-bendsql --query="$(<sql/python.sql)"        # 严格接口，2 个函数
-bendsql --query="$(<sql/compat_python.sql)" # 字符串策略，4 个函数
+bendsql --query="$(<sql/python.sql)"          # 严格接口，2 个函数
+bendsql --query="$(<sql/compat_python.sql)"   # 字符串参数入口，4 个函数
 ```
 
-使用已配置的远端网关时，地址示意：
+通过网关访问时，换成网关地址：
 
 ```bash
 python3 scripts/generate_sql.py --python-address https://sm4-gateway.example:443
-# 审阅生成文件、确认网关 schema/RPC 可用，再执行上述注册命令。
 ```
 
-生成器会重写六个 SQL 文件；若本地还有自定义 WASM 路径，需同时传 `--wasm-path`。
-这些命令只注册定义，不会启动服务或创建 TLS 网关。创建/验证时实例也可能连接服务，服务必须可达。
+生成器每次会重写全部六个 SQL 文件，如果 WASM 路径也有自定义值，要同时传 `--wasm-path`。注册函数时实例可能会连接服务，所以服务要先启动。
 
-## 6. 验证
+## 5. 验证
 
 严格接口：
 
@@ -99,7 +89,7 @@ SELECT to_string(sm4_decrypt_python(
 -- Hello Databend
 ```
 
-字符串策略：
+字符串参数入口：
 
 ```sql
 SELECT upper(hex(sm4_encrypt_explicit_iv_python(
@@ -115,16 +105,15 @@ SELECT to_string(sm4_decrypt_explicit_iv_python(
 -- Hello Databend
 ```
 
-配置客户端 SM4_URL/USER/PASSWORD 指向正确实例后：
+只读检查（需先配置 `SM4_URL` 等变量）：
 
 ```bash
 .venv/bin/python scripts/check_deployment.py --impl python
 ```
 
-## 7. 持续运行
+## 6. 长期运行
 
-开发可以在 tmux 中前台运行；生产应使用组织已有的进程管理器/容器平台。
-systemd 模板如下，需按环境修改：
+开发时可以在 tmux 里前台运行；生产建议用组织已有的进程管理或容器平台。下面是 systemd 模板，路径、用户和服务名按实际环境调整：
 
 ```ini
 [Unit]
@@ -149,43 +138,42 @@ PrivateTmp=true
 WantedBy=multi-user.target
 ```
 
-先创建专用用户、安装代码和依赖并调整路径/服务名；按需要设置 CPU、内存、文件权限和日志策略。
-跨机访问应经安全网关/受保护网络，不要为方便直接把明文监听改成公网地址。
+先创建专用用户，安装代码和依赖，再按需设置 CPU、内存、文件权限和日志策略：
 
 ```bash
-# 假设管理员已保存并审阅 sm4-udf.service
 sudo systemctl daemon-reload
 sudo systemctl enable --now sm4-udf
 sudo systemctl status sm4-udf
 journalctl -u sm4-udf --since '10 minutes ago'
 ```
 
-避免日志包含真实 key/明文。健康检查至少包含真实的测试 SQL 或已验证的 Flight 调用，仅检查端口不够。
+建议：
 
-## 8. 升级和回滚
+- 日志里不要出现真实 key 或明文。
+- 健康检查要真正调用一次函数（测试 SQL 或 Flight 调用），只看端口不够。
+- 跨机访问走 TLS 网关或受保护网络，不要直接把监听地址改成公网 IP。
 
-1. 保存旧服务镜像/虚拟环境、源代码、schema 和注册 SQL。
-2. 新版本先在独立进程/端口通过校验，再按组织发布流程切换路由或注册地址。
-3. 验证 BINARY/STRING、NULL 行为及所有模式；更新依赖也视为需要回归的升级。
-4. 出问题时恢复旧服务及旧路由/注册 SQL。只回滚 SQL、但服务已被原地覆盖，不能恢复旧逻辑。
-5. 确认没有旧调用后再停旧进程；若不再使用函数，先确认业务引用后执行 DROP FUNCTION。
+## 7. 升级与回滚
 
-## 9. 常见问题和场景
+1. 保存旧的服务镜像或虚拟环境、源码和注册 SQL。
+2. 新版本先用独立进程或端口启动并验证，再切换路由或注册地址。
+3. 验证所有模式、BINARY/STRING 和 NULL 行为。依赖升级也按版本升级对待。
+4. 出问题时同时恢复旧服务和旧路由/注册 SQL。如果服务已被原地覆盖，只回滚 SQL 是不够的。
+5. 确认没有调用后再停掉旧进程。
 
-| 现象 | 检查方向 |
+## 8. 常见问题
+
+| 现象 | 排查方向 |
 |---|---|
-| 连接拒绝/超时 | 服务是否运行、Query 节点视角的 DNS/地址、容器网络、防火墙、超时 |
-| 明文被拒绝/地址不允许 | 管理员的 allowlist、TLS 策略；不要在生产直接放宽 |
-| schema 不匹配 | SDK/Arrow 版本，实际 HANDLER 导出，BINARY 与 STRING 是否混用 |
-| 返回 NULL | 参数/填充校验；与进程崩溃和 RPC 失败区分，后者仍可能使整条查询失败 |
-| 多线程后不按比例提速 | Python 解释器、GIL、算法库和 SDK 都会影响，增加 Query 线程不是自动多核 SM4 |
-| 查询变慢但 Server CPU 不高 | 检查 SDK、RPC、批次、网络、网关；不能全归因于 SM4 算法 |
+| 连接被拒绝或超时 | 服务是否在运行；从 Query 节点看地址和 DNS 是否正确；容器网络、防火墙、超时设置 |
+| 明文被拒或地址不允许 | 管理员的允许列表和 TLS 策略 |
+| schema 不匹配 | SDK 和 Arrow 版本、HANDLER 名称、BINARY 与 STRING 是否用混 |
+| 结果为 NULL | 参数或 padding 不合法；进程崩溃、RPC 失败通常会让整条查询报错，而不是返回 NULL |
+| 加了 Query 线程也不变快 | Python 的 GIL、算法库和 SDK 都会限制并行度 |
+| 查询慢但服务 CPU 不高 | 瓶颈可能在 SDK、RPC、批次大小、网络或网关 |
 
-优先用于 **Data Pipeline** 中需要 Python 生态、外部依赖、已有业务处理逻辑和独立发布/服务治理的环节，前提是能接受并验证 RPC、SDK 和服务调度成本。
-对低延迟查询、逐行 CPU 密集计算或严格吞吐 SLA 的关键路径，不建议采用本项目这种纯 Python 标量实现。
-**ELT 中批量、计算密集且不依赖外部服务的 T 更适合 WASM**，轻量转换可用 JS。先考虑内置 SQL/函数，再按计算特点、依赖和治理需求选择扩展方式。
+## 9. 适合的场景
 
-Remote UDF 不提供幂等、背压或 exactly-once。
-访问外部系统或产生副作用时，应明确查询重试行为，设计超时、限流、幂等和故障恢复，避免假定每行只被调用一次。
+需要 Python 生态、模型、外部依赖或已有业务组件，并且希望独立发布和治理的处理环节。本项目的纯 Python SM4 实现比 JS 和 WASM 都慢，对延迟或吞吐要求高的批量加解密，更适合用 WASM。换成 C 实现的密码库、向量化或批处理后，性能会有明显变化，需要重新测量。
 
-换用原生库、向量化、批处理或服务并发后，需要重新测量。
+Remote UDF 不提供幂等和 exactly-once 保证。函数如果要写外部系统或产生其他副作用，要考虑查询重试带来的重复调用，自行设计超时、限流和幂等。选型对比见 [三种 UDF 怎么选](ARCHITECTURE.md)。

@@ -1,26 +1,18 @@
-# Security / maturity
+# 安全说明
 
-This is an experimental interoperability/performance project, not an audited cryptographic product.
-No production security assurance, regulatory compliance, constant-time behavior or secure memory
-erasure is claimed. JS/Rust use scalar S-box lookup tables; Python uses gmssl's scalar block primitive.
+这是一个用于互操作和性能对比的实验项目，**不是经过审计的密码学产品**。项目不承诺生产级安全、合规、常数时间执行或密钥内存安全擦除。JS 和 Rust 实现使用标量 S 盒查表，Python 使用 gmssl 的标量分组原语。
 
-- ECB/CBC/CFB128/OFB have no built-in authentication. Add an appropriate authenticated construction
-  at the application/protocol layer or use an audited AEAD implementation when designing a new system.
-  GCM/AEAD is not implemented here. Do not improvise a new scheme from these functions.
-- ECB leaks equal plaintext blocks. Do not choose it for new confidential data simply because it needs no IV.
-- Follow each mode's IV requirements; generate/manage appropriate per-message IVs outside the UDF.
-  Fixed IVs in examples/benchmarks are for reproducibility only. Never reuse published test keys.
-- Invalid input returns NULL deliberately. Check/count failures; SQL NULL is not an authentication signal.
-- Do not put real secrets in Git, public SQL logs, benchmark results, workflow artifacts or query text
-  unless your deployment's key handling and query logging controls are appropriate.
-- Python server defaults to plaintext loopback. The pinned SDK does not expose a usable native TLS
-  listener through this CLI. Remote operation requires an independently configured TLS gateway or
-  protected network plus trust, Databend allowlists, firewalls and access control. Gateway behavior
-  is not tested here. Do not expose this plaintext demo publicly or disable production checks.
-- UDF runtime/network/resource failures can still fail queries. Resource limits and concurrency
-  limits must be handled by the deployment. No unbounded key cache is maintained by these functions.
-- Reporting/deployment tooling is experimental too. Live test scripts create temporary objects and
-  attempt cleanup in finally; inspect the recorded cleanup errors after interruption/failure.
+## 使用注意
 
-Before publication the repository owner must choose a vulnerability reporting contact/channel.
-Do not open a public issue containing sensitive keys, plaintext or production credentials.
+- **没有完整性校验。** ECB、CBC、CFB128、OFB 都不提供认证。设计新系统时，请在应用或协议层加入合适的认证机制，或直接使用经过审计的 AEAD 实现。项目没有实现 GCM，也不要用这些函数自行拼凑新的加密方案。
+- **ECB 会泄露明文结构。** 相同的明文分组得到相同的密文分组。不要因为 ECB 不需要 IV 就用它加密新的敏感数据。
+- **IV 由业务负责。** 按各模式的要求，在 UDF 之外为每条消息生成和管理 IV。示例和基准测试里的固定 IV 只是为了结果可复现；公开的测试 key 绝不能用于真实数据。
+- **NULL 不是安全信号。** 非法输入会返回 NULL，请统计失败数量。解密结果非 NULL 不代表 key 正确或数据未被篡改。
+- **不要泄露密钥。** 真实密钥不要出现在 Git、公开的 SQL 日志、基准测试结果、CI 产物或查询文本中，除非部署环境的密钥管理和查询日志策略能够保护它们。
+- **Python Server 默认明文。** 服务默认监听本机明文端口，当前 SDK 没有可用的内置 TLS。远程使用时需要另外配置 TLS 网关或受保护网络，并设置证书信任、Databend 允许列表、防火墙和访问控制。不要把明文服务暴露到公网，也不要关闭生产环境的安全校验。
+- **资源限制由部署负责。** UDF 运行时、网络或资源故障仍可能导致查询失败，资源和并发限制需要在部署层设置。函数本身不维护无上限的密钥缓存。
+- **测试脚本会创建临时对象。** 集成测试和基准测试会在实例上创建临时函数、表和 stage，并在结束时尝试清理。中断或失败后，请检查日志中记录的清理错误。
+
+## 报告安全问题
+
+项目尚未设置私密的漏洞报告渠道，正式发布前由维护者补充。请不要在公开 issue 中贴出敏感 key、明文或生产凭证。
