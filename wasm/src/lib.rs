@@ -21,99 +21,156 @@ const SBOX: [u8; 256] = [
 ];
 const FK: [u32; 4] = [0xa3b1bac6,0x56aa3350,0x677d9197,0xb27022dc];
 
-#[inline]
+/// CK[i] bytes are (4i+j)*7 mod 256 (GB/T 32907).
+const CK: [u32; 32] = {
+    let mut ck = [0u32; 32];
+    let mut i = 0;
+    while i < 32 {
+        let mut j = 0;
+        while j < 4 { ck[i] = (ck[i] << 8) | (((4 * i + j) * 7) % 256) as u32; j += 1; }
+        i += 1;
+    }
+    ck
+};
+
+const fn linear(b: u32) -> u32 {
+    b ^ b.rotate_left(2) ^ b.rotate_left(10) ^ b.rotate_left(18) ^ b.rotate_left(24)
+}
+
+/// T tables merge the S-box and the round linear transform L: T[k][x] = L(SBOX[x] << (24 - 8k)).
+/// Because L commutes with rotation, each table is the first one rotated right by 8k bits.
+const T: [[u32; 256]; 4] = {
+    let mut t = [[0u32; 256]; 4];
+    let mut x = 0;
+    while x < 256 {
+        let v = linear((SBOX[x] as u32) << 24);
+        t[0][x] = v;
+        t[1][x] = v.rotate_right(8);
+        t[2][x] = v.rotate_right(16);
+        t[3][x] = v.rotate_right(24);
+        x += 1;
+    }
+    t
+};
+
+/// One encryption round: L(tau(x)) using four table lookups.
+#[inline(always)]
+fn round(x: u32) -> u32 {
+    T[0][(x >> 24) as u8 as usize] ^ T[1][(x >> 16) as u8 as usize]
+        ^ T[2][(x >> 8) as u8 as usize] ^ T[3][x as u8 as usize]
+}
+
+/// Key-schedule substitution; runs once per row, so it keeps the plain S-box.
 fn tau(x: u32) -> u32 {
     u32::from_be_bytes(x.to_be_bytes().map(|v| SBOX[v as usize]))
 }
 
-fn round_keys(bytes: &[u8]) -> [u32; 32] {
-    let key = bytes;
+fn round_keys(key: &[u8; 16]) -> [u32; 32] {
     let mut k: [u32; 4] = std::array::from_fn(|i|
         u32::from_be_bytes(key[i*4..i*4+4].try_into().unwrap()) ^ FK[i]);
     std::array::from_fn(|i| {
-        let ck = u32::from_be_bytes(std::array::from_fn(|j| ((4*i+j)*7) as u8));
-        let t = tau(k[1] ^ k[2] ^ k[3] ^ ck);
+        let t = tau(k[1] ^ k[2] ^ k[3] ^ CK[i]);
         let next = k[0] ^ t ^ t.rotate_left(13) ^ t.rotate_left(23);
         k = [k[1], k[2], k[3], next];
         next
     })
 }
 
+/// 32 rounds, unrolled by four so the state words never shift.
 #[inline]
 fn block(data: &[u8; 16], rk: &[u32; 32]) -> [u8; 16] {
-    let mut x: [u32; 4] = std::array::from_fn(|i|
-        u32::from_be_bytes(data[i*4..i*4+4].try_into().unwrap()));
-    for &r in rk {
-        let t = tau(x[1] ^ x[2] ^ x[3] ^ r);
-        let next = x[0] ^ t ^ t.rotate_left(2) ^ t.rotate_left(10)
-            ^ t.rotate_left(18) ^ t.rotate_left(24);
-        x = [x[1], x[2], x[3], next];
+    let word = |i: usize| u32::from_be_bytes([data[4*i], data[4*i+1], data[4*i+2], data[4*i+3]]);
+    let (mut x0, mut x1, mut x2, mut x3) = (word(0), word(1), word(2), word(3));
+    for r in rk.chunks_exact(4) {
+        x0 ^= round(x1 ^ x2 ^ x3 ^ r[0]);
+        x1 ^= round(x2 ^ x3 ^ x0 ^ r[1]);
+        x2 ^= round(x3 ^ x0 ^ x1 ^ r[2]);
+        x3 ^= round(x0 ^ x1 ^ x2 ^ r[3]);
     }
     let mut out = [0; 16];
-    for i in 0..4 { out[i*4..i*4+4].copy_from_slice(&x[3-i].to_be_bytes()); }
+    for (i, x) in [x3, x2, x1, x0].iter().enumerate() { out[i*4..i*4+4].copy_from_slice(&x.to_be_bytes()); }
     out
+}
+
+#[inline(always)]
+fn xor(a: &mut [u8; 16], b: &[u8; 16]) {
+    for i in 0..16 { a[i] ^= b[i]; }
 }
 
 #[derive(Clone, Copy, PartialEq)]
 enum Mode { Ecb, Cbc, Cfb, Ofb }
-fn parse_mode(name: &str) -> Option<Mode> {
-    if !name.is_ascii() { return None; }
-    let normalized = name.to_ascii_uppercase().replace('-', "_");
-    let suffix = normalized.strip_prefix("SM4_128_")
-        .or_else(|| normalized.strip_prefix("SM4_")).unwrap_or(&normalized);
-    match suffix {
-        "ECB" => Some(Mode::Ecb), "CBC" => Some(Mode::Cbc),
-        "CFB" | "CFB128" => Some(Mode::Cfb), "OFB" => Some(Mode::Ofb), _ => None,
-    }
+
+/// ASCII case-insensitive prefix match where '-' equals '_'; `pattern` is upper case with '_'.
+fn starts_with_mode(name: &[u8], pattern: &[u8]) -> bool {
+    name.len() >= pattern.len() && name.iter().zip(pattern).all(|(&c, &p)|
+        (if c == b'-' { b'_' } else { c.to_ascii_uppercase() }) == p)
 }
 
-fn crypt(data: &[u8], key: &[u8], iv: &[u8], name: &str, decrypt: bool) -> Option<Vec<u8>> {
+/// Same rules as before (optional SM4_ / SM4_128_ prefix), without allocating per row.
+fn parse_mode(name: &str) -> Option<Mode> {
+    if !name.is_ascii() { return None; }
+    let name = name.as_bytes();
+    let suffix = if starts_with_mode(name, b"SM4_128_") { &name[8..] }
+        else if starts_with_mode(name, b"SM4_") { &name[4..] } else { name };
+    let is = |pattern: &[u8]| suffix.len() == pattern.len() && starts_with_mode(suffix, pattern);
+    if is(b"ECB") { Some(Mode::Ecb) } else if is(b"CBC") { Some(Mode::Cbc) }
+    else if is(b"CFB") || is(b"CFB128") { Some(Mode::Cfb) } else if is(b"OFB") { Some(Mode::Ofb) }
+    else { None }
+}
+
+/// Strict byte interface. Public only so `benches/micro.rs` can call it natively.
+#[doc(hidden)]
+pub fn crypt(data: &[u8], key: &[u8], iv: &[u8], name: &str, decrypt: bool) -> Option<Vec<u8>> {
     let mode = parse_mode(name)?;
-    if key.len() != 16 || (mode != Mode::Ecb && iv.len() != 16) { return None; }
-    let mut rk = round_keys(key);
+    let key: &[u8; 16] = key.try_into().ok()?;
     let mut feedback = [0u8; 16];
-    if mode != Mode::Ecb { feedback.copy_from_slice(iv); }
-    let mut out = Vec::with_capacity(data.len() + 16);
-    if mode == Mode::Ecb || mode == Mode::Cbc {
-        let mut src = data.to_vec();
-        if decrypt {
-            if src.is_empty() || src.len() % 16 != 0 { return None; }
+    if mode != Mode::Ecb { feedback = iv.try_into().ok()?; }
+    let mut rk = round_keys(key);
+    match mode {
+        Mode::Ecb | Mode::Cbc if decrypt => {
+            if data.is_empty() || data.len() % 16 != 0 { return None; }
             rk.reverse();
-        } else {
-            let p = 16 - src.len() % 16;
-            src.resize(src.len() + p, p as u8);
-        }
-        for chunk in src.chunks_exact(16) {
-            let mut current: [u8; 16] = chunk.try_into().unwrap();
-            if mode == Mode::Cbc && !decrypt {
-                for i in 0..16 { current[i] ^= feedback[i]; }
+            let mut out = Vec::with_capacity(data.len());
+            for chunk in data.chunks_exact(16) {
+                let current: [u8; 16] = chunk.try_into().unwrap();
+                let mut result = block(&current, &rk);
+                if mode == Mode::Cbc { xor(&mut result, &feedback); feedback = current; }
+                out.extend_from_slice(&result);
             }
-            let mut result = block(&current, &rk);
-            if mode == Mode::Cbc {
-                if decrypt {
-                    for i in 0..16 { result[i] ^= feedback[i]; }
-                    feedback = current;
-                } else { feedback = result; }
-            }
-            out.extend_from_slice(&result);
-        }
-        if decrypt {
             let p = *out.last()? as usize;
             if !(1..=16).contains(&p) || !out[out.len()-p..].iter().all(|&b| b as usize == p) { return None; }
-            out.truncate(out.len()-p);
+            out.truncate(out.len() - p);
+            Some(out)
         }
-    } else {
-        for chunk in data.chunks(16) {
-            let stream = block(&feedback, &rk);
-            let mut result = [0u8; 16];
-            for i in 0..chunk.len() { result[i] = chunk[i] ^ stream[i]; }
-            out.extend_from_slice(&result[..chunk.len()]);
-            feedback = if mode == Mode::Ofb { stream } else if decrypt {
-                let mut next = [0;16]; next[..chunk.len()].copy_from_slice(chunk); next
-            } else { result };
+        Mode::Ecb | Mode::Cbc => {
+            // Pad only the final block instead of copying the whole input.
+            let full = data.len() / 16 * 16;
+            let mut last = [(16 - data.len() % 16) as u8; 16];
+            last[..data.len() - full].copy_from_slice(&data[full..]);
+            let mut out = Vec::with_capacity(full + 16);
+            for chunk in data[..full].chunks_exact(16).chain(std::iter::once(&last[..])) {
+                let mut current: [u8; 16] = chunk.try_into().unwrap();
+                if mode == Mode::Cbc { xor(&mut current, &feedback); }
+                let result = block(&current, &rk);
+                if mode == Mode::Cbc { feedback = result; }
+                out.extend_from_slice(&result);
+            }
+            Some(out)
+        }
+        Mode::Cfb | Mode::Ofb => {
+            let mut out = Vec::with_capacity(data.len());
+            for chunk in data.chunks(16) {
+                let stream = block(&feedback, &rk);
+                let mut result = [0u8; 16];
+                for i in 0..chunk.len() { result[i] = chunk[i] ^ stream[i]; }
+                out.extend_from_slice(&result[..chunk.len()]);
+                feedback = if mode == Mode::Ofb { stream } else if decrypt {
+                    let mut next = [0; 16]; next[..chunk.len()].copy_from_slice(chunk); next
+                } else { result };
+            }
+            Some(out)
         }
     }
-    Some(out)
 }
 
 // Use Option, not Result's side error column: invalid arguments explicitly return NULL.
@@ -127,7 +184,9 @@ fn sm4_decrypt_wasm(data: &[u8], key: &[u8], iv: &[u8], mode: &str) -> Option<Ve
     crypt(data, key, iv, mode, true)
 }
 
-fn database_crypt(data: &[u8], key: &str, iv: &str, name: &str, decrypt: bool, default_iv: bool) -> Option<Vec<u8>> {
+/// String-parameter interface (see docs/COMPATIBILITY.md). Public only for `benches/micro.rs`.
+#[doc(hidden)]
+pub fn database_crypt(data: &[u8], key: &str, iv: &str, name: &str, decrypt: bool, default_iv: bool) -> Option<Vec<u8>> {
     let name = if default_iv && name.is_empty() { "ECB" } else { name };
     let mode = parse_mode(name)?;
     if default_iv && data.is_empty() { return None; }

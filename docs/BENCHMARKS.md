@@ -60,6 +60,20 @@ export SM4_PASSWORD=''
 
 原始记录保存在被忽略的 `results/` 里。全部完成后，用 `scripts/report_results.py` 汇总生成 `reports/sm4-backends/` 下的 `REPORT.md`、`results.csv` 和 `results.json`。它会校验完成标志、重复次数、checksum 和源码指纹，任何一项不满足都不会生成报告；加 `--update-readme` 可同时刷新 README 中的摘要。最后运行 `python3 scripts/render_charts.py`，更新 [选型文章](ARCHITECTURE.md) 中的图表。
 
+## WASM 微基准
+
+`wasm/benches/micro.rs` 只测 Rust 实现本身，把当前 `wasm/src/lib.rs` 和冻结的优化前副本 `wasm/benches/baseline.rs` 放在同一进程里对比。它按 UDF 的方式逐行调用函数，所以包含每行的密钥扩展、mode 解析和返回值分配，但不包含 Databend 的运行时创建、Arrow 转换和 SQL 执行。
+
+```bash
+# 本机原生
+cargo bench --locked --manifest-path wasm/Cargo.toml --bench micro
+# 在 wasmtime 中以 wasm32-wasip1 运行，更接近 Databend 的执行环境
+CARGO_TARGET_WASM32_WASIP1_RUNNER=wasmtime \
+  cargo bench --locked --manifest-path wasm/Cargo.toml --bench micro --target wasm32-wasip1
+```
+
+计时前会先逐字节比对两版实现的输出（两类接口、合法与非法 mode、0–80 及更长的输入、合法密文与随机字节），有任何差异就直接失败。加 `-- --quick` 可减少数据量，只用于冒烟检查。微基准的数字说明算法层面的变化，SQL 端到端的效果仍需在测试实例上测量。
+
 ## 解读结果
 
 硬件、网络、warehouse、数据块布局、引擎和 SDK 版本、并发度都会影响结果。WASM 的初始化成本在小查询中占比很高，所以没有哪种实现在所有规模下都最快。其他接口、实现或版本测出的数字，不要套用到本接口上。

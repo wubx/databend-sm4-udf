@@ -4,9 +4,9 @@
 
 | 报告 | 回答的问题 | 测试矩阵 | 关键结果 |
 |---|---|---|---|
-| [SM4 三端](sm4-backends/REPORT.md)<br>[CSV](sm4-backends/results.csv) · [JSON](sm4-backends/results.json) | 三端是否结果一致？SM4 用哪种后端更快？ | 正确性：1,410 条共享向量断言<br>性能：`explicit_iv` CBC 解密，16/128/1,024 B × 1,000–50,000 行，144 次计时查询 | 三端全部通过。1 万行起 WASM 在所有长度最快；1,024 B × 5 万行 WASM 0.871 s、JS 79.5 s、Python 167.7 s。16 B × 1,000 行时 JS 更快 |
-| [MD5 内置 vs WASM：1–5 万行](md5-native-vs-wasm/rows-1-50k/REPORT.md)<br>[CSV](md5-native-vs-wasm/rows-1-50k/results.csv) · [JSON](md5-native-vs-wasm/rows-1-50k/results.json) | 已有内置函数时，WASM 慢多少？ | 内置 / WASM MD5 + 两种 identity 基线，16/128/1,024 B × 1–50,000 行，432 次计时查询 | 所有规模内置更快；1,024 B × 5 万行内置 81 ms、WASM 330 ms |
-| [MD5 内置 vs WASM：10–100 万行](md5-native-vs-wasm/rows-100k-1m/REPORT.md)<br>[CSV](md5-native-vs-wasm/rows-100k-1m/results.csv) · [JSON](md5-native-vs-wasm/rows-100k-1m/results.json) | 行数增大后，WASM 固定成本是否被摊薄？ | 仅内置 / WASM MD5，16/128/1,024 B × 10 万/30 万/100 万行，108 次计时查询 | 内置仍更快；1,024 B × 100 万行内置 1,471 ms、WASM 3,730 ms，耗时比降到约 2.54× |
+| [SM4 三端](sm4-backends/REPORT.md)<br>[CSV](sm4-backends/results.csv) · [JSON](sm4-backends/results.json) | 三端是否结果一致？SM4 用哪种后端更快？ | 正确性：1,410 条共享向量断言<br>性能：`explicit_iv` CBC 解密，16/128/1,024 B × 1,000–50,000 行，144 次计时查询 | 三端全部通过。1 万行起 WASM 在所有长度最快；1,024 B × 5 万行 WASM 0.611 s、JS 80.3 s、Python 169.0 s。16 B × 1,000 行时 JS 更快 |
+| [MD5 内置 vs WASM：1–5 万行](md5-native-vs-wasm/rows-1-50k/REPORT.md)<br>[CSV](md5-native-vs-wasm/rows-1-50k/results.csv) · [JSON](md5-native-vs-wasm/rows-1-50k/results.json) | 已有内置函数时，WASM 慢多少？ | 内置 / WASM MD5 + 两种 identity 基线，16/128/1,024 B × 1–50,000 行，432 次计时查询 | 所有规模内置更快；1,024 B × 5 万行内置 80 ms、WASM 340 ms |
+| [MD5 内置 vs WASM：10–100 万行](md5-native-vs-wasm/rows-100k-1m/REPORT.md)<br>[CSV](md5-native-vs-wasm/rows-100k-1m/results.csv) · [JSON](md5-native-vs-wasm/rows-100k-1m/results.json) | 行数增大后，WASM 固定成本是否被摊薄？ | 仅内置 / WASM MD5，16/128/1,024 B × 10 万/30 万/100 万行，108 次计时查询 | 内置仍更快；1,024 B × 100 万行内置 1,466 ms、WASM 3,658 ms，耗时比降到约 2.50× |
 
 **结论：自定义计算场景下，WASM 是三种 SM4 实现里批量最快的；有语义合适的内置函数时，优先用内置函数。** 图表版的对比和解读见 [三种 UDF 怎么选](../docs/ARCHITECTURE.md)。
 

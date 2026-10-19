@@ -131,13 +131,13 @@ bendsql --query="$(<sql/compat_python.sql)"
 **[SM4 三端](reports/sm4-backends/REPORT.md)**（[CSV](reports/sm4-backends/results.csv) · [JSON](reports/sm4-backends/results.json)）
 
 - 正确性：严格接口 226 + 字符串 key/IV 244 个向量 × 三端，共 **1,410 条断言通过**。
-- 性能：`explicit_iv`、CBC 解密，16/128/1,024 B × 1,000–50,000 行，144 次计时查询。1,024 B × 50,000 行中位耗时 WASM **0.871 s**、JS 79.525 s、Python 167.686 s。
+- 性能：`explicit_iv`、CBC 解密，16/128/1,024 B × 1,000–50,000 行，144 次计时查询。1,024 B × 50,000 行中位耗时 WASM **0.611 s**、JS 80.260 s、Python 169.016 s。
 <!-- TEST_REPORT_SUMMARY_END -->
 
 **MD5 内置函数 vs WASM**：用来回答“有内置函数时还需要 WASM 吗”。
 
-- [1–5 万行](reports/md5-native-vs-wasm/rows-1-50k/REPORT.md)：所有规模内置更快；1,024 B × 5 万行内置 **81 ms**、WASM **330 ms**。
-- [10–100 万行](reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md)：1,024 B × 100 万行内置 **1,471 ms**、WASM **3,730 ms**，差距缩小到约 2.5 倍。
+- [1–5 万行](reports/md5-native-vs-wasm/rows-1-50k/REPORT.md)：所有规模内置更快；1,024 B × 5 万行内置 **80 ms**、WASM **340 ms**。
+- [10–100 万行](reports/md5-native-vs-wasm/rows-100k-1m/REPORT.md)：1,024 B × 100 万行内置 **1,466 ms**、WASM **3,658 ms**，差距缩小到约 2.5 倍。
 
 所有数字都是单机、单线程下的完整 SQL 耗时。测试环境和方法见 [报告索引](reports/README.md) 与 [BENCHMARKS](docs/BENCHMARKS.md)。
 
