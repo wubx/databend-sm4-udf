@@ -1,0 +1,31 @@
+name: test
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip1
+      - run: python -m pip install -r python/requirements.lock
+      - run: PYTHONPATH=python python -m unittest discover -s tests -v
+      - run: node tests/test_js.mjs && node tests/test_compat.mjs
+      - run: node tests/generate_vectors.mjs && node tests/generate_compat_vectors.mjs && git diff --exit-code -- tests/vectors.json tests/compat_vectors.json
+      - run: python scripts/generate_sql.py --check
+      - run: cargo test --locked --manifest-path wasm/Cargo.toml
+      - run: cargo test --locked --manifest-path benchmarks/native-vs-wasm/wasm/Cargo.toml
+      - run: cargo build --locked --release --target wasm32-wasip1 --manifest-path wasm/Cargo.toml
+      - run: cargo build --locked --release --target wasm32-wasip1 --manifest-path benchmarks/native-vs-wasm/wasm/Cargo.toml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: databend-sm4-udf-wasm
+          path: wasm/target/wasm32-wasip1/release/databend_sm4_udf.wasm

@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "databend-sm4-udf"
+version = "0.1.0"
+description = "Explicit byte-oriented SM4 UDFs for Databend"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = ["databend-udf==0.2.20", "gmssl==3.2.2"]
+
+[project.scripts]
+sm4-udf-server = "sm4_udf.server:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sm4_udf*"]

@@ -1,0 +1,7 @@
+# Tested resolution for Python 3.10 (core/server); CI also checks Python 3.11.
+# Install this plus `pip install --no-deps -e python` for reproducible dependencies.
+databend-udf==0.2.20
+gmssl==3.2.2
+prometheus-client==0.26.0
+pyarrow==25.0.1
+pycryptodomex==3.24.1

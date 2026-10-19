@@ -1,0 +1,33 @@
+# Local environments and generated package metadata
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Build output; ship .wasm via release artifacts, not source commits
+/wasm/target/
+/benchmarks/native-vs-wasm/wasm/target/
+*.wasm
+/dist/
+/build/
+
+# Local test/benchmark data and server state
+/results/
+/.three-query/
+*.log
+
+# Credentials and private certificate material
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local editor/OS state
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,2446 @@
+{
+  "schema": 1,
+  "oracle": "OpenSSL plus fixed known ciphertexts; string-key adapter contract",
+  "cases": [
+    {
+      "id": "explicit_iv-ecb-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "617364617364617364617364",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": "e0640595b963e365a70cb24dc8a3e349"
+    },
+    {
+      "id": "explicit_iv-ecb-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "e0640595b963e365a70cb24dc8a3e349",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": "617364617364617364617364"
+    },
+    {
+      "id": "explicit_iv-cbc-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "617364617364617364617364",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "646b83fda4e969244e2b9bd835578d50"
+    },
+    {
+      "id": "explicit_iv-cbc-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "646b83fda4e969244e2b9bd835578d50",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "617364617364617364617364"
+    },
+    {
+      "id": "default_iv-ecb-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "74657874",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "",
+      "mode": "SM4_128_ECB",
+      "expected": "6838f045f941ac38e105920e14dc374e"
+    },
+    {
+      "id": "default_iv-ecb-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "6838f045f941ac38e105920e14dc374e",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "",
+      "mode": "SM4_128_ECB",
+      "expected": "74657874"
+    },
+    {
+      "id": "default_iv-cbc-default-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "74657874",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "",
+      "mode": "SM4_128_CBC",
+      "expected": "15262cb6f3a61f6717cbb07fd3bd8cba"
+    },
+    {
+      "id": "default_iv-cbc-default-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "15262cb6f3a61f6717cbb07fd3bd8cba",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "",
+      "mode": "SM4_128_CBC",
+      "expected": "74657874"
+    },
+    {
+      "id": "default_iv-cbc-short-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "74657874",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "SM4_128_CBC",
+      "expected": "d58e0d188ba449bbfd3ab9199d10f56d"
+    },
+    {
+      "id": "default_iv-cbc-short-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "d58e0d188ba449bbfd3ab9199d10f56d",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "SM4_128_CBC",
+      "expected": "74657874"
+    },
+    {
+      "id": "hello-explicit_iv-ecb-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "48656c6c6f204461746162656e64",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": "742fdcd4d976a043ac7f7f451b62b50f"
+    },
+    {
+      "id": "hello-explicit_iv-ecb-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "742fdcd4d976a043ac7f7f451b62b50f",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": "48656c6c6f204461746162656e64"
+    },
+    {
+      "id": "hello-explicit_iv-cbc-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "48656c6c6f204461746162656e64",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "80ecc1cd2c248143dc470a7d5318ef15"
+    },
+    {
+      "id": "hello-explicit_iv-cbc-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "80ecc1cd2c248143dc470a7d5318ef15",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "48656c6c6f204461746162656e64"
+    },
+    {
+      "id": "hello-default_iv-ecb-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "48656c6c6f204461746162656e64",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "",
+      "mode": "SM4_128_ECB",
+      "expected": "5e21ed5a0c3897efc275e888b1605f7d"
+    },
+    {
+      "id": "hello-default_iv-ecb-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "5e21ed5a0c3897efc275e888b1605f7d",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "",
+      "mode": "SM4_128_ECB",
+      "expected": "48656c6c6f204461746162656e64"
+    },
+    {
+      "id": "hello-default_iv-cbc-default-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "48656c6c6f204461746162656e64",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "",
+      "mode": "SM4_128_CBC",
+      "expected": "08885ae98d505f1d421d63b055afa26a"
+    },
+    {
+      "id": "hello-default_iv-cbc-default-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "08885ae98d505f1d421d63b055afa26a",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "",
+      "mode": "SM4_128_CBC",
+      "expected": "48656c6c6f204461746162656e64"
+    },
+    {
+      "id": "hello-default_iv-cbc-short-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "48656c6c6f204461746162656e64",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "SM4_128_CBC",
+      "expected": "ac463eb599c6f7c6abfc2196293c24d9"
+    },
+    {
+      "id": "hello-default_iv-cbc-short-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "ac463eb599c6f7c6abfc2196293c24d9",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "SM4_128_CBC",
+      "expected": "48656c6c6f204461746162656e64"
+    },
+    {
+      "id": "default_iv-ecb-0-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "",
+      "key": "",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": null
+    },
+    {
+      "id": "default_iv-ecb-0-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "a83f90cc9f35cac4daf66bfa071c4182",
+      "key": "",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": ""
+    },
+    {
+      "id": "default_iv-ecb-1-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "13",
+      "key": "12312313123",
+      "iv": "0123456789",
+      "mode": "sm4-ecb",
+      "expected": "257f68aaa28fed08afba8038b846074e"
+    },
+    {
+      "id": "default_iv-ecb-1-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "257f68aaa28fed08afba8038b846074e",
+      "key": "12312313123",
+      "iv": "0123456789",
+      "mode": "sm4-ecb",
+      "expected": "13"
+    },
+    {
+      "id": "default_iv-ecb-15-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "1d66aff8418ad31c65aef74089d21b",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "5884216702eeedc57c5da91e28611ae6"
+    },
+    {
+      "id": "default_iv-ecb-15-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "5884216702eeedc57c5da91e28611ae6",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "1d66aff8418ad31c65aef74089d21b"
+    },
+    {
+      "id": "default_iv-ecb-16-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "3079c20b549de62f78c10a539ce52e77",
+      "key": "中文密钥🙂",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": "45910a2929ef5a3956ea25a6b50a297d0aa5ec565eb133175e28ac094b6f9e9f"
+    },
+    {
+      "id": "default_iv-ecb-16-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "45910a2929ef5a3956ea25a6b50a297d0aa5ec565eb133175e28ac094b6f9e9f",
+      "key": "中文密钥🙂",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": "3079c20b549de62f78c10a539ce52e77"
+    },
+    {
+      "id": "default_iv-ecb-17-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "438cd51e67b0f9428bd41d66aff8418ad3",
+      "key": "  key  ",
+      "iv": "0123456789",
+      "mode": "sm4-ecb",
+      "expected": "0ef2e2b19c4a77aa1c4a04015af51b14f75c7a518ceddb83803ce9507e421984"
+    },
+    {
+      "id": "default_iv-ecb-17-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "0ef2e2b19c4a77aa1c4a04015af51b14f75c7a518ceddb83803ce9507e421984",
+      "key": "  key  ",
+      "iv": "0123456789",
+      "mode": "sm4-ecb",
+      "expected": "438cd51e67b0f9428bd41d66aff8418ad3"
+    },
+    {
+      "id": "default_iv-ecb-31-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db",
+      "key": "",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "fcab442fe7e7e92600ff360a713d18404f7d906db4f4f5e900e32869f0142fc5"
+    },
+    {
+      "id": "default_iv-ecb-31-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "fcab442fe7e7e92600ff360a713d18404f7d906db4f4f5e900e32869f0142fc5",
+      "key": "",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db"
+    },
+    {
+      "id": "default_iv-ecb-32-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": "783797f81a536bf5e11c741d6d38e3069f486d2f5884415e741b0240d07507d3137d9ff3ca4039618dccd9f2f2108e54"
+    },
+    {
+      "id": "default_iv-ecb-32-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "783797f81a536bf5e11c741d6d38e3069f486d2f5884415e741b0240d07507d3137d9ff3ca4039618dccd9f2f2108e54",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37"
+    },
+    {
+      "id": "default_iv-ecb-33-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "sm4-ecb",
+      "expected": "bbb2dfc511d0b809f30d5654c69414b361f51a6c2c9d0e056f799bec239e6edb1b0586818d721ab4c257c2d78d411583"
+    },
+    {
+      "id": "default_iv-ecb-33-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "bbb2dfc511d0b809f30d5654c69414b361f51a6c2c9d0e056f799bec239e6edb1b0586818d721ab4c257c2d78d411583",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "sm4-ecb",
+      "expected": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93"
+    },
+    {
+      "id": "default_iv-ecb-128-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "中文密钥🙂",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "059de0630025f368a75cfb45e387c5a83723ee82d4b73d91c2cb2460623852f1ed14d9652ab15f9bb2b3dc0f6c551d6d45910a2929ef5a3956ea25a6b50a297d7d045d701e1aea9a1cc0da20f4740b8aaf5fda63fc9071496ce2a6fc4b4311a9c4f39f26b7fa5047d369e50d3b2b27a70bc5c40ca45dab242ddabac1a3e5935d0aa5ec565eb133175e28ac094b6f9e9f"
+    },
+    {
+      "id": "default_iv-ecb-128-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "059de0630025f368a75cfb45e387c5a83723ee82d4b73d91c2cb2460623852f1ed14d9652ab15f9bb2b3dc0f6c551d6d45910a2929ef5a3956ea25a6b50a297d7d045d701e1aea9a1cc0da20f4740b8aaf5fda63fc9071496ce2a6fc4b4311a9c4f39f26b7fa5047d369e50d3b2b27a70bc5c40ca45dab242ddabac1a3e5935d0aa5ec565eb133175e28ac094b6f9e9f",
+      "key": "中文密钥🙂",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "default_iv-ecb-1024-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "  key  ",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": "778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f50de3e2452b1beca00abb5a903e29659"
+    },
+    {
+      "id": "default_iv-ecb-1024-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f50de3e2452b1beca00abb5a903e29659",
+      "key": "  key  ",
+      "iv": "",
+      "mode": "sm4-ecb",
+      "expected": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "default_iv-cbc-0-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "",
+      "key": "",
+      "iv": "",
+      "mode": "sm4-cbc",
+      "expected": null
+    },
+    {
+      "id": "default_iv-cbc-0-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "a269756f34da79044b4c7911dc105383",
+      "key": "",
+      "iv": "",
+      "mode": "sm4-cbc",
+      "expected": ""
+    },
+    {
+      "id": "default_iv-cbc-1-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "13",
+      "key": "12312313123",
+      "iv": "0123456789",
+      "mode": "sm4-cbc",
+      "expected": "4051c968efe4600935b1b5da59fc026c"
+    },
+    {
+      "id": "default_iv-cbc-1-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "4051c968efe4600935b1b5da59fc026c",
+      "key": "12312313123",
+      "iv": "0123456789",
+      "mode": "sm4-cbc",
+      "expected": "13"
+    },
+    {
+      "id": "default_iv-cbc-15-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "1d66aff8418ad31c65aef74089d21b",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "be5e172ae771b434c722360c0eef0122"
+    },
+    {
+      "id": "default_iv-cbc-15-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "be5e172ae771b434c722360c0eef0122",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "1d66aff8418ad31c65aef74089d21b"
+    },
+    {
+      "id": "default_iv-cbc-16-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "3079c20b549de62f78c10a539ce52e77",
+      "key": "中文密钥🙂",
+      "iv": "",
+      "mode": "sm4-cbc",
+      "expected": "4e4084d509d108e928cec486f2dac48315d2d933abe3090feb59fac7ddba8185"
+    },
+    {
+      "id": "default_iv-cbc-16-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "4e4084d509d108e928cec486f2dac48315d2d933abe3090feb59fac7ddba8185",
+      "key": "中文密钥🙂",
+      "iv": "",
+      "mode": "sm4-cbc",
+      "expected": "3079c20b549de62f78c10a539ce52e77"
+    },
+    {
+      "id": "default_iv-cbc-17-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "438cd51e67b0f9428bd41d66aff8418ad3",
+      "key": "  key  ",
+      "iv": "0123456789",
+      "mode": "sm4-cbc",
+      "expected": "fded1e51c249beb86786ffb2814130c2884a20fabbabf46b1448ff224d0a3bcc"
+    },
+    {
+      "id": "default_iv-cbc-17-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "fded1e51c249beb86786ffb2814130c2884a20fabbabf46b1448ff224d0a3bcc",
+      "key": "  key  ",
+      "iv": "0123456789",
+      "mode": "sm4-cbc",
+      "expected": "438cd51e67b0f9428bd41d66aff8418ad3"
+    },
+    {
+      "id": "default_iv-cbc-31-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db",
+      "key": "",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "ebfe3ab2687955718ea7780571295f68bc5851976f752a65a8ad379cc95f11c3"
+    },
+    {
+      "id": "default_iv-cbc-31-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "ebfe3ab2687955718ea7780571295f68bc5851976f752a65a8ad379cc95f11c3",
+      "key": "",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db"
+    },
+    {
+      "id": "default_iv-cbc-32-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-cbc",
+      "expected": "808a81734dfd9cfcc9d512680790a9c0a1cbaf27596b26e77e657d9176443fe3201c0914b32fadf3793896a1bfc928e5"
+    },
+    {
+      "id": "default_iv-cbc-32-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "808a81734dfd9cfcc9d512680790a9c0a1cbaf27596b26e77e657d9176443fe3201c0914b32fadf3793896a1bfc928e5",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-cbc",
+      "expected": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37"
+    },
+    {
+      "id": "default_iv-cbc-33-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "sm4-cbc",
+      "expected": "4099b1cc614a7b8ee1db85926553e2f4f3d5ef38b81a3544d8dc763c53da6f247a165715c5617053bad0e8efbef3a507"
+    },
+    {
+      "id": "default_iv-cbc-33-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "4099b1cc614a7b8ee1db85926553e2f4f3d5ef38b81a3544d8dc763c53da6f247a165715c5617053bad0e8efbef3a507",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "sm4-cbc",
+      "expected": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93"
+    },
+    {
+      "id": "default_iv-cbc-128-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "中文密钥🙂",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "4e927fafd59db9a0926d67de9e32027afcb388ae549416841005324c073bc712523b4df7547275a1e56b9a3e19acf63a75636bae0b48f5ddecc31e5ff3f704d87425c06eed77d2ac86c58e9b117f263f72b3b0dc95b9c9f4bc7abd0e27fd7371a8a312359d570cd76ac1997ac0fe45da9d7f97d680dd9d1f472dbbdf712faba23d0db89fdaea4fe9284c3876f1868219"
+    },
+    {
+      "id": "default_iv-cbc-128-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "4e927fafd59db9a0926d67de9e32027afcb388ae549416841005324c073bc712523b4df7547275a1e56b9a3e19acf63a75636bae0b48f5ddecc31e5ff3f704d87425c06eed77d2ac86c58e9b117f263f72b3b0dc95b9c9f4bc7abd0e27fd7371a8a312359d570cd76ac1997ac0fe45da9d7f97d680dd9d1f472dbbdf712faba23d0db89fdaea4fe9284c3876f1868219",
+      "key": "中文密钥🙂",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "default_iv-cbc-1024-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "  key  ",
+      "iv": "",
+      "mode": "sm4-cbc",
+      "expected": "d90a49814a0ec412425b9b30fea0a43936060e7cea549d11e7a3b14f0c00b4e24fda2b4190be77e33db3194f32799dd15b39d380214545023661e5d89cd7e152faa4e976f6c8f88c91077e325359add064f14f403b101a524983fac7b3012a7af2a7b114889324f30c5946e6531822990ff4f549d96683ca81b2dd9575ea5275fece3b1d35a9505ddcd0f1e5ca85d80727026f7e3e95dd30758b48ed080ebe9cefe9da17cefdf9b54cbad8cce5589bcea4dcae9cb751f3be35a8daf9f24f1c25ce213fccf6cbad5940a12da4ef01b63653a5271edb684025108e5be2f41c00ca873a57b6afe52ab36e59dba12431f863a24703b79e29576b957dbd7a23dced50a0189cdb1d3d5cd577b96716146504ca6b94b06491944ceb7e93222a3dfcd5f19f9b12442b4e88866e1ccfa1705cbfa7262ed8bcdfe9116f1526a3ed60278f4a67dc2c7a09c744dae4a6b550f912018b18450a131e3ad06eb78d3b7c38fcfd5d3e524ad8fc576ef00e4452b9b2627f2c898b94e8d3c9a4283f7a1c97effabce7ab858640f2ecff6ce7545c40d5f2c97c68d9df95dfbe8d659f5a6afaf33c2be0123d9391078d24f009b7f3fcb251643d57caac1192604d5811ffc3fc7fd6c54906f0f51c3805b6e5cd7feeec9b61d37cd8e86cb8aeaf9855ed59ab4e53ea761fa60a0299851a18dc7a19e464f9e939bbfd9b08b59412a519a5b1a5ca13086afdcf560ac1de3d6c3bb508c32cb7eadccd0ca3b45313ce3baf7f5ab80b488ca6e162fe964775f6ea4eb9032f4de79be021492b948d22842456a4017d580a749b825b3bd99447952f10bc9965e9544a7af66794e653a6354bce07528e5924c7902f927bf07c4913ca4fd7306265e7e4ce77bd70d93bb3b7683db91bea78d6a78fa80255d07d742db803b2be1dcef4e745d2f30a7be118d218d332fd9447a58daff281773ed134c71cad5c0908568326a80d6df2eb512113a36a5abf726717d62b08d4d2114d0773765307df7be8094866f48175971cae0f492a80cd1e7e504aa1d99e6609c9885a9456ca228acc82898da1ab05ce07429c95dc044ed1d755b1ab83a856cd662b5a0835c17657ff3dc920b276ef9b5dc8ee984bd76ceb8668d9dfa423a6986c2ce17d2cada8aae160905fd63ed4d0c25286324fe2c72b735ef76d5fa71c6e2322c9be25c82a0976936d6990803073717e3f7f018e3297714cf25d4c7e9a3fc29da9b2e04fffdc29c3167e8b038eb51f2eff7ff573e35b459eaf3e2a2abae4a682233a7a1007193489bec382b7afd8d4dc755e8f10dba8af3e12d77057f3db923400d74c87674338fc275b3e2caa6f988eaaf56820d396111247678a30837eb80524467d180c536841fd293870e6bd1631a1e03cb702a2a55551cb124c6cffb291a712f6b66e5e23aaeb9bd360066ec6077e1caa20166304b6e86e74aaaaefd99bf1642b8ec6d0d7d2021797"
+    },
+    {
+      "id": "default_iv-cbc-1024-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "d90a49814a0ec412425b9b30fea0a43936060e7cea549d11e7a3b14f0c00b4e24fda2b4190be77e33db3194f32799dd15b39d380214545023661e5d89cd7e152faa4e976f6c8f88c91077e325359add064f14f403b101a524983fac7b3012a7af2a7b114889324f30c5946e6531822990ff4f549d96683ca81b2dd9575ea5275fece3b1d35a9505ddcd0f1e5ca85d80727026f7e3e95dd30758b48ed080ebe9cefe9da17cefdf9b54cbad8cce5589bcea4dcae9cb751f3be35a8daf9f24f1c25ce213fccf6cbad5940a12da4ef01b63653a5271edb684025108e5be2f41c00ca873a57b6afe52ab36e59dba12431f863a24703b79e29576b957dbd7a23dced50a0189cdb1d3d5cd577b96716146504ca6b94b06491944ceb7e93222a3dfcd5f19f9b12442b4e88866e1ccfa1705cbfa7262ed8bcdfe9116f1526a3ed60278f4a67dc2c7a09c744dae4a6b550f912018b18450a131e3ad06eb78d3b7c38fcfd5d3e524ad8fc576ef00e4452b9b2627f2c898b94e8d3c9a4283f7a1c97effabce7ab858640f2ecff6ce7545c40d5f2c97c68d9df95dfbe8d659f5a6afaf33c2be0123d9391078d24f009b7f3fcb251643d57caac1192604d5811ffc3fc7fd6c54906f0f51c3805b6e5cd7feeec9b61d37cd8e86cb8aeaf9855ed59ab4e53ea761fa60a0299851a18dc7a19e464f9e939bbfd9b08b59412a519a5b1a5ca13086afdcf560ac1de3d6c3bb508c32cb7eadccd0ca3b45313ce3baf7f5ab80b488ca6e162fe964775f6ea4eb9032f4de79be021492b948d22842456a4017d580a749b825b3bd99447952f10bc9965e9544a7af66794e653a6354bce07528e5924c7902f927bf07c4913ca4fd7306265e7e4ce77bd70d93bb3b7683db91bea78d6a78fa80255d07d742db803b2be1dcef4e745d2f30a7be118d218d332fd9447a58daff281773ed134c71cad5c0908568326a80d6df2eb512113a36a5abf726717d62b08d4d2114d0773765307df7be8094866f48175971cae0f492a80cd1e7e504aa1d99e6609c9885a9456ca228acc82898da1ab05ce07429c95dc044ed1d755b1ab83a856cd662b5a0835c17657ff3dc920b276ef9b5dc8ee984bd76ceb8668d9dfa423a6986c2ce17d2cada8aae160905fd63ed4d0c25286324fe2c72b735ef76d5fa71c6e2322c9be25c82a0976936d6990803073717e3f7f018e3297714cf25d4c7e9a3fc29da9b2e04fffdc29c3167e8b038eb51f2eff7ff573e35b459eaf3e2a2abae4a682233a7a1007193489bec382b7afd8d4dc755e8f10dba8af3e12d77057f3db923400d74c87674338fc275b3e2caa6f988eaaf56820d396111247678a30837eb80524467d180c536841fd293870e6bd1631a1e03cb702a2a55551cb124c6cffb291a712f6b66e5e23aaeb9bd360066ec6077e1caa20166304b6e86e74aaaaefd99bf1642b8ec6d0d7d2021797",
+      "key": "  key  ",
+      "iv": "",
+      "mode": "sm4-cbc",
+      "expected": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "default_iv-cfb-0-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "",
+      "key": "",
+      "iv": "",
+      "mode": "sm4-cfb",
+      "expected": null
+    },
+    {
+      "id": "default_iv-cfb-0-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "",
+      "key": "",
+      "iv": "",
+      "mode": "sm4-cfb",
+      "expected": null
+    },
+    {
+      "id": "default_iv-cfb-1-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "13",
+      "key": "12312313123",
+      "iv": "0123456789",
+      "mode": "sm4-cfb",
+      "expected": "c7"
+    },
+    {
+      "id": "default_iv-cfb-1-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "c7",
+      "key": "12312313123",
+      "iv": "0123456789",
+      "mode": "sm4-cfb",
+      "expected": "13"
+    },
+    {
+      "id": "default_iv-cfb-15-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "1d66aff8418ad31c65aef74089d21b",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "a88ff1c1f136c7e2882fe274578325"
+    },
+    {
+      "id": "default_iv-cfb-15-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "a88ff1c1f136c7e2882fe274578325",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "1d66aff8418ad31c65aef74089d21b"
+    },
+    {
+      "id": "default_iv-cfb-16-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "3079c20b549de62f78c10a539ce52e77",
+      "key": "中文密钥🙂",
+      "iv": "",
+      "mode": "sm4-cfb",
+      "expected": "eff44333b2776382ca5779e97481d92e"
+    },
+    {
+      "id": "default_iv-cfb-16-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "eff44333b2776382ca5779e97481d92e",
+      "key": "中文密钥🙂",
+      "iv": "",
+      "mode": "sm4-cfb",
+      "expected": "3079c20b549de62f78c10a539ce52e77"
+    },
+    {
+      "id": "default_iv-cfb-17-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "438cd51e67b0f9428bd41d66aff8418ad3",
+      "key": "  key  ",
+      "iv": "0123456789",
+      "mode": "sm4-cfb",
+      "expected": "a9cfff5b206cc9eb0aeb4523c078d5f8c0"
+    },
+    {
+      "id": "default_iv-cfb-17-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "a9cfff5b206cc9eb0aeb4523c078d5f8c0",
+      "key": "  key  ",
+      "iv": "0123456789",
+      "mode": "sm4-cfb",
+      "expected": "438cd51e67b0f9428bd41d66aff8418ad3"
+    },
+    {
+      "id": "default_iv-cfb-31-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db",
+      "key": "",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "eff69f77b4bc7fea20bbcf1905098a4b031154de03cb9a279f60454af823df"
+    },
+    {
+      "id": "default_iv-cfb-31-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "eff69f77b4bc7fea20bbcf1905098a4b031154de03cb9a279f60454af823df",
+      "key": "",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db"
+    },
+    {
+      "id": "default_iv-cfb-32-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-cfb",
+      "expected": "21bd50f840d6a4733ea17f30270493b2d844ecebdebc750ea791041ac41136ed"
+    },
+    {
+      "id": "default_iv-cfb-32-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "21bd50f840d6a4733ea17f30270493b2d844ecebdebc750ea791041ac41136ed",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-cfb",
+      "expected": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37"
+    },
+    {
+      "id": "default_iv-cfb-33-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "sm4-cfb",
+      "expected": "2332d7a86734764cc79e7b0302f2f4be6a5c6dcef3c49a48261916925ab405930f"
+    },
+    {
+      "id": "default_iv-cfb-33-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "2332d7a86734764cc79e7b0302f2f4be6a5c6dcef3c49a48261916925ab405930f",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "sm4-cfb",
+      "expected": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93"
+    },
+    {
+      "id": "default_iv-cfb-128-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "中文密钥🙂",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "816b5329b96a1424b146de893c0e545085987c4841a829f935a1e7a8365b5b618adac275c1ecce615a97a2bbb5d9e6b7f8e0f2fd3c70036d8f5ce5c1550dca197a7855a2e89e5d3cd8dbb1e267e15469994e93981e90a86d15eb06aba290bec200e67bdf27956c8e628e7a525623384e3a6576f9d2b8b84207c36b6a8c4f578c"
+    },
+    {
+      "id": "default_iv-cfb-128-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "816b5329b96a1424b146de893c0e545085987c4841a829f935a1e7a8365b5b618adac275c1ecce615a97a2bbb5d9e6b7f8e0f2fd3c70036d8f5ce5c1550dca197a7855a2e89e5d3cd8dbb1e267e15469994e93981e90a86d15eb06aba290bec200e67bdf27956c8e628e7a525623384e3a6576f9d2b8b84207c36b6a8c4f578c",
+      "key": "中文密钥🙂",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "default_iv-cfb-1024-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "  key  ",
+      "iv": "",
+      "mode": "sm4-cfb",
+      "expected": "55df454ee71869ef8bb117b74daa798198da6cbc3fd3d46de0ed863eaeb5c0d6f905c56ab7229187386835a39074ea4d1d2803738bd997e9eed479b4a8b3611727fb342d1bf31f7ff85593a249dd67e9d3510503467cda9b501ae379fa43dff3702e0c4b303ad5efce0f9feaf4262039775f34a72025ec17f95869c25f0b675413da10549062351a7972c7ca1643a0c945dedbedac82ade417a20aa91f085ec70b9a824f76dac3f8d1d97a83a626c6a1e76017b88f6f9653026d52bf21f88e60c03369184b6c94e08e1561158d904cc70e6e212af7c88d856134b56a7b4184119f279a56f525869b6bbcd9e39f82b0c6dc113592e0a86ceff56c1fbf5bf622e3a1fd9333ee72588bd321140be88510734f8555d004791ac1f618d9aa7f64c72df7b866945f900b39e33c30e48c0f92bd5ae215a40a0d4ed4acebf8bbb688c0e631b2ace767133c37229f8edaec8f2faef703ea3cf10cdb196ac0565ce3648a77314bbf3dcb1b5991c19be19eab0b2e5c6953545b839fb3236432509bd178a41ce06fa55412cbf1a1f208629719fce8db91958d2c8591f91e08d385d47336793168e158692987259b1b3b5ed192fa667a1f8d6dba81383ca14b8020a6c9517dce082a6158fd0d260feaf6bd8dc8e427d755f52c29ae0ece0704d0e74fb5fbd79ab9180da4e492bb3df12d4ee9ef4b382b9ab841aa678169aebfb17a846fb0bc7e284c38db60c41707dd1f592db95c7c44102d2bd058fe067beaa6ff97a56dea1dae3b3153f6af9445520c658677a231a3190aa4d15b21193869ac2477e4ddf82125fe754526130b32244bf0ac56137f8b3e7a96ce9281bd0ee759bd2fa0a786267efa9c575ac0a8e53cec1dd9271394e5c80d9e1542e27a19fe31a549bd388ded918c2a02898fd3abe4692525d7d6e11f51b2e247ecd940eadbf6a09ee08aaccf700159dee814da0bd1f29ff39fe03c17f8b38aa85161db177f0939f5b8883fb54e256bba04de769017c1ac2d7c8c40828c50486cb5b221ffe4cd071402301c895878f0bfc72a34f3606a78368f2e7d0903c683e511f31c73b9a514758685933b1d901b753f9788daec63899db9fe8b31de71183c177b7593802dab234ec9f41e10ec10d072ae6745dd5e791dd6bc1a725abd6c3127a81c3c44ee9c3f28f439a27b5adf9be0b9763c7ca4126cc141fcd5e23526cbc34261234eef347ba1c5a7d167a963eeb586282971ed0bcb7bbdd9431fa8be356d115bcdb5c727d4ff74e299fcfeada43817fbba515ed217ecfad30b3dd269bb9f7921cf21225d668933ab2fbc0766cef771655ce0e50a282466219053976bd3eeba206bcb2a988d34423657934a7e83a5c7d9817745e6cacdb112874b9dceec59ad5b0d971f6126746b2910b9501dd4f470eb3e4d0ca1cba6bb01e0e043c3f48794584cd3b12622c62e771c"
+    },
+    {
+      "id": "default_iv-cfb-1024-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "55df454ee71869ef8bb117b74daa798198da6cbc3fd3d46de0ed863eaeb5c0d6f905c56ab7229187386835a39074ea4d1d2803738bd997e9eed479b4a8b3611727fb342d1bf31f7ff85593a249dd67e9d3510503467cda9b501ae379fa43dff3702e0c4b303ad5efce0f9feaf4262039775f34a72025ec17f95869c25f0b675413da10549062351a7972c7ca1643a0c945dedbedac82ade417a20aa91f085ec70b9a824f76dac3f8d1d97a83a626c6a1e76017b88f6f9653026d52bf21f88e60c03369184b6c94e08e1561158d904cc70e6e212af7c88d856134b56a7b4184119f279a56f525869b6bbcd9e39f82b0c6dc113592e0a86ceff56c1fbf5bf622e3a1fd9333ee72588bd321140be88510734f8555d004791ac1f618d9aa7f64c72df7b866945f900b39e33c30e48c0f92bd5ae215a40a0d4ed4acebf8bbb688c0e631b2ace767133c37229f8edaec8f2faef703ea3cf10cdb196ac0565ce3648a77314bbf3dcb1b5991c19be19eab0b2e5c6953545b839fb3236432509bd178a41ce06fa55412cbf1a1f208629719fce8db91958d2c8591f91e08d385d47336793168e158692987259b1b3b5ed192fa667a1f8d6dba81383ca14b8020a6c9517dce082a6158fd0d260feaf6bd8dc8e427d755f52c29ae0ece0704d0e74fb5fbd79ab9180da4e492bb3df12d4ee9ef4b382b9ab841aa678169aebfb17a846fb0bc7e284c38db60c41707dd1f592db95c7c44102d2bd058fe067beaa6ff97a56dea1dae3b3153f6af9445520c658677a231a3190aa4d15b21193869ac2477e4ddf82125fe754526130b32244bf0ac56137f8b3e7a96ce9281bd0ee759bd2fa0a786267efa9c575ac0a8e53cec1dd9271394e5c80d9e1542e27a19fe31a549bd388ded918c2a02898fd3abe4692525d7d6e11f51b2e247ecd940eadbf6a09ee08aaccf700159dee814da0bd1f29ff39fe03c17f8b38aa85161db177f0939f5b8883fb54e256bba04de769017c1ac2d7c8c40828c50486cb5b221ffe4cd071402301c895878f0bfc72a34f3606a78368f2e7d0903c683e511f31c73b9a514758685933b1d901b753f9788daec63899db9fe8b31de71183c177b7593802dab234ec9f41e10ec10d072ae6745dd5e791dd6bc1a725abd6c3127a81c3c44ee9c3f28f439a27b5adf9be0b9763c7ca4126cc141fcd5e23526cbc34261234eef347ba1c5a7d167a963eeb586282971ed0bcb7bbdd9431fa8be356d115bcdb5c727d4ff74e299fcfeada43817fbba515ed217ecfad30b3dd269bb9f7921cf21225d668933ab2fbc0766cef771655ce0e50a282466219053976bd3eeba206bcb2a988d34423657934a7e83a5c7d9817745e6cacdb112874b9dceec59ad5b0d971f6126746b2910b9501dd4f470eb3e4d0ca1cba6bb01e0e043c3f48794584cd3b12622c62e771c",
+      "key": "  key  ",
+      "iv": "",
+      "mode": "sm4-cfb",
+      "expected": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "default_iv-ofb-0-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "",
+      "key": "",
+      "iv": "",
+      "mode": "sm4-ofb",
+      "expected": null
+    },
+    {
+      "id": "default_iv-ofb-0-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "",
+      "key": "",
+      "iv": "",
+      "mode": "sm4-ofb",
+      "expected": null
+    },
+    {
+      "id": "default_iv-ofb-1-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "13",
+      "key": "12312313123",
+      "iv": "0123456789",
+      "mode": "sm4-ofb",
+      "expected": "c7"
+    },
+    {
+      "id": "default_iv-ofb-1-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "c7",
+      "key": "12312313123",
+      "iv": "0123456789",
+      "mode": "sm4-ofb",
+      "expected": "13"
+    },
+    {
+      "id": "default_iv-ofb-15-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "1d66aff8418ad31c65aef74089d21b",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "a88ff1c1f136c7e2882fe274578325"
+    },
+    {
+      "id": "default_iv-ofb-15-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "a88ff1c1f136c7e2882fe274578325",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "1d66aff8418ad31c65aef74089d21b"
+    },
+    {
+      "id": "default_iv-ofb-16-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "3079c20b549de62f78c10a539ce52e77",
+      "key": "中文密钥🙂",
+      "iv": "",
+      "mode": "sm4-ofb",
+      "expected": "eff44333b2776382ca5779e97481d92e"
+    },
+    {
+      "id": "default_iv-ofb-16-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "eff44333b2776382ca5779e97481d92e",
+      "key": "中文密钥🙂",
+      "iv": "",
+      "mode": "sm4-ofb",
+      "expected": "3079c20b549de62f78c10a539ce52e77"
+    },
+    {
+      "id": "default_iv-ofb-17-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "438cd51e67b0f9428bd41d66aff8418ad3",
+      "key": "  key  ",
+      "iv": "0123456789",
+      "mode": "sm4-ofb",
+      "expected": "a9cfff5b206cc9eb0aeb4523c078d5f8e7"
+    },
+    {
+      "id": "default_iv-ofb-17-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "a9cfff5b206cc9eb0aeb4523c078d5f8e7",
+      "key": "  key  ",
+      "iv": "0123456789",
+      "mode": "sm4-ofb",
+      "expected": "438cd51e67b0f9428bd41d66aff8418ad3"
+    },
+    {
+      "id": "default_iv-ofb-31-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db",
+      "key": "",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "eff69f77b4bc7fea20bbcf1905098a4b870806715cccacf7a3b8ba0e0424f2"
+    },
+    {
+      "id": "default_iv-ofb-31-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "eff69f77b4bc7fea20bbcf1905098a4b870806715cccacf7a3b8ba0e0424f2",
+      "key": "",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db"
+    },
+    {
+      "id": "default_iv-ofb-32-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-ofb",
+      "expected": "21bd50f840d6a4733ea17f30270493b2be2fcb07ad86cc767c60b89b5d2bf3fc"
+    },
+    {
+      "id": "default_iv-ofb-32-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "21bd50f840d6a4733ea17f30270493b2be2fcb07ad86cc767c60b89b5d2bf3fc",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "sm4-ofb",
+      "expected": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37"
+    },
+    {
+      "id": "default_iv-ofb-33-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "sm4-ofb",
+      "expected": "2332d7a86734764cc79e7b0302f2f4bee3ddad10fc67851a61c16574cfaee36c14"
+    },
+    {
+      "id": "default_iv-ofb-33-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "2332d7a86734764cc79e7b0302f2f4bee3ddad10fc67851a61c16574cfaee36c14",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "0123456789",
+      "mode": "sm4-ofb",
+      "expected": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93"
+    },
+    {
+      "id": "default_iv-ofb-128-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "中文密钥🙂",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "816b5329b96a1424b146de893c0e5450267637b7371e05a7320e24791561ff4674d1a0bafab477fc7d56593136fe1cac7122492a8a8d221fd3dd29140aeb488a6506a15dbf351a6624085f1d37dabef99f38e961f4f3fcb811bc0b4e52d0276b1aa4eba300247b185478ca523c603f1793fdf65e6311da2ec75d4a4219e7705c"
+    },
+    {
+      "id": "default_iv-ofb-128-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "816b5329b96a1424b146de893c0e5450267637b7371e05a7320e24791561ff4674d1a0bafab477fc7d56593136fe1cac7122492a8a8d221fd3dd29140aeb488a6506a15dbf351a6624085f1d37dabef99f38e961f4f3fcb811bc0b4e52d0276b1aa4eba300247b185478ca523c603f1793fdf65e6311da2ec75d4a4219e7705c",
+      "key": "中文密钥🙂",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "default_iv-ofb-1024-enc",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "  key  ",
+      "iv": "",
+      "mode": "sm4-ofb",
+      "expected": "55df454ee71869ef8bb117b74daa798195621d5af1af9d077aaf83f6808e6884fcefecdcac50d6086f9eaa2fb5f6c5d33f147fbcf79d2d6ed8221d102820316e35981bbec5861a1592d688535f3611ec1f2c4056e3735973325503cff546c867bac3bfacfed36f0d4939b5be9ec08484f3ef25a0f902b79509ffda65f2b2c20cb3b4230df406d198ef2f34dbd606115ca286965a0e77dc37c613e5ad885a7438ea823a8493f2bb78eec6b28f30cd23d9148cb09bb5826c1d00d7df3b42f7a6259ca010fa14c4d2fb9325508bb9502391b03c46e5846f1561c38c5058a94d365cce9159d07be481d2f4be871cd7b94fd1a7943e15ecebc207add28788beaaee696ef0823e87567d48a6818e063ef83bac47322f3eaf7b56002c0e813a1ecd5410106ce62db2a5b07fbb1a2ee6a7fbee4387918f59bfe900f26362abc78356e94785916b8f033a4c016d95a663e043b99d86d9781790c366ed0e20d2879d53f7e61d6efe004f735bfbfbdcfcde10abb4c3601b214d726124dc5c51c7e9f7f653eff7ac3e95e1ec407e0379502fe91be8b85be64da1faaa1cde49dfc04d57c6beb89b48670d9ac3849b5dbc7565abe804db0bf7441b1786032a756aa9b20a0d6c76f7000d6b6723e2633b97a42b40342def0f4830f4eab56f97f649f4b8b0c81ecefccbcc50b0bedf0d4573a27c326c08212a73cd14b1fa6c0a1a016b2d1bcdef2625e15f9cf1f50ed93637a379729f676812165285c5c3b1e019164f11d505076b7f333c8f476abff1cf1490d53ca77cd859dd3c10a15829ba0e5bd89a0ff260fb8fce82bff978824201aacd845d5f98e9ad22cfea9a58aac974e08ac4ed49d2355952ac8c009c5cab27547f8ca03609c755706b38b165ddc5246e90e316fc1109bb72cf429af42e9742e727d1304ec09ac02dbadbe1e248217b9fb99c5bdd94b8b7f719f5fa90d66991cbb45566f2ac8c4f5bef498e470db301c6c16b0816563d3899dba6787383a3a233f81912c0d295c78c8860e42b222d925f1973b0309b695803be65c57b32089e657c734ed00daa9c37cebe18930b83ca4bdc39bf09fb63e65609bb81f93031db70a8f8586089aef115142817752044bb01b1da750dae823c940fb2cf693a8239ec5b3a4a41fa30b9f068b1e2a20af0a273b5b512f36b179801d78ba56e9162f1c7670bea0b82e6b2dec3ac065f837559dfea71f89d5ab7e1eda4584f72670f961c9557eee9ff05d3949434d8061de7d3cd0f539378a8d17c93431a4377472df8e30d65293ed71df4f963a0147b890c3a9280aad5a676300572bad9806cda79fece7d2ba80b1b2cb01fe54c99eef174cb6c2ca9326acae89e9f8825dec829c828eaaf79f077ea0c4b4229b82e2ad3b58cd84f11e1836a669809af1c203854a1a352335797840f4094b72f645a7613cc4fed9f85bc322388"
+    },
+    {
+      "id": "default_iv-ofb-1024-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "55df454ee71869ef8bb117b74daa798195621d5af1af9d077aaf83f6808e6884fcefecdcac50d6086f9eaa2fb5f6c5d33f147fbcf79d2d6ed8221d102820316e35981bbec5861a1592d688535f3611ec1f2c4056e3735973325503cff546c867bac3bfacfed36f0d4939b5be9ec08484f3ef25a0f902b79509ffda65f2b2c20cb3b4230df406d198ef2f34dbd606115ca286965a0e77dc37c613e5ad885a7438ea823a8493f2bb78eec6b28f30cd23d9148cb09bb5826c1d00d7df3b42f7a6259ca010fa14c4d2fb9325508bb9502391b03c46e5846f1561c38c5058a94d365cce9159d07be481d2f4be871cd7b94fd1a7943e15ecebc207add28788beaaee696ef0823e87567d48a6818e063ef83bac47322f3eaf7b56002c0e813a1ecd5410106ce62db2a5b07fbb1a2ee6a7fbee4387918f59bfe900f26362abc78356e94785916b8f033a4c016d95a663e043b99d86d9781790c366ed0e20d2879d53f7e61d6efe004f735bfbfbdcfcde10abb4c3601b214d726124dc5c51c7e9f7f653eff7ac3e95e1ec407e0379502fe91be8b85be64da1faaa1cde49dfc04d57c6beb89b48670d9ac3849b5dbc7565abe804db0bf7441b1786032a756aa9b20a0d6c76f7000d6b6723e2633b97a42b40342def0f4830f4eab56f97f649f4b8b0c81ecefccbcc50b0bedf0d4573a27c326c08212a73cd14b1fa6c0a1a016b2d1bcdef2625e15f9cf1f50ed93637a379729f676812165285c5c3b1e019164f11d505076b7f333c8f476abff1cf1490d53ca77cd859dd3c10a15829ba0e5bd89a0ff260fb8fce82bff978824201aacd845d5f98e9ad22cfea9a58aac974e08ac4ed49d2355952ac8c009c5cab27547f8ca03609c755706b38b165ddc5246e90e316fc1109bb72cf429af42e9742e727d1304ec09ac02dbadbe1e248217b9fb99c5bdd94b8b7f719f5fa90d66991cbb45566f2ac8c4f5bef498e470db301c6c16b0816563d3899dba6787383a3a233f81912c0d295c78c8860e42b222d925f1973b0309b695803be65c57b32089e657c734ed00daa9c37cebe18930b83ca4bdc39bf09fb63e65609bb81f93031db70a8f8586089aef115142817752044bb01b1da750dae823c940fb2cf693a8239ec5b3a4a41fa30b9f068b1e2a20af0a273b5b512f36b179801d78ba56e9162f1c7670bea0b82e6b2dec3ac065f837559dfea71f89d5ab7e1eda4584f72670f961c9557eee9ff05d3949434d8061de7d3cd0f539378a8d17c93431a4377472df8e30d65293ed71df4f963a0147b890c3a9280aad5a676300572bad9806cda79fece7d2ba80b1b2cb01fe54c99eef174cb6c2ca9326acae89e9f8825dec829c828eaaf79f077ea0c4b4229b82e2ad3b58cd84f11e1836a669809af1c203854a1a352335797840f4094b72f645a7613cc4fed9f85bc322388",
+      "key": "  key  ",
+      "iv": "",
+      "mode": "sm4-ofb",
+      "expected": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "default_iv-encrypt-null-data",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": null,
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-encrypt-null-key",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "64617461",
+      "key": null,
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-encrypt-null-iv",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "64617461",
+      "key": "12312313123",
+      "iv": null,
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-encrypt-null-mode",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "64617461",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": null,
+      "expected": null
+    },
+    {
+      "id": "default_iv-encrypt-mode-104",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "",
+      "expected": "eb2d7dcc24714dcb4dc076cc9af58e80"
+    },
+    {
+      "id": "default_iv-encrypt-mode-105",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CBC ",
+      "expected": null
+    },
+    {
+      "id": "default_iv-encrypt-mode-106",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CTR",
+      "expected": null
+    },
+    {
+      "id": "default_iv-encrypt-mode-107",
+      "profile": "default_iv",
+      "operation": "encrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "ＧＣＭ",
+      "expected": null
+    },
+    {
+      "id": "default_iv-decrypt-null-data",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": null,
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-decrypt-null-key",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "64617461",
+      "key": null,
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-decrypt-null-iv",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "64617461",
+      "key": "12312313123",
+      "iv": null,
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-decrypt-null-mode",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "64617461",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": null,
+      "expected": null
+    },
+    {
+      "id": "default_iv-decrypt-mode-112",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "",
+      "expected": null
+    },
+    {
+      "id": "default_iv-decrypt-mode-113",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CBC ",
+      "expected": null
+    },
+    {
+      "id": "default_iv-decrypt-mode-114",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CTR",
+      "expected": null
+    },
+    {
+      "id": "default_iv-decrypt-mode-115",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "ＧＣＭ",
+      "expected": null
+    },
+    {
+      "id": "default_iv-bad-size-1",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "00",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-bad-size-15",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-bad-size-17",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "0000000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-bad-padding-0",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "316d2d5f6b77332e0ceaa133ee09cafb",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-bad-padding-17",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "af8fc22f26ba3b02fa097eac735e28d4",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-bad-padding-255",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "1e5e1c7ecb794312679af471a295244e",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "default_iv-utf8-dec",
+      "profile": "default_iv",
+      "operation": "decrypt",
+      "data": "159715a57e9e712048116e8dfa915ca45b21a052d9202c5e04d7fdb753295a72",
+      "key": "  key  ",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": "68656c6c6f01e4b8ade69687f09f9982"
+    },
+    {
+      "id": "explicit_iv-ecb-0-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "",
+      "key": "",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ecb",
+      "expected": "a83f90cc9f35cac4daf66bfa071c4182"
+    },
+    {
+      "id": "explicit_iv-ecb-0-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "a83f90cc9f35cac4daf66bfa071c4182",
+      "key": "",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ecb",
+      "expected": ""
+    },
+    {
+      "id": "explicit_iv-ecb-1-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "13",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "257f68aaa28fed08afba8038b846074e"
+    },
+    {
+      "id": "explicit_iv-ecb-1-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "257f68aaa28fed08afba8038b846074e",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "13"
+    },
+    {
+      "id": "explicit_iv-ecb-15-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "1d66aff8418ad31c65aef74089d21b",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ecb",
+      "expected": "5884216702eeedc57c5da91e28611ae6"
+    },
+    {
+      "id": "explicit_iv-ecb-15-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "5884216702eeedc57c5da91e28611ae6",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ecb",
+      "expected": "1d66aff8418ad31c65aef74089d21b"
+    },
+    {
+      "id": "explicit_iv-ecb-16-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "3079c20b549de62f78c10a539ce52e77",
+      "key": "中文密钥🙂",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ecb",
+      "expected": "45910a2929ef5a3956ea25a6b50a297d0aa5ec565eb133175e28ac094b6f9e9f"
+    },
+    {
+      "id": "explicit_iv-ecb-16-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "45910a2929ef5a3956ea25a6b50a297d0aa5ec565eb133175e28ac094b6f9e9f",
+      "key": "中文密钥🙂",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ecb",
+      "expected": "3079c20b549de62f78c10a539ce52e77"
+    },
+    {
+      "id": "explicit_iv-ecb-17-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "438cd51e67b0f9428bd41d66aff8418ad3",
+      "key": "  key  ",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "0ef2e2b19c4a77aa1c4a04015af51b14f75c7a518ceddb83803ce9507e421984"
+    },
+    {
+      "id": "explicit_iv-ecb-17-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "0ef2e2b19c4a77aa1c4a04015af51b14f75c7a518ceddb83803ce9507e421984",
+      "key": "  key  ",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "438cd51e67b0f9428bd41d66aff8418ad3"
+    },
+    {
+      "id": "explicit_iv-ecb-31-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db",
+      "key": "",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ecb",
+      "expected": "fcab442fe7e7e92600ff360a713d18404f7d906db4f4f5e900e32869f0142fc5"
+    },
+    {
+      "id": "explicit_iv-ecb-31-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "fcab442fe7e7e92600ff360a713d18404f7d906db4f4f5e900e32869f0142fc5",
+      "key": "",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ecb",
+      "expected": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db"
+    },
+    {
+      "id": "explicit_iv-ecb-32-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37",
+      "key": "12312313123",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ecb",
+      "expected": "783797f81a536bf5e11c741d6d38e3069f486d2f5884415e741b0240d07507d3137d9ff3ca4039618dccd9f2f2108e54"
+    },
+    {
+      "id": "explicit_iv-ecb-32-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "783797f81a536bf5e11c741d6d38e3069f486d2f5884415e741b0240d07507d3137d9ff3ca4039618dccd9f2f2108e54",
+      "key": "12312313123",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ecb",
+      "expected": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37"
+    },
+    {
+      "id": "explicit_iv-ecb-33-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "bbb2dfc511d0b809f30d5654c69414b361f51a6c2c9d0e056f799bec239e6edb1b0586818d721ab4c257c2d78d411583"
+    },
+    {
+      "id": "explicit_iv-ecb-33-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "bbb2dfc511d0b809f30d5654c69414b361f51a6c2c9d0e056f799bec239e6edb1b0586818d721ab4c257c2d78d411583",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ecb",
+      "expected": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93"
+    },
+    {
+      "id": "explicit_iv-ecb-128-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "中文密钥🙂",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ecb",
+      "expected": "059de0630025f368a75cfb45e387c5a83723ee82d4b73d91c2cb2460623852f1ed14d9652ab15f9bb2b3dc0f6c551d6d45910a2929ef5a3956ea25a6b50a297d7d045d701e1aea9a1cc0da20f4740b8aaf5fda63fc9071496ce2a6fc4b4311a9c4f39f26b7fa5047d369e50d3b2b27a70bc5c40ca45dab242ddabac1a3e5935d0aa5ec565eb133175e28ac094b6f9e9f"
+    },
+    {
+      "id": "explicit_iv-ecb-128-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "059de0630025f368a75cfb45e387c5a83723ee82d4b73d91c2cb2460623852f1ed14d9652ab15f9bb2b3dc0f6c551d6d45910a2929ef5a3956ea25a6b50a297d7d045d701e1aea9a1cc0da20f4740b8aaf5fda63fc9071496ce2a6fc4b4311a9c4f39f26b7fa5047d369e50d3b2b27a70bc5c40ca45dab242ddabac1a3e5935d0aa5ec565eb133175e28ac094b6f9e9f",
+      "key": "中文密钥🙂",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ecb",
+      "expected": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "explicit_iv-ecb-1024-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "  key  ",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ecb",
+      "expected": "778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f50de3e2452b1beca00abb5a903e29659"
+    },
+    {
+      "id": "explicit_iv-ecb-1024-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f778005cdd46815cd576d99865c83a663a4b660f59b50bd114fa641ebe1b02f43282311d8e329d2db73c451bc5e2557c14de613ad2de0be216ac866d8b8420fe9d116a24dcd3afd32d4ba108cbcc91f81a2f6883c74c8b5526b17e2cf5d96f22cee7e710288c0a4abf17860a17cd7251d72a140c023d9e1b393b002608ad21e44d32b0df3c332a70d0744d3a63e85a73a3ad6429925b3c6aedcbc2732c600b2a30aa7b109c681d9c916de85ba7568d155db3b2849d925706abd2a9651e136629541154c5fa9061b9883b4364fac3a46a497f133d03f3b92dea1ce7186c75af1318434993475f8530db3485560031d793ada23bef5cbb817ad5b55e03bb1d92b5f50de3e2452b1beca00abb5a903e29659",
+      "key": "  key  ",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ecb",
+      "expected": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "explicit_iv-cbc-0-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "",
+      "key": "",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cbc",
+      "expected": "11b8d40e631d449e0b5bc8f01c6bd39d"
+    },
+    {
+      "id": "explicit_iv-cbc-0-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "11b8d40e631d449e0b5bc8f01c6bd39d",
+      "key": "",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cbc",
+      "expected": ""
+    },
+    {
+      "id": "explicit_iv-cbc-1-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "13",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "1f07b87d145a7fb870f7402ecc82efad"
+    },
+    {
+      "id": "explicit_iv-cbc-1-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "1f07b87d145a7fb870f7402ecc82efad",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "13"
+    },
+    {
+      "id": "explicit_iv-cbc-15-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "1d66aff8418ad31c65aef74089d21b",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cbc",
+      "expected": "70ee7d3eeadf13085d874eca58349020"
+    },
+    {
+      "id": "explicit_iv-cbc-15-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "70ee7d3eeadf13085d874eca58349020",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cbc",
+      "expected": "1d66aff8418ad31c65aef74089d21b"
+    },
+    {
+      "id": "explicit_iv-cbc-16-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "3079c20b549de62f78c10a539ce52e77",
+      "key": "中文密钥🙂",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cbc",
+      "expected": "e0d3893a42caa66347bb511c4754d07304419866bf14bb28decbd6c7ddaa5354"
+    },
+    {
+      "id": "explicit_iv-cbc-16-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "e0d3893a42caa66347bb511c4754d07304419866bf14bb28decbd6c7ddaa5354",
+      "key": "中文密钥🙂",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cbc",
+      "expected": "3079c20b549de62f78c10a539ce52e77"
+    },
+    {
+      "id": "explicit_iv-cbc-17-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "438cd51e67b0f9428bd41d66aff8418ad3",
+      "key": "  key  ",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "e36c7313ed5bfed15026143571fba6591c1c1fd2555bc5e71de9b27f8cb9f7db"
+    },
+    {
+      "id": "explicit_iv-cbc-17-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "e36c7313ed5bfed15026143571fba6591c1c1fd2555bc5e71de9b27f8cb9f7db",
+      "key": "  key  ",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "438cd51e67b0f9428bd41d66aff8418ad3"
+    },
+    {
+      "id": "explicit_iv-cbc-31-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db",
+      "key": "",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cbc",
+      "expected": "9eb037023e6e3122473c0dd4cfcf8dcb05c35fcc0220669f4a9f3041daac6368"
+    },
+    {
+      "id": "explicit_iv-cbc-31-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "9eb037023e6e3122473c0dd4cfcf8dcb05c35fcc0220669f4a9f3041daac6368",
+      "key": "",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cbc",
+      "expected": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db"
+    },
+    {
+      "id": "explicit_iv-cbc-32-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37",
+      "key": "12312313123",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cbc",
+      "expected": "aa6866ced3770343366605ef62a1117e7c4bdd0ec5f972ad336ddfa544fedfad4eec615e7625879487eee02d5929cfae"
+    },
+    {
+      "id": "explicit_iv-cbc-32-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "aa6866ced3770343366605ef62a1117e7c4bdd0ec5f972ad336ddfa544fedfad4eec615e7625879487eee02d5929cfae",
+      "key": "12312313123",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cbc",
+      "expected": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37"
+    },
+    {
+      "id": "explicit_iv-cbc-33-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "dbe561504570b8d4f820f65b3d3b7400ce8af1560671537a1e9b04e30640446e4c881dcb87ef70d1aa95a5df32c5dacc"
+    },
+    {
+      "id": "explicit_iv-cbc-33-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "dbe561504570b8d4f820f65b3d3b7400ce8af1560671537a1e9b04e30640446e4c881dcb87ef70d1aa95a5df32c5dacc",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cbc",
+      "expected": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93"
+    },
+    {
+      "id": "explicit_iv-cbc-128-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "中文密钥🙂",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cbc",
+      "expected": "1652c895e02a45b899c7bf8b7882206d913c920b5e15b15821ade283946f8632a234e17f02972fa95b669600234c17429be29ed85915bb9f9ab0560c0ecee04fee73bc459acd322ec24aa38dacd01fd9166eb62b3d5c3dfa43c425c99f06bf830df1c40d74e17132d06f4b3807ef53859b2cc348a2b1169203997c267c4c854be81c7dde0c0fd4f42a5c8ef043362ad2"
+    },
+    {
+      "id": "explicit_iv-cbc-128-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "1652c895e02a45b899c7bf8b7882206d913c920b5e15b15821ade283946f8632a234e17f02972fa95b669600234c17429be29ed85915bb9f9ab0560c0ecee04fee73bc459acd322ec24aa38dacd01fd9166eb62b3d5c3dfa43c425c99f06bf830df1c40d74e17132d06f4b3807ef53859b2cc348a2b1169203997c267c4c854be81c7dde0c0fd4f42a5c8ef043362ad2",
+      "key": "中文密钥🙂",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cbc",
+      "expected": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "explicit_iv-cbc-1024-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "  key  ",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cbc",
+      "expected": "4993e4f3daae80239711e335ebfc7d73896127e426accee45dd92be7772a8dc4190bab9db732f0531978cda3c424c1d27256f8b20f9ebe67800c6e203387438f6139b5501049f72976260fcb0f6f799ae10def41e92c913f7b8b86d50248c3ae1b7a2a5d095e6488a95a91091986f2682d17e6a1434ae7d8db4dbd0acf5a85107d2b9a9d43e4e553aefb4b6e1785195538ceab3ac4e0f42911a3d6ee71d7a50bf3d422d870887eb2b918f07c3b51f7b1de5792d6ae3f5a9dd2f14f19723edf127bc90c776c63b85624861f3ada6fd0f763e2c6d0d8e759354158c36aaefe83652f8ff97446a4a283a9aaf27ac991fe70c1d3a3f29b09a6abc117acaa82f0399627d3849f02128682773ede5d10f747f6d2024dd2bc92dd3e8746e37be54ebd0d887749048d8dfab512760d46edcbf430586e48edffc96d13264d2199599d8dc0b0463484812e08acf0cd579a958e0b7cafa13d24cea03a7b0c3d3b3e08c3df5813c5b898a54aa1faee76bcd6c15034e0ed92ce2271ffcba533750300255f5dd5fb711e04b174d3b029b0dd36d958f50b32017539115b55d503b46076332fc1783ca04393f17b40a49892e75a1267d81865882d41db1a47c15e8ae9ac233bedee2426b79fb0e25a631d503bdfd91bb50192b648e1257cf952720e271e6f7189affb89b86885215290ba98065a6e2a25410ed91c48f4f99c480753c7d040acfe38d55f8de5c6479613adc6803206faebb5ef96b251f08700512f7c41c8b0b9851903aad9019916d9702925c1cdbeec719d4533fa0aeddce9ac4c1725c78c2d2d1bdc69a8587c8ab8c3380bd245978773a55c8a68486706c1364916232c3f57f22a9af948b549cf03e94ea475a68c145aca3503c1e9d0ac5b04c84f5fd58a7878eee17a429aacfcbb80ab825a95cb94e5e0a98c6ba4e5c8fb8e10932c56f32798f6ef92f2d8e6bf3044b0c0aae94f4457540663501791899d0395ed937791a55f9f269295835e1b1e7dfaf57c0642645d0c6608ca7e11c2961b4a883042d597ee09aa9eef83fa281d8a3e19fd940c8683f4ac8694b736b3793537deed9d5a34ddd9a4002d66200cf578756af7356fe1e87ecac9d89be87394fadf06a78ee637f657b3d01a3cf2ffe1f018a1ebf97015f3897f5e6c15e342895450513be1ceb86fb48ace03a0dd4c834ea5ad2940e348c197368f67740ae104ff02d85938dddef6ff713fd23acb471e38f9c71a23ccb2e0427ee2121c0903ff2a6871ef63319147c1db63ba1d79ea42f924f28dc7b0a17746b4a41567c967aa286998eaed544a236284db55bc67057f64b8f3eb9c8bef5355fdf139d5055137df08b4a22ea52a39a0eece1254110f3eac2a0a4c59fc15618c427993f2bab46337b129cc0ed4972db997eb5301b3643ef325b9f8fd1b4c5a2e64498ca47f2145cee52187787ea34c9ffb613c1392c159b1ece339aea3a3abd0"
+    },
+    {
+      "id": "explicit_iv-cbc-1024-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "4993e4f3daae80239711e335ebfc7d73896127e426accee45dd92be7772a8dc4190bab9db732f0531978cda3c424c1d27256f8b20f9ebe67800c6e203387438f6139b5501049f72976260fcb0f6f799ae10def41e92c913f7b8b86d50248c3ae1b7a2a5d095e6488a95a91091986f2682d17e6a1434ae7d8db4dbd0acf5a85107d2b9a9d43e4e553aefb4b6e1785195538ceab3ac4e0f42911a3d6ee71d7a50bf3d422d870887eb2b918f07c3b51f7b1de5792d6ae3f5a9dd2f14f19723edf127bc90c776c63b85624861f3ada6fd0f763e2c6d0d8e759354158c36aaefe83652f8ff97446a4a283a9aaf27ac991fe70c1d3a3f29b09a6abc117acaa82f0399627d3849f02128682773ede5d10f747f6d2024dd2bc92dd3e8746e37be54ebd0d887749048d8dfab512760d46edcbf430586e48edffc96d13264d2199599d8dc0b0463484812e08acf0cd579a958e0b7cafa13d24cea03a7b0c3d3b3e08c3df5813c5b898a54aa1faee76bcd6c15034e0ed92ce2271ffcba533750300255f5dd5fb711e04b174d3b029b0dd36d958f50b32017539115b55d503b46076332fc1783ca04393f17b40a49892e75a1267d81865882d41db1a47c15e8ae9ac233bedee2426b79fb0e25a631d503bdfd91bb50192b648e1257cf952720e271e6f7189affb89b86885215290ba98065a6e2a25410ed91c48f4f99c480753c7d040acfe38d55f8de5c6479613adc6803206faebb5ef96b251f08700512f7c41c8b0b9851903aad9019916d9702925c1cdbeec719d4533fa0aeddce9ac4c1725c78c2d2d1bdc69a8587c8ab8c3380bd245978773a55c8a68486706c1364916232c3f57f22a9af948b549cf03e94ea475a68c145aca3503c1e9d0ac5b04c84f5fd58a7878eee17a429aacfcbb80ab825a95cb94e5e0a98c6ba4e5c8fb8e10932c56f32798f6ef92f2d8e6bf3044b0c0aae94f4457540663501791899d0395ed937791a55f9f269295835e1b1e7dfaf57c0642645d0c6608ca7e11c2961b4a883042d597ee09aa9eef83fa281d8a3e19fd940c8683f4ac8694b736b3793537deed9d5a34ddd9a4002d66200cf578756af7356fe1e87ecac9d89be87394fadf06a78ee637f657b3d01a3cf2ffe1f018a1ebf97015f3897f5e6c15e342895450513be1ceb86fb48ace03a0dd4c834ea5ad2940e348c197368f67740ae104ff02d85938dddef6ff713fd23acb471e38f9c71a23ccb2e0427ee2121c0903ff2a6871ef63319147c1db63ba1d79ea42f924f28dc7b0a17746b4a41567c967aa286998eaed544a236284db55bc67057f64b8f3eb9c8bef5355fdf139d5055137df08b4a22ea52a39a0eece1254110f3eac2a0a4c59fc15618c427993f2bab46337b129cc0ed4972db997eb5301b3643ef325b9f8fd1b4c5a2e64498ca47f2145cee52187787ea34c9ffb613c1392c159b1ece339aea3a3abd0",
+      "key": "  key  ",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cbc",
+      "expected": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "explicit_iv-cfb-0-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "",
+      "key": "",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cfb",
+      "expected": ""
+    },
+    {
+      "id": "explicit_iv-cfb-0-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "",
+      "key": "",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cfb",
+      "expected": ""
+    },
+    {
+      "id": "explicit_iv-cfb-1-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "13",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "22"
+    },
+    {
+      "id": "explicit_iv-cfb-1-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "22",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "13"
+    },
+    {
+      "id": "explicit_iv-cfb-15-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "1d66aff8418ad31c65aef74089d21b",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cfb",
+      "expected": "dbd3555de44122d84746a7ea69091f"
+    },
+    {
+      "id": "explicit_iv-cfb-15-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "dbd3555de44122d84746a7ea69091f",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cfb",
+      "expected": "1d66aff8418ad31c65aef74089d21b"
+    },
+    {
+      "id": "explicit_iv-cfb-16-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "3079c20b549de62f78c10a539ce52e77",
+      "key": "中文密钥🙂",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cfb",
+      "expected": "115e60d5b4fd60cbb5a99c929abf4c0a"
+    },
+    {
+      "id": "explicit_iv-cfb-16-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "115e60d5b4fd60cbb5a99c929abf4c0a",
+      "key": "中文密钥🙂",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cfb",
+      "expected": "3079c20b549de62f78c10a539ce52e77"
+    },
+    {
+      "id": "explicit_iv-cfb-17-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "438cd51e67b0f9428bd41d66aff8418ad3",
+      "key": "  key  ",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "a072775fb2cebf99d5b62e061c914a65b0"
+    },
+    {
+      "id": "explicit_iv-cfb-17-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "a072775fb2cebf99d5b62e061c914a65b0",
+      "key": "  key  ",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "438cd51e67b0f9428bd41d66aff8418ad3"
+    },
+    {
+      "id": "explicit_iv-cfb-31-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db",
+      "key": "",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cfb",
+      "expected": "97918748a0aadfad75f4f70b140ea8c83e81c0433db18ba148aab6882fa098"
+    },
+    {
+      "id": "explicit_iv-cfb-31-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "97918748a0aadfad75f4f70b140ea8c83e81c0433db18ba148aab6882fa098",
+      "key": "",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cfb",
+      "expected": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db"
+    },
+    {
+      "id": "explicit_iv-cfb-32-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37",
+      "key": "12312313123",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cfb",
+      "expected": "49379227fe57f6f62b625b584266d3b2fa2fa3b0db294b014d9cd861d0ec3750"
+    },
+    {
+      "id": "explicit_iv-cfb-32-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "49379227fe57f6f62b625b584266d3b2fa2fa3b0db294b014d9cd861d0ec3750",
+      "key": "12312313123",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cfb",
+      "expected": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37"
+    },
+    {
+      "id": "explicit_iv-cfb-33-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "c6555b77275c3d8c568558a201794fff356395c71d36a015520e7b46baa5611404"
+    },
+    {
+      "id": "explicit_iv-cfb-33-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "c6555b77275c3d8c568558a201794fff356395c71d36a015520e7b46baa5611404",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-cfb",
+      "expected": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93"
+    },
+    {
+      "id": "explicit_iv-cfb-128-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "中文密钥🙂",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cfb",
+      "expected": "a635f0f73164fb5e36c828b6af7eb88128b745a2b11534c434db95b1fe57a6b80d34836d0399ab2f025366c75b3f626c97cf5e6260e5ce61828afff085ef1b153c40ca7cb196593e37494009caeef0d2f030a51a787c3c1dbc2dc9a59b2e1c250a32b2d52db5a9892a6378601f6121dea0abaa52fd9c79cec55732a5cc28526c"
+    },
+    {
+      "id": "explicit_iv-cfb-128-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "a635f0f73164fb5e36c828b6af7eb88128b745a2b11534c434db95b1fe57a6b80d34836d0399ab2f025366c75b3f626c97cf5e6260e5ce61828afff085ef1b153c40ca7cb196593e37494009caeef0d2f030a51a787c3c1dbc2dc9a59b2e1c250a32b2d52db5a9892a6378601f6121dea0abaa52fd9c79cec55732a5cc28526c",
+      "key": "中文密钥🙂",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-cfb",
+      "expected": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "explicit_iv-cfb-1024-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "  key  ",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cfb",
+      "expected": "6a68e580dafd959470d5d60c1124c29b19afdeb4588809a08cda3260bf67d66c6e55559f23fd2ac1789ff6ecc89f1546f05bc10cf312ac5625bf62201ddad646608fb2fafdeacf92166c363e421c4f4b31bad829995311b5f35224dc2671217dddc76da44dba0323614b63c0422416f2c6ceca48a932372b144d88864fc8bc7dc47cbcef28b5d339ed3407481b32a615912fde1e307be65ab139c2f050db99ebbe0c64f21a40f73f3f7b5e269c9455fef201b1c38c966af9c3603995c3b5fb17091ba412bec1174f5a9290264cf647cb270192cbe12fd13c81615a1f85ca5e908486387fc40a924608bb56118c0b81a87257fff6f4d5f031ddb35e258c7ae77220c85bdfb50ec272f66e80a2673f67bc4bcdeee3aa642ae5b0daa5c37e6d4bb9404ea8b55db182e956269a357b7d8f8a38cc331cd4823ecef4c11f40336910bfb45010914a1d1ed7724e104a0b10debc4c03dd70d70959693d3881f07b4890321b2a6d7db5df8e3d0a4736bc25fd38c30c2d2c66bd26440b059eab0303a15d2d21de351412f9eac91921fd640fa9e9a32dc7ae1ed184dc29036396ead2163610f195fe99a751c576496cf843439c3777689d994ff4d23c822c271db858e603ad29dc5a2386b2e48f2a66e09b9dfb41772f69d81729481f40141ec0c9f0e3f7e115323428c4ead2d46f5637daf7ee5ea66cc6515e7ec81131a0a97dc9a83ff9f9a4b9fb317552a2f8071932cdfaf5447442969176a8b50e2dc6ec5987a90431cb1dd0f8c1986fac9227f837b2d11bd3b32d3f727a94ff16a6cafd128f8e2def80252d1649f8369dc741c2ae463340a4fd50b3aec94ce53c2f197a2a65e8debcb81b93b0af9836af9595c21a3742e5d66d752583cad578d26544e33d6904a742fcc079c3d80dd212d9b81b9e400457d3ab0d7c56abd519d12afd33afc8cd72f5c54e9f39060bc1138aaa13f3f73fb618ad80230db1cf9340d7defebc45280575cc2a5c1305a79ca4ced5d682780c62a2b4806d6d8bc8c0550a7be71640ffd317df0c978fbf7822d9be3e31459dc22d1b1e7bfb841ed767fb5cf73a78fa1403f38e3200dccc57a458c1861a620d9c4e4a19f00d81d238e5a1cf27f22997e14155c19be1b7cc565a0bd674f936d70de1a4bf27f53d7fe7cff903776b1b40bd313567c53a2c02ace0ad95769d3a390edcded0fdb14ac4605c4415584c4a3680a75201ffd59b72b38e28484bbcd6d2b1daa92e56bec0033c9beedbc84b4c5367a8475e9aab797ad546cb9516474492933aa47cab0aadf4595c28fe39f17c9c56bb2f507157062b44d583146d90a3aa9643034b0fe09cbdbcc44fcf18db68906f7c33b49a0ec8281ca171d278b2ab0d490c4b8c245a567c52abe1088ad29a241fcc5f26e65a85b704f2bdfefbf7edb47a77cccfab60bd77eeed967a96709a23dd44a41e"
+    },
+    {
+      "id": "explicit_iv-cfb-1024-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "6a68e580dafd959470d5d60c1124c29b19afdeb4588809a08cda3260bf67d66c6e55559f23fd2ac1789ff6ecc89f1546f05bc10cf312ac5625bf62201ddad646608fb2fafdeacf92166c363e421c4f4b31bad829995311b5f35224dc2671217dddc76da44dba0323614b63c0422416f2c6ceca48a932372b144d88864fc8bc7dc47cbcef28b5d339ed3407481b32a615912fde1e307be65ab139c2f050db99ebbe0c64f21a40f73f3f7b5e269c9455fef201b1c38c966af9c3603995c3b5fb17091ba412bec1174f5a9290264cf647cb270192cbe12fd13c81615a1f85ca5e908486387fc40a924608bb56118c0b81a87257fff6f4d5f031ddb35e258c7ae77220c85bdfb50ec272f66e80a2673f67bc4bcdeee3aa642ae5b0daa5c37e6d4bb9404ea8b55db182e956269a357b7d8f8a38cc331cd4823ecef4c11f40336910bfb45010914a1d1ed7724e104a0b10debc4c03dd70d70959693d3881f07b4890321b2a6d7db5df8e3d0a4736bc25fd38c30c2d2c66bd26440b059eab0303a15d2d21de351412f9eac91921fd640fa9e9a32dc7ae1ed184dc29036396ead2163610f195fe99a751c576496cf843439c3777689d994ff4d23c822c271db858e603ad29dc5a2386b2e48f2a66e09b9dfb41772f69d81729481f40141ec0c9f0e3f7e115323428c4ead2d46f5637daf7ee5ea66cc6515e7ec81131a0a97dc9a83ff9f9a4b9fb317552a2f8071932cdfaf5447442969176a8b50e2dc6ec5987a90431cb1dd0f8c1986fac9227f837b2d11bd3b32d3f727a94ff16a6cafd128f8e2def80252d1649f8369dc741c2ae463340a4fd50b3aec94ce53c2f197a2a65e8debcb81b93b0af9836af9595c21a3742e5d66d752583cad578d26544e33d6904a742fcc079c3d80dd212d9b81b9e400457d3ab0d7c56abd519d12afd33afc8cd72f5c54e9f39060bc1138aaa13f3f73fb618ad80230db1cf9340d7defebc45280575cc2a5c1305a79ca4ced5d682780c62a2b4806d6d8bc8c0550a7be71640ffd317df0c978fbf7822d9be3e31459dc22d1b1e7bfb841ed767fb5cf73a78fa1403f38e3200dccc57a458c1861a620d9c4e4a19f00d81d238e5a1cf27f22997e14155c19be1b7cc565a0bd674f936d70de1a4bf27f53d7fe7cff903776b1b40bd313567c53a2c02ace0ad95769d3a390edcded0fdb14ac4605c4415584c4a3680a75201ffd59b72b38e28484bbcd6d2b1daa92e56bec0033c9beedbc84b4c5367a8475e9aab797ad546cb9516474492933aa47cab0aadf4595c28fe39f17c9c56bb2f507157062b44d583146d90a3aa9643034b0fe09cbdbcc44fcf18db68906f7c33b49a0ec8281ca171d278b2ab0d490c4b8c245a567c52abe1088ad29a241fcc5f26e65a85b704f2bdfefbf7edb47a77cccfab60bd77eeed967a96709a23dd44a41e",
+      "key": "  key  ",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-cfb",
+      "expected": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "explicit_iv-ofb-0-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "",
+      "key": "",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ofb",
+      "expected": ""
+    },
+    {
+      "id": "explicit_iv-ofb-0-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "",
+      "key": "",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ofb",
+      "expected": ""
+    },
+    {
+      "id": "explicit_iv-ofb-1-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "13",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "22"
+    },
+    {
+      "id": "explicit_iv-ofb-1-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "22",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "13"
+    },
+    {
+      "id": "explicit_iv-ofb-15-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "1d66aff8418ad31c65aef74089d21b",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ofb",
+      "expected": "dbd3555de44122d84746a7ea69091f"
+    },
+    {
+      "id": "explicit_iv-ofb-15-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "dbd3555de44122d84746a7ea69091f",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ofb",
+      "expected": "1d66aff8418ad31c65aef74089d21b"
+    },
+    {
+      "id": "explicit_iv-ofb-16-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "3079c20b549de62f78c10a539ce52e77",
+      "key": "中文密钥🙂",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ofb",
+      "expected": "115e60d5b4fd60cbb5a99c929abf4c0a"
+    },
+    {
+      "id": "explicit_iv-ofb-16-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "115e60d5b4fd60cbb5a99c929abf4c0a",
+      "key": "中文密钥🙂",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ofb",
+      "expected": "3079c20b549de62f78c10a539ce52e77"
+    },
+    {
+      "id": "explicit_iv-ofb-17-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "438cd51e67b0f9428bd41d66aff8418ad3",
+      "key": "  key  ",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "a072775fb2cebf99d5b62e061c914a657f"
+    },
+    {
+      "id": "explicit_iv-ofb-17-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "a072775fb2cebf99d5b62e061c914a657f",
+      "key": "  key  ",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "438cd51e67b0f9428bd41d66aff8418ad3"
+    },
+    {
+      "id": "explicit_iv-ofb-31-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db",
+      "key": "",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ofb",
+      "expected": "97918748a0aadfad75f4f70b140ea8c85b7639ac48efdaaad4e4b1f3923a3a"
+    },
+    {
+      "id": "explicit_iv-ofb-31-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "97918748a0aadfad75f4f70b140ea8c85b7639ac48efdaaad4e4b1f3923a3a",
+      "key": "",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ofb",
+      "expected": "4d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db"
+    },
+    {
+      "id": "explicit_iv-ofb-32-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37",
+      "key": "12312313123",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ofb",
+      "expected": "49379227fe57f6f62b625b584266d3b2836729d339de2338db35c128e4817606"
+    },
+    {
+      "id": "explicit_iv-ofb-32-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "49379227fe57f6f62b625b584266d3b2836729d339de2338db35c128e4817606",
+      "key": "12312313123",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ofb",
+      "expected": "60a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee37"
+    },
+    {
+      "id": "explicit_iv-ofb-33-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "c6555b77275c3d8c568558a201794fff11f06c18e092bba29d361b8bbe4191d157"
+    },
+    {
+      "id": "explicit_iv-ofb-33-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "c6555b77275c3d8c568558a201794fff11f06c18e092bba29d361b8bbe4191d157",
+      "key": "F3229A0B371ED2D9441B830D21A390C3",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "sm4-ofb",
+      "expected": "73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93"
+    },
+    {
+      "id": "explicit_iv-ofb-128-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "中文密钥🙂",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ofb",
+      "expected": "a635f0f73164fb5e36c828b6af7eb881af8b5e2670e9b465fd5f46e4bcdedb9a15c1c2f4d32cbe9dc094715e3680518bfdc1a26818b613b0ce7c63d04c110eb958fd57ee03c92bc49ee290b0c053075ebb6400e5a6c06d6863e5518f8a9cd396b6ee454c82f4148b0fee741cd0e09b6781bbb0b8e624c731776e5b1471d8223b"
+    },
+    {
+      "id": "explicit_iv-ofb-128-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "a635f0f73164fb5e36c828b6af7eb881af8b5e2670e9b465fd5f46e4bcdedb9a15c1c2f4d32cbe9dc094715e3680518bfdc1a26818b613b0ce7c63d04c110eb958fd57ee03c92bc49ee290b0c053075ebb6400e5a6c06d6863e5518f8a9cd396b6ee454c82f4148b0fee741cd0e09b6781bbb0b8e624c731776e5b1471d8223b",
+      "key": "中文密钥🙂",
+      "iv": "中文向量示例较长",
+      "mode": "sm4-ofb",
+      "expected": "80c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "explicit_iv-ofb-1024-enc",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7",
+      "key": "  key  ",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ofb",
+      "expected": "6a68e580dafd959470d5d60c1124c29b66187a52767e158c0fa8550e8fe09af17ebea19d0ee9a0aec66c07ca3d028097341495f0df649095ffe48056db113f924c97229ab2c647ba1926949478894d278c5ce938c2793eac2e1d80f823a36b6762f4709b61cc45d5cb0995eefdb1cd5f23dfb0423a107f6052857d3257c9639c1ae518bebf3d679389496817a7848bf4242ce532b638fe773303b302c94239ef0f86b14b257bf00dddcb7a3ac0a3b5a1f8329a71e0611ec6179ce457964d89f3e7f78aafbe492fbe6f15aac410cbbf55446af8a03b4d59edecfadc7e94e054f4c36645bf237b63b30d988c92edbf8bc63d1a114094207a1363ef765439a305cb224914c89a3b15e20422c8fe77613d19fd86792fed2073d35fed2d0498065845836cc4d9979beed2686bb429566e8babc740efa085fa9a1f5a5c03a8eef26e7da307fc2cd1bed4b2579585ad98833aab6c9bd8666f3f2e4367111fdec565db25cded674f9c97caad325723d8d87179a1e6a6e9d7a509e7dbcb8f2f8b0c82c8fc8420f0759890540d42d8bbf4a02080d60227d9b551d8e0bb4226b0498570c61b5352e267e450b8a6421f7f4a2af97b19c4e3acdd745d087af322703492e8478d573c7535b520fadee6b243a097ec87fb962ffecc15f1fc0b8613aed3c0450d35a7b56764fb361170f314e826f92103e32a710673d01de40e417349cd5f31c92c8292ac1cd7ae35538dbb22fddb055bf22198551ad3a63e6acba0d69f42cd2acc75f519c4da3b8cfa747822ee3ae5b15d7639f3c6e304373b87054098d00cc9f45fed48e15ad1bd28986942800f884aff12458e403ae0e74a6fbd5a506de4c0f44e29b78a5f1db871370c0caec6a3b1755eaca01cd4355d160be376dca426c56f88beeb05da65e1ea88af1f5e1573657def635213624ea13bff60b3bc1cf7e9a6fe866966144190bf0640277a0dbd0638c2ff711cd465582df0a5967fce6bd722539ba54722629ebd30d62e518ab4f9e142315da4c8d696ad03360f181fcf4446e59db7903ffb9fce66d59b1ad3a5380c2df80b624520aee0a50d4b9b6c92ab6835d5dd5c5c2194a29e8d7c4fd5ab9ea02426f8b6dbf5ad86357c546efaead76f2c82b2a6c6ed1821a47a5c37d56e5e571abd7c801701945a74a35f1057dfb0ad81938b5c2350e3b6bdf7d786c1d97a6111a971ed265477640fe981e6c4bd946e78c6843f561f48b806ab077739554eb04c7015d5105411441bc24fcbae8bd1e360faf0884a6e8f8ca41263612438b7969dfe28380925a87e782b1c22d0d9b3e9c38cf2b588480a7c95953c5068e04cafc0ba38d676a00e99f97543e6b9be9f63bc785974e8101d4a9d5203f9befe80c5f7a296d12df6827a000ea1ba67de9f01f5cbdfa70cacc9afba433fd19c64ce9a5507266eaff49f81bcdca31ca92f4e81"
+    },
+    {
+      "id": "explicit_iv-ofb-1024-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "6a68e580dafd959470d5d60c1124c29b66187a52767e158c0fa8550e8fe09af17ebea19d0ee9a0aec66c07ca3d028097341495f0df649095ffe48056db113f924c97229ab2c647ba1926949478894d278c5ce938c2793eac2e1d80f823a36b6762f4709b61cc45d5cb0995eefdb1cd5f23dfb0423a107f6052857d3257c9639c1ae518bebf3d679389496817a7848bf4242ce532b638fe773303b302c94239ef0f86b14b257bf00dddcb7a3ac0a3b5a1f8329a71e0611ec6179ce457964d89f3e7f78aafbe492fbe6f15aac410cbbf55446af8a03b4d59edecfadc7e94e054f4c36645bf237b63b30d988c92edbf8bc63d1a114094207a1363ef765439a305cb224914c89a3b15e20422c8fe77613d19fd86792fed2073d35fed2d0498065845836cc4d9979beed2686bb429566e8babc740efa085fa9a1f5a5c03a8eef26e7da307fc2cd1bed4b2579585ad98833aab6c9bd8666f3f2e4367111fdec565db25cded674f9c97caad325723d8d87179a1e6a6e9d7a509e7dbcb8f2f8b0c82c8fc8420f0759890540d42d8bbf4a02080d60227d9b551d8e0bb4226b0498570c61b5352e267e450b8a6421f7f4a2af97b19c4e3acdd745d087af322703492e8478d573c7535b520fadee6b243a097ec87fb962ffecc15f1fc0b8613aed3c0450d35a7b56764fb361170f314e826f92103e32a710673d01de40e417349cd5f31c92c8292ac1cd7ae35538dbb22fddb055bf22198551ad3a63e6acba0d69f42cd2acc75f519c4da3b8cfa747822ee3ae5b15d7639f3c6e304373b87054098d00cc9f45fed48e15ad1bd28986942800f884aff12458e403ae0e74a6fbd5a506de4c0f44e29b78a5f1db871370c0caec6a3b1755eaca01cd4355d160be376dca426c56f88beeb05da65e1ea88af1f5e1573657def635213624ea13bff60b3bc1cf7e9a6fe866966144190bf0640277a0dbd0638c2ff711cd465582df0a5967fce6bd722539ba54722629ebd30d62e518ab4f9e142315da4c8d696ad03360f181fcf4446e59db7903ffb9fce66d59b1ad3a5380c2df80b624520aee0a50d4b9b6c92ab6835d5dd5c5c2194a29e8d7c4fd5ab9ea02426f8b6dbf5ad86357c546efaead76f2c82b2a6c6ed1821a47a5c37d56e5e571abd7c801701945a74a35f1057dfb0ad81938b5c2350e3b6bdf7d786c1d97a6111a971ed265477640fe981e6c4bd946e78c6843f561f48b806ab077739554eb04c7015d5105411441bc24fcbae8bd1e360faf0884a6e8f8ca41263612438b7969dfe28380925a87e782b1c22d0d9b3e9c38cf2b588480a7c95953c5068e04cafc0ba38d676a00e99f97543e6b9be9f63bc785974e8101d4a9d5203f9befe80c5f7a296d12df6827a000ea1ba67de9f01f5cbdfa70cacc9afba433fd19c64ce9a5507266eaff49f81bcdca31ca92f4e81",
+      "key": "  key  ",
+      "iv": "0123456789abcdef",
+      "mode": "sm4-ofb",
+      "expected": "004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7"
+    },
+    {
+      "id": "explicit_iv-encrypt-null-data",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": null,
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-encrypt-null-key",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "64617461",
+      "key": null,
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-encrypt-null-iv",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "64617461",
+      "key": "12312313123",
+      "iv": null,
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-encrypt-null-mode",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "64617461",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": null,
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-encrypt-mode-207",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-encrypt-mode-208",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CBC ",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-encrypt-mode-209",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CTR",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-encrypt-mode-210",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "ＧＣＭ",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-decrypt-null-data",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": null,
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-decrypt-null-key",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "64617461",
+      "key": null,
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-decrypt-null-iv",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "64617461",
+      "key": "12312313123",
+      "iv": null,
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-decrypt-null-mode",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "64617461",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": null,
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-decrypt-mode-215",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-decrypt-mode-216",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CBC ",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-decrypt-mode-217",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CTR",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-decrypt-mode-218",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "74657874",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "ＧＣＭ",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-bad-size-1",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "00",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-bad-size-15",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-bad-size-17",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "0000000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-bad-padding-0",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "316d2d5f6b77332e0ceaa133ee09cafb",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-bad-padding-17",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "af8fc22f26ba3b02fa097eac735e28d4",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-bad-padding-255",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "1e5e1c7ecb794312679af471a295244e",
+      "key": "12312313123",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-utf8-dec",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "159715a57e9e712048116e8dfa915ca45b21a052d9202c5e04d7fdb753295a72",
+      "key": "  key  ",
+      "iv": "asdasdkljasdkljalskdjaklsdjaklsjdaklsdjlaksdj",
+      "mode": "CBC",
+      "expected": "68656c6c6f01e4b8ade69687f09f9982"
+    },
+    {
+      "id": "explicit_iv-short-iv-226",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-227",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-228",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "short",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-229",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "short",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-230",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "123456789012345",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-231",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "123456789012345",
+      "mode": "CBC",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-232",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CFB128",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-233",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "CFB128",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-234",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "short",
+      "mode": "CFB128",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-235",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "short",
+      "mode": "CFB128",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-236",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "123456789012345",
+      "mode": "CFB128",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-237",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "123456789012345",
+      "mode": "CFB128",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-238",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "OFB",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-239",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "",
+      "mode": "OFB",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-240",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "short",
+      "mode": "OFB",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-241",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "short",
+      "mode": "OFB",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-242",
+      "profile": "explicit_iv",
+      "operation": "encrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "123456789012345",
+      "mode": "OFB",
+      "expected": null
+    },
+    {
+      "id": "explicit_iv-short-iv-243",
+      "profile": "explicit_iv",
+      "operation": "decrypt",
+      "data": "00000000000000000000000000000000",
+      "key": "12312313123",
+      "iv": "123456789012345",
+      "mode": "OFB",
+      "expected": null
+    }
+  ]
+}
